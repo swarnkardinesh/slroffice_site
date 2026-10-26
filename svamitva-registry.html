@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>स्वामित्व रजिस्ट्री पोर्टल | SVAMITVA Registry Resource Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+:root{
+--bg:#f4f7f5;--surface:#fff;--ink:#14281f;--muted:#566b5f;--line:#dbe5de;
+--deep:#0f3b2a;--deep2:#1b5a40;--accent:#e9a93b;--accent-ink:#3d2800;--link:#13609a;--chip:#e8f1ec;--on-deep:#f2f6f3;
+--shadow:0 1px 2px rgba(15,59,42,.06),0 4px 14px rgba(15,59,42,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--bg:#0c1712;--surface:#14241c;--ink:#e8f0eb;--muted:#9bb0a4;--line:#26392f;--deep:#0a2a1d;--deep2:#7fd0a5;--accent:#f0b84e;--accent-ink:#2b1c00;--link:#7cc0f2;--chip:#1c3228;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1712;--surface:#14241c;--ink:#e8f0eb;--muted:#9bb0a4;--line:#26392f;--deep:#0a2a1d;--deep2:#7fd0a5;--accent:#f0b84e;--accent-ink:#2b1c00;--link:#7cc0f2;--chip:#1c3228;--shadow:none;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 "Mukta","Noto Sans Devanagari",system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom,0)}
+h1,h2,h3{font-family:"Tiro Devanagari Hindi","Mukta",serif;font-weight:400;line-height:1.35;margin:0}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* header */
+header.nav{position:sticky;top:0;z-index:20;background:var(--deep);color:var(--on-deep);padding-top:env(safe-area-inset-top,0);box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.nav .wrap{display:flex;align-items:center;gap:12px;height:54px}
+.home{display:inline-flex;align-items:center;gap:4px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:12.5px;line-height:1.2;text-decoration:none;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.home:hover{filter:brightness(1.08)}
+.home svg{width:13px;height:13px}
+.brand{font-family:"Tiro Devanagari Hindi",serif;font-size:18px;white-space:nowrap;margin-right:auto}
+.nav nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav nav::-webkit-scrollbar{display:none}
+.nav nav a{padding:5px 12px;border-radius:99px;text-decoration:none;font-size:14.5px;white-space:nowrap;color:#d3e4da}
+.nav nav a:hover{background:rgba(255,255,255,.13);color:#fff}
+
+/* hero */
+.hero{background:linear-gradient(135deg,var(--deep) 0%,var(--deep2) 140%);color:var(--on-deep);position:relative;overflow:hidden}
+.hero svg.map{position:absolute;right:-30px;top:0;height:100%;width:55%;opacity:.4}
+.hero .wrap{position:relative;padding-top:34px;padding-bottom:36px}
+.hero h1{font-size:clamp(22px,3.6vw,34px);max-width:22em}
+.hero p{max-width:40em;color:#cde0d5;margin:8px 0 0;font-size:15.5px}
+.hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.hero .chips a{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;text-decoration:none;padding:4px 14px;border-radius:99px;font-size:14px}
+.hero .chips a:hover{background:rgba(255,255,255,.2)}
+
+/* sections */
+section{padding:38px 0 0}
+section h2{font-size:clamp(22px,3vw,29px);color:var(--deep);display:flex;align-items:center;gap:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) section h2{color:var(--accent)}}
+:root[data-theme="dark"] section h2{color:var(--accent)}
+section h2::before{content:"";width:5px;height:1.1em;background:var(--accent);border-radius:3px}
+.sub{color:var(--muted);margin:4px 0 16px;max-width:46em;font-size:15px}
+.tag{display:inline-block;background:var(--chip);color:var(--deep2);font-size:12.5px;font-weight:600;padding:1px 10px;border-radius:6px;white-space:nowrap}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+
+/* link list (dashboards / tools / documents) */
+.list{list-style:none;margin:0;padding:0}
+.list li{display:grid;grid-template-columns:130px 1fr;gap:4px 16px;align-items:baseline;padding:12px 18px;border-top:1px solid var(--line)}
+.list li:first-child{border-top:0}
+.list li:hover{background:var(--chip)}
+.list .t{font-weight:600;font-size:16.5px}
+.list .t a{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.list .t a:hover{text-decoration-thickness:2px}
+.list .t a::after{content:" ↗";font-size:.85em;text-decoration:none;display:inline-block}
+.list small{display:block;color:var(--muted);font-size:14px;font-weight:400;line-height:1.5}
+.warn{display:inline-block;margin-left:6px;background:#fff1d6;color:#7a4b00;font-size:12px;font-weight:600;padding:0 8px;border-radius:5px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{background:#3a2c0b;color:#f0c46a}}
+:root[data-theme="dark"] .warn{background:#3a2c0b;color:#f0c46a}
+
+
+/* compact cards */
+.cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.card{padding:14px 16px 14px 18px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--deep2)}
+.card h3{font-size:17px;font-family:"Mukta",sans-serif;font-weight:600;line-height:1.4}
+.card p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.card .spacer{flex:1}
+.card .bt{display:inline-flex;align-items:center;gap:4px;margin-top:4px;padding:5px 14px;border-radius:7px;background:var(--deep);color:#fff;font-weight:600;font-size:13.5px;text-decoration:none}
+.card .bt::after{content:"\2192"}
+.card .bt:hover{background:var(--deep2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card .bt{background:var(--accent);color:var(--accent-ink)}}
+:root[data-theme="dark"] .card .bt{background:var(--accent);color:var(--accent-ink)}
+.card.wide{grid-column:1/-1;flex-direction:row;align-items:center;flex-wrap:wrap;gap:10px 16px}
+.card.wide::before{background:var(--accent)}
+.card.wide .txt{flex:1 1 260px}
+.card.wide .bt{margin:0}
+
+/* videos */
+.vids{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.vid{overflow:hidden}
+.vid .ratio{aspect-ratio:16/9;background:#000}
+.vid iframe{width:100%;height:100%;border:0;display:block}
+.vid .cap{padding:10px 16px 12px}
+.vid h3{font-size:16.5px;font-family:"Mukta",sans-serif;font-weight:600}
+.vid .cap a{font-size:14px}
+
+/* help */
+.help{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:20px}
+.hb{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hb span{display:block;color:var(--muted);font-size:14px}
+.hb b{font-family:"Tiro Devanagari Hindi",serif;font-weight:400;font-size:24px}
+.hb.dark{background:var(--deep);color:var(--on-deep);border-color:var(--deep)}
+.hb.dark span{color:#b9d1c4}
+.pill{display:inline-block;padding:7px 16px;border-radius:99px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14.5px;text-decoration:none;white-space:nowrap}
+.pill:hover{filter:brightness(1.07)}
+h3.sec{font-size:19px;margin:22px 0 10px;color:var(--deep)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) h3.sec{color:var(--accent)}}
+:root[data-theme="dark"] h3.sec{color:var(--accent)}
+.nodal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.nodal div{padding:12px 16px}
+.nodal small{display:block;color:var(--muted);font-size:14px}
+.nodal a{font-weight:600;text-decoration:none}
+.search{width:100%;max-width:420px;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;margin:0 0 14px}
+.tblwrap{overflow-x:auto;margin-bottom:18px}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:15px}
+caption{text-align:left;padding:12px 16px;font-weight:700;font-size:16px}
+th,td{padding:8px 16px;text-align:left;border-top:1px solid var(--line)}
+th{background:var(--chip);font-weight:600;font-size:14px}
+td a{font-weight:600;text-decoration:none;white-space:nowrap}
+td a:hover{text-decoration:underline}
+tbody tr:hover{background:var(--chip)}
+footer{margin-top:50px;background:var(--deep);color:#c5d9ce;padding:20px 0;font-size:14px;text-align:center}
+.top{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0));background:var(--accent);color:var(--accent-ink);width:40px;height:40px;border-radius:50%;display:grid;place-items:center;text-decoration:none;font-weight:700;font-size:18px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+
+@media (max-width:700px){
+.wrap{padding:0 14px}
+.brand{display:none}
+.nav nav{margin-left:auto}
+.hero svg.map{width:100%;opacity:.2}
+.hero .wrap{padding-top:24px;padding-bottom:26px}
+.list li{grid-template-columns:1fr;padding:11px 14px}
+section{padding-top:30px}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+<div class="wrap">
+<a class="home" href="#top" aria-label="Home">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg>Home</a>
+<span class="brand">स्वामित्व रजिस्ट्री पोर्टल</span>
+<nav aria-label="सेक्शन">
+<a href="#dash">डेशबोर्ड</a><a href="#video">वीडियो</a><a href="#tools">सेवाएँ</a><a href="#docs">दस्तावेज़</a><a href="#help">सहायता</a>
+</nav>
+</div>
+</header>
+
+<div class="hero" id="top">
+<svg class="map" viewBox="0 0 600 420" preserveAspectRatio="xMaxYMid slice" aria-hidden="true" fill="none" stroke="#9fd0b6" stroke-width="1.3">
+<path d="M40 40 L260 20 L300 150 L90 190Z"/><path d="M260 20 L470 60 L440 170 L300 150"/><path d="M90 190 L300 150 L330 300 L120 330Z"/><path d="M300 150 L440 170 L520 290 L330 300"/><path d="M470 60 L580 110 L560 220 L440 170"/><path d="M120 330 L330 300 L360 400 L150 410Z"/>
+<path d="M0 250 C120 210 200 300 330 240 S520 230 600 280" stroke="#e9a93b" stroke-width="2" stroke-dasharray="6 6"/>
+<g fill="#e9a93b" stroke="none"><circle cx="300" cy="150" r="5"/><circle cx="90" cy="190" r="5"/><circle cx="440" cy="170" r="5"/><circle cx="330" cy="300" r="5"/></g></svg>
+<div class="wrap">
+<h1>स्वामित्व योजना : रजिस्ट्री से जुड़ी हर जानकारी एक ही पेज पर</h1>
+<p>डेशबोर्ड, प्रशिक्षण वीडियो, आदेश, SOP, प्रशिक्षण पुस्तिका और सहायता संपर्क। All SVAMITVA registry links, documents and helpline contacts in one place.</p>
+</div></div>
+
+<main class="wrap">
+
+<section id="dash"><h2>डेशबोर्ड</h2><p class="sub">रजिस्ट्री की प्रगति और जिलावार स्थिति देखने के लिए।</p>
+<div class="cards">
+<div class="card box wide"><div class="txt"><span class="tag">मुख्य डेशबोर्ड</span><h3>Swamitva Registry Dashboard</h3><p>स्वामित्व रजिस्ट्री का मुख्य डेशबोर्ड पेज।</p></div><a class="bt" href="https://datastudio.google.com/u/0/reporting/286cdead-38ab-4291-8c68-7a8360de572f/page/upGBG/edit" target="_blank" rel="noopener">डेशबोर्ड खोलें</a></div>
+<div class="card box"><span class="tag">State level</span><h3>Swamitva State Level Dashboard</h3><p>जिलावार रजिस्ट्री की स्थिति (MPIGR)।</p><span class="spacer"></span><a class="bt" href="https://services.mpigr.gov.in/svamitva_dashboard/district-registration/%E0%A4%B6%E0%A4%BF%E0%A4%B5%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A5%80" target="_blank" rel="noopener">खोलें</a></div>
+<div class="card box"><span class="tag">परीक्षण मोड</span><h3>स्वामित्व पंजीकरण डेशबोर्ड</h3><p><span class="warn" style="margin:0">Not recommended for official use</span></p><span class="spacer"></span><a class="bt" href="https://slrofficeshivpuri.netlify.app/" target="_blank" rel="noopener">खोलें</a></div>
+</div></section>
+
+<section id="video"><h2>प्रशिक्षण वीडियो</h2><p class="sub">“स्वामित्व अधिकार अभिलेख निष्पादन एवं पंजीयन–2026” योजना के क्रियान्वयन पर ऑनलाइन प्रशिक्षण।</p>
+<div class="vids">
+<div class="vid box"><div class="ratio"><iframe src="https://www.youtube.com/embed/utEE1VPBznQ" title="ऑनलाइन प्रशिक्षण 05-09-2026" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="cap"><span class="tag">05-09-2026</span><h3>ऑनलाइन प्रशिक्षण कार्यक्रम : सत्र 1</h3><a href="https://youtube.com/live/utEE1VPBznQ?feature=share" target="_blank" rel="noopener">YouTube पर देखें ↗</a></div></div>
+<div class="vid box"><div class="ratio"><iframe src="https://www.youtube.com/embed/BH6T6nuhKjw" title="ऑनलाइन प्रशिक्षण 05-10-2026" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><div class="cap"><span class="tag">05-10-2026</span><h3>ऑनलाइन प्रशिक्षण कार्यक्रम : सत्र 2</h3><a href="https://www.youtube.com/live/BH6T6nuhKjw" target="_blank" rel="noopener">YouTube पर देखें ↗</a></div></div>
+</div></section>
+
+<section id="tools"><h2>पोर्टल, ऐप और ऑनलाइन सेवाएँ</h2><p class="sub">आवेदन, जाँच और शिकायत के लिए सीधे लिंक।</p>
+<div class="cards">
+<div class="card box"><span class="tag">Mobile App</span><h3>MP e-Swa Portal App</h3><p>Google Play Store से ऐप डाउनलोड करें।</p><span class="spacer"></span><a class="bt" href="https://play.google.com/store/apps/details?id=com.mpsedc.unified_portal" target="_blank" rel="noopener">Play Store पर खोलें</a></div>
+<div class="card box"><span class="tag">ड्रोन मानचित्र</span><h3>ड्रोन छवि एवं मानचित्र की उपलब्धता जाँचें</h3><p>SVAMITVA परियोजना के अंतर्गत ड्रोन छवि और नक्शा उपलब्ध है या नहीं, यहाँ देखें।</p><span class="spacer"></span><a class="bt" href="https://sampada.mpigr.gov.in/#/ViewLgdCode" target="_blank" rel="noopener">जाँच करें</a></div>
+<div class="card box"><span class="tag">स्थिति</span><h3>पटवारी द्वारा प्रस्तुत स्वामित्व रजिस्ट्री की स्थिति</h3><p>पटवारी द्वारा प्रस्तुत रजिस्ट्री की वर्तमान स्थिति देखें।</p><span class="spacer"></span><a class="bt" href="https://sampada.mpigr.gov.in/#/RegistryAssignDetail" target="_blank" rel="noopener">स्थिति देखें</a></div>
+<div class="card box"><span class="tag">Support</span><h3>Raise SVAMITVA Support Ticket</h3><p>To raise a SVAMITVA support ticket, use this link.</p><span class="spacer"></span><a class="bt" href="https://sampada.mpigr.gov.in/#/raiseTicket" target="_blank" rel="noopener">Ticket raise करें</a></div>
+</div></section>
+
+<section id="docs"><h2>दस्तावेज़ एवं मार्गदर्शिकाएँ</h2><p class="sub">आदेश, SOP, प्रशिक्षण सामग्री और प्रक्रिया-गाइड। शीर्षक पर क्लिक करने पर फ़ाइल Google Drive में खुलेगी।</p>
+<div class="box"><ul class="list" id="doclist"></ul></div></section>
+
+<section id="help"><h2>सहायता एवं संपर्क</h2><p class="sub">स्वामित्व से जुड़ी समस्या के लिए पहले अपने संभागीय सलाहकार (Divisional Consultant) से संपर्क करें।</p>
+<div class="help">
+<div class="hb box dark"><div><span>SVAMITVA Technical Helpdesk</span><b>0755-2780133</b></div><a class="pill" href="tel:07552780133">कॉल करें</a></div>
+<div class="hb box"><div><span>Technical issue?</span><b>Support Ticket</b></div><a class="pill" href="https://sampada.mpigr.gov.in/#/raiseTicket" target="_blank" rel="noopener">Ticket raise करें</a></div>
+</div>
+
+<h3 class="sec">State Nodal for SVAMITVA Registry Scheme</h3>
+<div class="nodal" id="nodal"></div>
+
+<h3 class="sec">संपर्क खोजें</h3>
+<input class="search" id="q" type="search" placeholder="संभाग या नाम से खोजें (जैसे Bhopal, Indore)" aria-label="संभाग या नाम से खोजें">
+<div class="tblwrap box"><table><caption>Divisional Consultants (संभाग अनुसार)</caption><thead><tr><th>नाम</th><th>संभाग</th><th>मोबाइल</th></tr></thead><tbody id="t1"></tbody></table></div>
+<p class="sub" style="margin-top:-4px">जिले पहले अपने Divisional Consultant से संपर्क करें। समाधान न होने पर नीचे दिए गए राज्य स्तर के संभागीय प्रमुख (SPOC) से संपर्क करें।</p>
+<div class="tblwrap box"><table><caption>State Nodal : संभाग-वार SPOC</caption><thead><tr><th>नाम</th><th>आवंटित संभाग</th><th>मोबाइल</th></tr></thead><tbody id="t2"></tbody></table></div>
+<div class="tblwrap box"><table><caption>SVAMITVA Technical Key Members</caption><thead><tr><th>Name</th><th>Mobile No.</th></tr></thead><tbody id="t3"></tbody></table></div>
+</section>
+</main>
+
+<footer><div class="wrap">स्वामित्व रजिस्ट्री संसाधन पेज। जानकारी विभागीय आदेशों और परिपत्रों के अनुसार देखें।</div></footer>
+<a class="top" href="#top" aria-label="ऊपर जाएँ">↑</a>
+
+<script>
+var D="https://drive.google.com/file/d/";
+var docs=[
+["24-09-2026","SVAMITVA Registry Circular & SOP","पंजीयन से जुड़ा परिपत्र एवं मानक संचालन प्रक्रिया।","1DkSLltcdG_0RVdLe_Ae3d743HuRC5JxG"],
+["17-09-2026","SVAMITVA Registry Rule (IGRS Dept)","IGRS विभाग द्वारा जारी स्वामित्व रजिस्ट्री नियम।","1vbeDTGumXrTY4eg4g7TLVa9DjGU37hoh"],
+["आदेश","स्वामित्व योजना रजिस्ट्री में पटवारी के संरक्षण बावत आदेश","रजिस्ट्री में पटवारी की भूमिका और संरक्षण संबंधी आदेश।","1AB2-zAg__0-8ZKLxQOx9NzxKl5kBvWnZ"],
+["गाइड","SVAMITVA ई सेवा एप से आवेदन की प्रक्रिया","ई-सेवा ऐप से आवेदन करने की चरणबद्ध प्रक्रिया।","1F9_WjalfTiuOJGDf4HrSeu6124EMUp0a"],
+["गाइड","दस्तावेज़ पंजीकरण के लिए आवंटित अधिकारी कैसे जानें","अपने दस्तावेज़ के लिए आवंटित अधिकारी जानने की जानकारी।","1WY28sjEKCPnV-VjikycZfAoKv7sHaIy2"],
+["08-10-2026","SVAMITVA PPT (VC) v2","वीडियो कॉन्फ्रेंस के लिए प्रस्तुति।","1Q-HhR2q8wcRA_a4wcpe8AyldFsD4p-fd"],
+["v1.6.1","SVAMITVA Training Manual","प्रशिक्षण पुस्तिका (Training Manual)।","136g9V86tz44X8uLW6k7qlIucyZVMeeyh"]];
+var dl=document.getElementById("doclist");
+docs.forEach(function(d){var li=document.createElement("li");
+li.innerHTML='<span><span class="tag"></span></span><div class="t"><a target="_blank" rel="noopener"></a><small></small></div>';
+li.querySelector(".tag").textContent=d[0];
+var a=li.querySelector("a");a.textContent=d[1];a.href=D+d[3]+"/view?usp=drive_link";
+li.querySelector("small").textContent=d[2];dl.appendChild(li)});
+
+var nodal=[["Mr. Digpal Singh Kushwah","Principal Technical Officer, MPLRS","7898682418"],["Ms. Oshin Victor","Assistant Director, MPLRS","8839636949"],["Ms. Apoorva Dubey","ARC, Land Resource Management MP","9424021998"]];
+var cons=[["Upendra Tripathi","Shahdol","8839663392"],["Bhupendra Gurjar","Narmadapuram","9826065701"],["Gaurav Nandwal","Indore","9039575464"],["Gaurav Shrivastava","Ujjain","8889566888"],["Abhyanand Sahu","Gwalior","9827121202"],["Mayank Shrivastava","Chambal","9425738086"],["Kamal Soni","Sagar","9806856062"],["Ramchandra Gupta","Jabalpur","9827434346"],["Rahul Tiwari","Reva","9713802292"],["Shubham Mehra","Bhopal","9425640804"]];
+var spoc=[["Amit Kumar Mishra","Shahdol","7869919658"],["Surendra Singh Dangi","Narmadapuram","7723003660"],["Kumar Vaibhav Gupta","Indore","9752337099"],["Himanshu Jain","Ujjain","8889566888"],["Praveen Dabgar","Gwalior","9826219270"],["Mayur Kolhatkar","Chambal","9460719299"],["Puneet Yadav","Sagar & Bhopal","9810883712"],["Yamini Shrivastava","Jabalpur","9424548343"],["Piyush Raikwar","Rewa","8517890673"]];
+var keys=[["Manish Singh","9560864966"],["Abhay Rai","9977905818"],["Umesh Vishwakarma","9977890188"],["Sunil Jain","9893114330"],["Harsh Sharma","8109145755"]];
+function tel(n){return '<a href="tel:+91'+n+'">'+n+'</a>'}
+var nd=document.getElementById("nodal");
+nodal.forEach(function(n){var d=document.createElement("div");d.className="box";d.innerHTML="<b></b><small></small>"+tel(n[2]);d.children[0].textContent=n[0];d.children[1].textContent=n[1];nd.appendChild(d)});
+function rows(id,a,filter){var b=document.getElementById(id);b.innerHTML="";a.forEach(function(r){
+if(filter&&(r.join(" ").toLowerCase().indexOf(filter)<0))return;var tr=document.createElement("tr");
+r.forEach(function(v,i){var td=document.createElement("td");if(i==r.length-1)td.innerHTML=tel(v);else td.textContent=v;tr.appendChild(td)});b.appendChild(tr)})}
+function all(){var f=document.getElementById("q").value.trim().toLowerCase();rows("t1",cons,f);rows("t2",spoc,f)}
+document.getElementById("q").addEventListener("input",all);all();rows("t3",keys);
+</script>
+</body>
+</html>
