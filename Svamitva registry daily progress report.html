@@ -63,7 +63,7 @@
       font-weight: 700;
     }
     .total-row td {
-      background-color: #cfe2f3;
+      background-color: #cfe2f3 !important;
       font-weight: 800;
       font-size: 14px;
       padding: 7px 4px;
@@ -112,4 +112,145 @@
 <script>
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTu1ru3JwkKgNDTg-oI0HtL_3X937_fvzmx2GnwaE3rEUMEotOMUHwNhVxFORnVGegrhBD6MUxKb7OT/pub?gid=1613441531&single=true&output=csv';
 
-  function parse
+  function parseCSV(text) {
+    const lines = text.split(/\r?\n/);
+    return lines.map(line => {
+      const row = [];
+      let inQuotes = false;
+      let token = '';
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') {
+          inQuotes = !inQuotes;
+        } else if (c === ',' && !inQuotes) {
+          row.push(token.trim());
+          token = '';
+        } else {
+          token += c;
+        }
+      }
+      row.push(token.trim());
+      return row;
+    });
+  }
+
+  function getColorClass(percentage) {
+    const p = parseFloat(percentage);
+    if (isNaN(p)) return '';
+    if (p < 33) return 'c-red';
+    if (p < 36) return 'c-light-red';
+    if (p < 38) return 'c-peach';
+    if (p < 41) return 'c-light-green';
+    return 'c-green';
+  }
+
+  async function loadSheetData() {
+    try {
+      const response = await fetch(csvUrl + '&t=' + new Date().getTime());
+      const text = await response.text();
+      const rows = parseCSV(text);
+
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '';
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length < 3) continue;
+
+        const rowStr = row.join(' ').toUpperCase();
+
+        // 1. Top Title Line extract karein
+        if (rowStr.includes('SVAMITVA') && !rowStr.includes('S.NO.')) {
+          const titleText = row.find(c => c && c.toUpperCase().includes('SVAMITVA'));
+          if (titleText) {
+            document.getElementById('reportTime').innerText = titleText;
+          }
+          continue;
+        }
+
+        // 2. Extra header rows ko skip karein
+        if (rowStr.includes('S.NO.') || rowStr.includes('TEHSIL NAME')) {
+          continue;
+        }
+
+        // 3. Check karein kya yeh TOTAL wali row hai
+        const isTotal = rowStr.includes('TOTAL');
+
+        // 4. Data row ya Total row dono me se koi ek hona zaroori hai
+        const firstColNum = parseInt(row[0]);
+        if (!isTotal && isNaN(firstColNum)) {
+          continue;
+        }
+
+        const tr = document.createElement('tr');
+
+        if (isTotal) {
+          tr.className = 'total-row';
+          
+          // Total row me agar 'Total' column 0 me ho ya column 1 me, sahi shift handle karein
+          const hasColspan = (row[0].toUpperCase().includes('TOTAL') && (!row[1] || row[1] === '')) || 
+                             (!row[0] && row[1].toUpperCase().includes('TOTAL'));
+
+          if (hasColspan) {
+            tr.innerHTML = `
+              <td colspan="2">Total</td>
+              <td>${row[2] || ''}</td>
+              <td>${row[3] || ''}</td>
+              <td>${row[4] || ''}</td>
+              <td>${row[5] || ''}</td>
+              <td>${row[6] || ''}</td>
+              <td>${row[7] || ''}</td>
+              <td>${row[8] || ''}</td>
+              <td>${row[9] || ''}</td>
+              <td class="bold-cell">${row[10] || 0}</td>
+            `;
+          } else {
+            // Agar Total column 0 me hai aur column 1 me koi data nahi/direct shift hai
+            tr.innerHTML = `
+              <td colspan="2">Total</td>
+              <td>${row[2] || row[1] || ''}</td>
+              <td>${row[3] || row[2] || ''}</td>
+              <td>${row[4] || row[3] || ''}</td>
+              <td>${row[5] || row[4] || ''}</td>
+              <td>${row[6] || row[5] || ''}</td>
+              <td>${row[7] || row[6] || ''}</td>
+              <td>${row[8] || row[7] || ''}</td>
+              <td>${row[9] || row[8] || ''}</td>
+              <td class="bold-cell">${row[10] || row[9] || 0}</td>
+            `;
+          }
+        } else {
+          const compPct = row[9] || '';
+          const colorClass = getColorClass(compPct);
+
+          tr.innerHTML = `
+            <td>${row[0]}</td>
+            <td class="bold-cell">${row[1]}</td>
+            <td>${row[2] || ''}</td>
+            <td>${row[3] || ''}</td>
+            <td>${row[4] || ''}</td>
+            <td>${row[5] || ''}</td>
+            <td>${row[6] || ''}</td>
+            <td>${row[7] || ''}</td>
+            <td>${row[8] || ''}</td>
+            <td class="${colorClass}">${compPct}</td>
+            <td class="bold-cell">${row[10] || 0}</td>
+          `;
+        }
+
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById('status').style.display = 'none';
+      document.getElementById('dataTable').style.display = 'table';
+    } catch (err) {
+      document.getElementById('status').innerText = 'डेटा लोड करने में समस्या आई।';
+    }
+  }
+
+  loadSheetData();
+  setInterval(loadSheetData, 300000);
+</script>
+
+</body>
+</html>
