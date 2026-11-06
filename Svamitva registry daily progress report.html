@@ -3,22 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background-color: #f7f9fc; padding: 10px; display: flex; justify-content: center; }
-    .report-card { width: 100%; max-width: 1050px; background: #ffffff; border: 1.5px solid #1a73e8; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); overflow-x: auto; }
-    .main-title { color: #0b5394; font-size: 19px; font-weight: 700; text-align: center; padding: 8px 4px 2px 4px; }
-    .sub-title { color: #0b5394; font-size: 14px; font-weight: 700; text-align: center; padding-bottom: 8px; }
-    table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; }
-    th { background-color: #cfe2f3; color: #000000; font-weight: 700; padding: 8px 4px; border: 1px solid #333333; line-height: 1.25; vertical-align: middle; }
-    td { padding: 6px 4px; border: 1px solid #333333; color: #000000; font-size: 13.5px; vertical-align: middle; }
-    .bold-cell { font-weight: 700; }
-    .total-row td { background-color: #cfe2f3; font-weight: 800; font-size: 14px; padding: 7px 4px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    body {
+      background-color: #f7f9fc;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+    }
+    .report-card {
+      width: 100%;
+      max-width: 1050px;
+      background: #ffffff;
+      border: 1.5px solid #1a73e8;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow-x: auto;
+    }
+    .main-title {
+      color: #0b5394;
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 4px 2px 4px;
+    }
+    .sub-title {
+      color: #0b5394;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      padding-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 13px;
+    }
+    th {
+      background-color: #cfe2f3;
+      color: #000000;
+      font-weight: 700;
+      padding: 8px 4px;
+      border: 1px solid #333333;
+      line-height: 1.25;
+      vertical-align: middle;
+    }
+    td {
+      padding: 6px 4px;
+      border: 1px solid #333333;
+      color: #000000;
+      font-size: 13.5px;
+      vertical-align: middle;
+    }
+    .bold-cell {
+      font-weight: 700;
+    }
+    .total-row td {
+      background-color: #cfe2f3;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 7px 4px;
+    }
     .c-red { background-color: #f4cccc; }
     .c-light-red { background-color: #fce5cd; }
     .c-peach { background-color: #fff2cc; }
     .c-light-green { background-color: #d9ead3; }
     .c-green { background-color: #b6d7a8; }
-    #status { text-align: center; padding: 20px; font-weight: bold; color: #1a73e8; }
+    #status {
+      text-align: center;
+      padding: 20px;
+      font-weight: bold;
+      color: #1a73e8;
+    }
   </style>
 </head>
 <body>
@@ -50,77 +110,6 @@
 </div>
 
 <script>
-  // Google Sheet CSV Export Link
   const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTu1ru3JwkKgNDTg-oI0HtL_3X937_fvzmx2GnwaE3rEUMEotOMUHwNhVxFORnVGegrhBD6MUxKb7OT/pub?gid=1613441531&single=true&output=csv';
 
-  function getColorClass(percentage) {
-    const p = parseFloat(percentage);
-    if (isNaN(p)) return '';
-    if (p < 33) return 'c-red';
-    if (p < 36) return 'c-light-red';
-    if (p < 38) return 'c-peach';
-    if (p < 41) return 'c-light-green';
-    return 'c-green';
-  }
-
-  async function loadSheetData() {
-    try {
-      const response = await fetch(csvUrl + '&t=' + new Date().getTime());
-      const data = await response.text();
-      
-      const rows = data.split('\n').map(row => {
-        // CSV split handling commas
-        const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g;
-        let matches = [];
-        let match;
-        while ((match = regex.exec(row)) !== null && match[0] !== '') {
-          matches.push(match[1].replace(/^"|"$/g, '').trim());
-        }
-        return matches;
-      }).filter(r => r.length > 1);
-
-      const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
-
-      // Row parsing starts after headers
-      for (let i = 2; i < rows.length; i++) {
-        const row = rows[i];
-        if (!row[1] || row[1] === '') continue;
-
-        const isTotal = row[0].toLowerCase().includes('total') || row[1].toLowerCase().includes('total');
-        const tr = document.createElement('tr');
-        if (isTotal) tr.className = 'total-row';
-
-        const compPct = row[9] || '';
-        const colorClass = isTotal ? '' : getColorClass(compPct);
-
-        tr.innerHTML = `
-          <td>${row[0]}</td>
-          <td class="bold-cell">${row[1]}</td>
-          <td>${row[2]}</td>
-          <td>${row[3]}</td>
-          <td>${row[4]}</td>
-          <td>${row[5]}</td>
-          <td>${row[6]}</td>
-          <td>${row[7]}</td>
-          <td>${row[8]}</td>
-          <td class="${colorClass}">${compPct}</td>
-          <td class="bold-cell">${row[10] || 0}</td>
-        `;
-        tbody.appendChild(tr);
-      }
-
-      document.getElementById('status').style.display = 'none';
-      document.getElementById('dataTable').style.display = 'table';
-    } catch (err) {
-      document.getElementById('status').innerText = 'डेटा लोड करने में समस्या आई।';
-    }
-  }
-
-  // Load immediately and auto refresh every 5 minutes
-  loadSheetData();
-  setInterval(loadSheetData, 300000);
-</script>
-
-</body>
-</html>
+  function parse
