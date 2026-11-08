@@ -76,7 +76,7 @@ function buildData(rows){
   const hi=rows.findIndex(r=>{const m=mapHeader(r);return m.n!=null&&m.pl!=null&&m.cm!=null});if(hi<0)return null;
   const m=mapHeader(rows[hi]),out=[];
   for(let i=hi+1;i<rows.length;i++){const r=rows[i],g=f=>m[f]!=null?String(r[m[f]]==null?'':r[m[f]]).trim():'';
-    const n=g('n');if(!n||/^(total|कुल|grand)/i.test(n))continue;const pl=num(g('pl'));if(!pl&&!num(g('cm')))continue;
+    const n=g('n');if(!n||/^(total|grand\s*total|sub\s*total|कुल|कुल\s*योग|योग)$/i.test(n.trim()))continue;const pl=num(g('pl'));if(!pl&&!num(g('cm')))continue;
     const pn=g('pn')||NA,t=g('t')||'—',mob=g('m')||'-';
     D_push(out,{n,l:g('l'),t,s:g('s')||'—',c:g('c')||'—',pn,h:g('h')||'—',m:mob,pk:t+'|'+pn+'|'+mob,pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(g('cm')),p1:num(g('p1')),p7:num(g('p7'))})}
   return{out,m,hasP:m.p1!=null||m.p7!=null,head:rows[hi]}}
@@ -198,7 +198,7 @@ async function refresh(force){
       setup();draw();
       if(!res.hasP)showMsg('सूचना: शीट में "1 day / 1 week progress" कॉलम नहीं मिले, इसलिए तुलना में 0 दिख रहा है। कॉलम के हेडर में "1 Day" / "1 Week" शब्द होने चाहिए।');else showMsg('');
     }
-    lsync.textContent=SYNC||'—';setStatus('ok','Live');
+    lsync.textContent=SYNC||'—';setStatus('ok','Live · '+nf(D.length)+' गाँव · Completed '+nf(D.reduce((a,r)=>a+r.cm,0)));
   }catch(e){setStatus('err','Connection issue');showMsg('डेटा लोड नहीं हो सका: '+e.message+' · जाँचें कि Sheet "Anyone with the link – Viewer" पर शेयर है। पिछला डेटा स्क्रीन पर बना हुआ है।',true)}
   busy=false;remain=CFG.POLL}
 setInterval(()=>{remain--;if(remain<=0)refresh();else cdn.textContent=remain+' sec'},1000);
