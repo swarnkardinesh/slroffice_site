@@ -1,207 +1,233 @@
 <!DOCTYPE html>
-<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Svamitva registry: live progress dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Svamitva Registry : Live Progress Dashboard · District Shivpuri</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eef1ee;--sf:#fff;--ink:#14201b;--mut:#5b6862;--ln:#e1e6e2;--ac:#176b57;--ac2:#0e3f4f;--acb:#e2f2ec;--lo:#fbdcd8;--lot:#8a1f15;--mi:#faebc4;--mit:#6a4606;--hi:#d3ebc3;--hit:#1f4a0b;--bar:#2b7a8c;--up:#0f7a4f;--upb:#d9f2e4;--dn:#9a5b06;--dnb:#fbecd0;--sh:0 1px 2px rgba(20,40,30,.06),0 4px 14px rgba(20,40,30,.06);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1512;--sf:#18211d;--ink:#e8eee9;--mut:#9fb0a8;--ln:#2a3631;--ac:#4fbf9f;--ac2:#2a8fa8;--acb:#1c3a31;--lo:#4a1f1b;--lot:#f5b8b1;--mi:#4a3a14;--mit:#f3d58b;--hi:#24401a;--hit:#bfe3a8;--bar:#5db5c7;--up:#6fdc9f;--upb:#1b3b2a;--dn:#f0c27a;--dnb:#40300f;--sh:none}}
-:root[data-theme="dark"]{--bg:#0f1512;--sf:#18211d;--ink:#e8eee9;--mut:#9fb0a8;--ln:#2a3631;--ac:#4fbf9f;--ac2:#2a8fa8;--acb:#1c3a31;--lo:#4a1f1b;--lot:#f5b8b1;--mi:#4a3a14;--mit:#f3d58b;--hi:#24401a;--hit:#bfe3a8;--bar:#5db5c7;--up:#6fdc9f;--upb:#1b3b2a;--dn:#f0c27a;--dnb:#40300f;--sh:none}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 "Noto Sans Devanagari","Mukta","Hind","Nirmala UI","Mangal","Kohinoor Devanagari","Noto Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
-.hd{background:linear-gradient(120deg,var(--ac2),var(--ac));color:#fff;padding:20px 14px 62px}.in{max-width:1220px;margin:0 auto}.hd h1{margin:0;font-size:22px;font-weight:700;letter-spacing:.2px}.hd p{margin:2px 0 10px;opacity:.88;font-size:13px}
-.stat{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}.stat>div{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:10px;padding:5px 12px;font-size:13px}.stat small{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;opacity:.85;line-height:1.2}.stat b{font-size:15px}
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#4ade80;margin-right:6px;animation:pl 1.8s infinite}.dot.err{background:#f87171;animation:none}.dot.ld{background:#fbbf24}@keyframes pl{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
-.bs button{border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:99px;padding:2px 11px;font-size:12px;margin:0 6px 4px 0;cursor:pointer;font-family:inherit}.bs button.on{background:#fff;color:var(--ac2);font-weight:700}.tp{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.tc2{background:var(--bg);border-radius:12px;padding:12px;border-top:4px solid var(--ac)}.tc2.r1{border-color:#e0a800}.tc2.r2{border-color:#9aa5b1}.tc2.r3{border-color:#c0773a}.tc2 h4{margin:0;font-size:15px}.tc2 .s2{color:var(--mut);font-size:12px}.tc2 .bg{font-size:26px;font-weight:700;color:var(--up)}.tc2 table{margin-top:6px}.tc2 td{padding:3px 4px;font-size:12px}.lgd{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;margin-top:8px}.lgd i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}.chip{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:2px 11px;font-size:12px;margin:0 6px 4px 0}
-.w{max-width:1220px;margin:-46px auto 0;padding:0 14px 40px}
-.fl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;background:var(--sf);border-radius:12px;padding:12px;box-shadow:var(--sh);margin-bottom:14px}
-.fl label{font-size:11px;color:var(--mut);display:block;text-transform:uppercase;letter-spacing:.4px}select,input{width:100%;padding:7px 8px;border:1px solid var(--ln);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
-.top{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-bottom:14px}@media(min-width:860px){.top{grid-template-columns:310px minmax(0,1fr)}}
-.hero{background:linear-gradient(150deg,var(--ac),var(--ac2));color:#fff;border-radius:14px;padding:18px;box-shadow:var(--sh)}.hero b{display:block;font-size:50px;line-height:1.05;font-weight:700;margin:2px 0}.hero span{font-size:13px;opacity:.92;display:block}.hero .gd{margin-top:10px;background:rgba(255,255,255,.18);border-radius:8px;padding:6px 10px;font-size:13px}
-.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px}.k div{background:var(--sf);border-radius:12px;padding:10px 12px;box-shadow:var(--sh);border-top:3px solid var(--bar)}.k div.g{border-top-color:var(--up)}.k div.o{border-top-color:#d99a1c}.k div.r{border-top-color:#c8483b}.k small{color:var(--mut);font-size:12px;display:block}.k b{font-size:20px;font-weight:700}
-.card{background:var(--sf);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--sh)}.card h2{font-size:15px;margin:0 0 10px;font-weight:700}.card h2 small{color:var(--mut);font-weight:400;font-size:12px;margin-left:6px}
-.g2{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}@media(min-width:960px){.g2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
-.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.ch{background:var(--bg);border-radius:10px;padding:8px 12px}.ch small{color:var(--mut);font-size:12px;display:block}.ch b{font-size:20px}.ch>span{font-size:12px;color:var(--mut);display:block}
-.fn{display:grid;grid-template-columns:128px minmax(0,1fr) 150px;gap:7px 10px;align-items:center;font-size:13px}.tr{background:var(--ln);height:13px;border-radius:4px;position:relative}.tr i{display:block;height:13px;border-radius:4px;background:var(--bar)}.tr i.gi{background:var(--up)}.tr u{position:absolute;top:-3px;width:2px;height:19px;background:var(--ink);opacity:.7}.lg{grid-column:1/-1;color:var(--mut);font-size:12px}
-.tabs,.sb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.tabs button,.sb button{border:1px solid var(--ln);background:var(--sf);color:var(--ink);padding:8px 14px;border-radius:99px;font:inherit;cursor:pointer;box-shadow:var(--sh)}.tabs button.on,.sb button.on{background:var(--ac);color:#fff;border-color:var(--ac)}.sb button{padding:5px 12px;font-size:13px}
-.tw{overflow-x:auto;border-radius:10px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 9px;border-bottom:1px solid var(--ln);text-align:right;white-space:nowrap}th{position:sticky;top:0;background:var(--sf);cursor:pointer;color:var(--mut);font-weight:600;font-size:12px;z-index:1}
-td.l,th.l{text-align:left}td.sr{color:var(--mut)}td.w2{white-space:normal;min-width:190px;max-width:300px}tr:hover td{background:var(--acb)}tr.tot td{font-weight:700;background:var(--acb);border-top:2px solid var(--ac)}
-.pc{display:inline-block;min-width:54px;padding:1px 7px;border-radius:6px;text-align:right;font-weight:600}.lo{background:var(--lo);color:var(--lot)}.mi{background:var(--mi);color:var(--mit)}.hi{background:var(--hi);color:var(--hit)}.sc{padding:1px 8px;border-radius:99px;font-size:12px}
+:root{--bg:#f1f5f9;--sf:#fff;--ink:#0f1f2e;--mut:#5f7183;--ln:#e2e8f0;--ac:#0f766e;--ac2:#0b3b5c;--acb:#e6f4f1;--lo:#fde4e1;--lot:#9b1c13;--mi:#fdf0c8;--mit:#7a4d05;--hi:#d8f1dc;--hit:#17642b;--bar:#2b7a8c;--up:#0f7a4f;--upb:#dcf3e6;--dn:#a85d05;--dnb:#fdeed2;--wk:#7c5cd6;--dy:#e8960c;--sh:0 1px 2px rgba(15,31,46,.05),0 8px 24px rgba(15,31,46,.07);--r:16px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1219;--sf:#141e29;--ink:#e6edf4;--mut:#93a5b6;--ln:#243242;--ac:#2dd4bf;--ac2:#2a7fb0;--acb:#163530;--lo:#4a1f1b;--lot:#f5b8b1;--mi:#4a3a14;--mit:#f3d58b;--hi:#1d3c22;--hit:#b8e3bf;--bar:#5db5c7;--up:#5fe0a0;--upb:#173a29;--dn:#f0c27a;--dnb:#40300f;--wk:#a994f0;--dy:#f5b445;--sh:none}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Inter","Noto Sans Devanagari","Mukta","Hind","Nirmala UI","Mangal",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.in{max-width:1280px;margin:0 auto}
+.hd{background:radial-gradient(1200px 400px at 90% -20%,rgba(45,212,191,.35),transparent),linear-gradient(120deg,var(--ac2),var(--ac));color:#fff;padding:22px 16px 76px}
+.hdr{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:14px}.logo{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;font-size:26px}
+.hd h1{margin:0;font-size:clamp(19px,3vw,28px);font-weight:800;letter-spacing:.2px;line-height:1.2}
+.dist{display:inline-block;margin-top:5px;background:#fff;color:var(--ac2);font-weight:700;font-size:13px;padding:2px 12px;border-radius:99px;letter-spacing:.4px}
+.stat{display:flex;flex-wrap:wrap;gap:10px}.pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:7px 14px;min-width:150px;backdrop-filter:blur(4px)}
+.pill small{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;opacity:.85;line-height:1.3}.pill b{font-size:15px;font-weight:700}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#4ade80;margin-right:7px;animation:pl 1.8s infinite}.dot.err{background:#f87171;animation:none}.dot.ld{background:#fbbf24;animation:none}
+@keyframes pl{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.w{max-width:1280px;margin:-56px auto 0;padding:0 16px 40px}
+#pm{display:none;padding:10px 14px;border-radius:12px;margin-bottom:12px;background:#fff8e1;color:#5b3d05;box-shadow:var(--sh)}#pm.err{background:#fde7e4;color:#8a1f15}
+.fl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;background:var(--sf);border-radius:var(--r);padding:14px;box-shadow:var(--sh);margin-bottom:14px}
+.fl label{font-size:10.5px;color:var(--mut);display:block;text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:2px}
+select,input{width:100%;padding:8px 10px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}select:focus,input:focus{outline:2px solid var(--ac);outline-offset:0}
+.top{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-bottom:14px}@media(min-width:900px){.top{grid-template-columns:330px minmax(0,1fr)}}
+.hero{background:linear-gradient(155deg,var(--ac),var(--ac2));color:#fff;border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.hero .l{font-size:13px;opacity:.9;font-weight:600}.hero b.big{display:block;font-size:54px;line-height:1.05;font-weight:800;margin:2px 0 2px;letter-spacing:-1px}.hero .s{font-size:13px;opacity:.92}
+.meter{height:9px;background:rgba(255,255,255,.25);border-radius:9px;margin:12px 0 4px;overflow:hidden}.meter i{display:block;height:100%;background:#fff;border-radius:9px}
+.gd{margin-top:8px;background:rgba(255,255,255,.16);border-radius:10px;padding:7px 11px;font-size:13px;display:flex;justify-content:space-between;gap:8px;align-items:center}.gd span{opacity:.92}.gd b{font-weight:700}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.kc{background:var(--sf);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh);border-top:4px solid var(--bar)}.kc.g{border-top-color:var(--up)}.kc.o{border-top-color:#e0a21a}.kc.r{border-top-color:#d64a3b}.kc.p{border-top-color:var(--wk)}
+.kc small{color:var(--mut);font-size:12px;display:block;font-weight:500}.kc b{font-size:24px;font-weight:800;letter-spacing:-.3px}
+.card{background:var(--sf);border-radius:var(--r);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}.card h2{font-size:15.5px;margin:0 0 3px;font-weight:700}.card .sub{color:var(--mut);font-size:12px;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}@media(min-width:980px){.g2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.sm{border-radius:12px;padding:9px 13px;background:var(--bg)}.sm small{display:block;color:var(--mut);font-size:11.5px}.sm b{font-size:21px;font-weight:800}.sm.dy b{color:var(--dy)}.sm.wk b{color:var(--wk)}.sm.pc b.up{color:var(--up)}.sm.pc b.dn{color:#c0392b}
+.rw{display:grid;grid-template-columns:112px minmax(0,1fr) 118px;gap:10px;align-items:center;margin:9px 0;font-size:13px}.rw .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rw .v{text-align:right;font-weight:700}
+.tr{background:var(--ln);height:13px;border-radius:7px;position:relative}.tr i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--bar),var(--ac))}.tr u{position:absolute;top:-3px;width:2px;height:19px;background:var(--ink);opacity:.65}
+.gb{display:flex;flex-direction:column;gap:4px}.gb .tr{height:9px;border-radius:5px}.gb .a i{background:var(--dy)}.gb .b i{background:var(--wk)}
+.lgd{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--mut);margin-bottom:6px}.lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.tabs button,.sbb button,.seg button{border:1px solid var(--ln);background:var(--sf);color:var(--ink);padding:8px 14px;border-radius:99px;font:inherit;font-weight:500;cursor:pointer;box-shadow:var(--sh);transition:.15s}.tabs button:hover{border-color:var(--ac)}
+.tabs button.on,.sbb button.on,.seg button.on{background:var(--ac);color:#fff;border-color:var(--ac)}.sbb{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}.sbb button{padding:5px 12px;font-size:13px}
+.pdfb{margin-left:auto;background:var(--ac2)!important;color:#fff!important;border-color:var(--ac2)!important;font-weight:600!important}
+.seg{display:flex;align-items:center;gap:6px;margin:0 0 12px;flex-wrap:wrap;font-size:12.5px;color:var(--mut)}.seg button{padding:4px 13px;font-size:12.5px}
+.tw{overflow:auto;max-height:72vh;border-radius:12px;border:1px solid var(--ln)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}th,td{padding:8px 10px;border-bottom:1px solid var(--ln);text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:var(--acb);cursor:pointer;color:var(--ac2);font-weight:700;font-size:11.5px;z-index:2;text-transform:uppercase;letter-spacing:.3px}@media(prefers-color-scheme:dark){th{color:var(--ac)}}
+td.l,th.l{text-align:left}td.sr{color:var(--mut)}td.w2{white-space:normal;min-width:190px;max-width:300px}tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--bg) 55%,transparent)}tbody tr:hover td{background:var(--acb)}
+tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid var(--ac);position:sticky;bottom:0}
+.pc{display:inline-block;min-width:58px;padding:1px 8px;border-radius:7px;text-align:right;font-weight:700}.lo{background:var(--lo);color:var(--lot)}.mi{background:var(--mi);color:var(--mit)}.hi{background:var(--hi);color:var(--hit)}.sc{padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600}
 .d{font-size:10.5px;font-weight:700;margin-left:3px;padding:0 4px;border-radius:4px;vertical-align:super;line-height:1}.d.up{background:var(--upb);color:var(--up)}.d.g{background:var(--up);color:#fff}.d.dn{background:var(--dnb);color:var(--dn)}
-.dd{display:inline-block;min-width:34px;padding:1px 7px;border-radius:6px;font-weight:700}.dd.up{background:var(--upb);color:var(--up)}.dd.g{background:var(--up);color:#fff}.dd.dn{background:var(--dnb);color:var(--dn)}.dz{color:var(--mut)}
-.more{margin-top:8px;padding:7px 14px;border:1px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:8px;cursor:pointer;font:inherit}.note{color:var(--mut);font-size:12px;margin-top:8px}h3{font-size:13px;margin:14px 0 6px}
-.bg2{display:flex;gap:8px;margin:8px 0 4px}.bg2>div{flex:1;background:var(--sf);border-radius:8px;padding:5px 10px;border:1px solid var(--ln)}.bg2 b{font-size:22px;display:block;line-height:1.2}.bg2 .on{border-color:var(--up)}.bg2 .on b{color:var(--up)}.bg2 small{font-size:11px;color:var(--mut)}.dt td{text-align:center}.dt td.l{text-align:left}.dt td.ck{cursor:pointer;font-weight:700;color:var(--ac)}.dt td.ck:hover{background:var(--acb);text-decoration:underline}.dt td.dsel,.dt td.dsel:hover{background:var(--ac);color:#fff}.dt td.tt{font-weight:700;background:var(--acb)}.dt tr.tot td{font-weight:700}.rng{font-size:12px;opacity:.92;margin-top:4px}.ph{display:none}.pdfb{margin-left:auto;background:var(--ac)!important;color:#fff!important;border-color:var(--ac)!important;font-weight:600}
-#pm{display:none;padding:8px 12px;border-radius:8px;margin-bottom:10px;background:#fff8e1;color:#5b3d05}#pm.err{background:#fde7e4;color:#8a1f15}
-@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.g2,.tabs,.sb,.more,.note,#bs,.stat{display:none!important}.hd{padding:8px 14px}.w{margin-top:6px}.ph{display:block;font-weight:700;font-size:13px;margin:0 0 6px}.tw{overflow:visible}table{font-size:9px}th,td{padding:3px 4px;white-space:normal}th{position:static}thead{display:table-header-group}tr{break-inside:avoid}.card,.k div{box-shadow:none;border:1px solid var(--ln)}.top{grid-template-columns:200px 1fr}.hero b{font-size:34px}.tp{grid-template-columns:repeat(3,1fr)}.tc2{break-inside:avoid}}
+.dd{display:inline-block;min-width:34px;padding:1px 8px;border-radius:7px;font-weight:700;text-align:center}.dd.up{background:var(--upb);color:var(--up)}.dd.g{background:var(--up);color:#fff}.dd.dn{background:var(--dnb);color:var(--dn)}.dz{color:var(--mut)}
+.more{margin-top:10px;padding:8px 16px;border:1px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:10px;cursor:pointer;font:inherit;font-weight:600}.note{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.5}h3{font-size:14px;margin:16px 0 6px}
+.tp{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.tc2{background:var(--bg);border-radius:14px;padding:14px;border-top:4px solid var(--ac)}.tc2.r1{border-color:#e0a800}.tc2.r2{border-color:#9aa5b1}.tc2.r3{border-color:#c0773a}.tc2 h4{margin:0;font-size:15px}.tc2 .s2{color:var(--mut);font-size:12px}.tc2 table{margin-top:6px}.tc2 td{padding:3px 4px;font-size:12px}
+.bg2{display:flex;gap:8px;margin:8px 0 4px}.bg2>div{flex:1;background:var(--sf);border-radius:10px;padding:5px 10px;border:1px solid var(--ln)}.bg2 b{font-size:21px;display:block;line-height:1.2}.bg2 .on{border-color:var(--up)}.bg2 .on b{color:var(--up)}.bg2 small{font-size:11px;color:var(--mut)}
+.dt td{text-align:center}.dt td.l{text-align:left}.dt td.ck{cursor:pointer;font-weight:700;color:var(--ac)}.dt td.ck:hover{background:var(--acb);text-decoration:underline}.dt td.dsel,.dt td.dsel:hover{background:var(--ac)!important;color:#fff}.dt td.tt{font-weight:700;background:var(--acb)}
+.foot{text-align:center;color:var(--mut);font-size:12px;margin-top:6px}.ph{display:none}
+@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.g2,.tabs,.sbb,.seg,.more,.note,.sum,.foot{display:none!important}.hd{padding:8px 14px 40px}.w{margin-top:-24px}.ph{display:block;font-weight:700;font-size:13px;margin:0 0 6px}.tw{overflow:visible;max-height:none}table{font-size:9px}th,td{padding:3px 4px;white-space:normal}th{position:static}tr.tot td{position:static}thead{display:table-header-group}tr{break-inside:avoid}.card,.kc{box-shadow:none;border:1px solid var(--ln)}.top{grid-template-columns:230px 1fr}.hero b.big{font-size:36px}.tp{grid-template-columns:repeat(3,1fr)}.tc2{break-inside:avoid}}
 </style></head><body>
-<div class="hd"><div class="in"><h1>Svamitva registry: live progress dashboard</h1><p>तहसील, कोर्ट, पटवारी और गाँव के अनुसार प्रगति समीक्षा · Google Sheet से स्वतः अपडेट</p>
-<div class="stat"><div><small>Status</small><b><span class="dot ld" id="dot"></span><span id="stx">Loading…</span></b></div><div><small>Last Updated (Data Sync)</small><b id="lsync">—</b></div><div><small>Next check</small><b id="cdn">—</b></div></div>
-<span class="chip">तुलना:</span><span id="bs"></span><span class="chip">Completion % = Completed / Total plots</span><div class="rng" id="rng"></div></div></div>
-<div class="w">
+<header class="hd"><div class="in"><div class="hdr">
+ <div class="brand"><div class="logo">🏛️</div><div><h1>Svamitva Registry : Live Progress Dashboard</h1><span class="dist">District Shivpuri</span></div></div>
+ <div class="stat"><div class="pill"><small>Status</small><b><span class="dot ld" id="dot"></span><span id="stx">Loading…</span></b></div><div class="pill"><small>Last Updated</small><b id="lsync">—</b></div></div>
+</div></div></header>
+<main class="w">
+<div id="pm"></div>
 <div class="fl" id="fl"></div>
-<div id="pm"></div><div class="ph" id="ph"></div><div class="top"><div class="hero"><span>Completion %</span><b id="hp">—</b><span id="hs"></span><div class="gd" id="hd"></div></div><div class="k" id="k"></div></div>
-<div class="card" id="pgc"><h2 id="ptt"></h2><div class="pg" id="pg"></div></div>
-<div class="g2"><div class="card"><h2 id="ft"></h2><div class="fn" id="fn"></div></div><div class="card"><h2 id="tt"></h2><div class="fn" id="tc"></div></div></div>
-<div class="tabs" id="tabs"></div><div class="card"><div id="sb"></div><div class="tw" id="tb"></div></div>
-</div>
+<div class="ph" id="ph"></div>
+<section class="top"><div class="hero"><div class="l">कुल Completion %</div><b class="big" id="hp">—</b><div class="s" id="hs"></div><div class="meter"><i id="hm" style="width:0"></i></div><div class="gd" id="hd1"></div><div class="gd" id="hd7"></div></div><div class="k" id="k"></div></section>
+<section class="card"><h2>प्रगति तुलना: 1 Day बनाम 1 Week</h2><div class="sub">1 Day / 1 Week progress = इस अवधि में Completed प्लॉट की बढ़त</div><div class="sum" id="sum"></div>
+<div class="g2"><div><h3 style="margin-top:0">तहसील-वार Completion %</h3><div class="note" style="margin:0 0 8px">काली रेखा ▏ = 1 सप्ताह पहले की स्थिति</div><div id="cT"></div></div>
+<div><h3 style="margin-top:0">तहसील-वार गति: 1 Day बनाम साप्ताहिक औसत (प्रति दिन)</h3><div class="lgd"><span><i style="background:var(--dy)"></i>1 Day</span><span><i style="background:var(--wk)"></i>1 Week का औसत/दिन</span></div><div id="cG"></div></div></div></section>
+<div class="tabs" id="tabs"></div>
+<div class="card" id="tcard"><div class="seg" id="seg"></div><div id="sb"></div><div id="tb"></div></div>
+<div class="foot">Completion % = Completed ÷ Total plots · गोपनीयता हेतु मोबाइल नंबर मास्क किए गए हैं</div>
+</main>
 <script>
-/* ============ CONFIG ============ */
+/* ===================== CONFIG ===================== */
 const CFG={
-  ID:"1dafxm2UDPL7idfc3AIx7M0dkuPU0PCBo73Z2DYtbNk4",
-  SHEETS:["RegistryReport","Sheet2","Sheet1"], // गाँव-स्तर का डेटा जिस टैब में है उसका नाम सबसे पहले रखें
-  SYNC_SHEETS:["Sheet1","RegistryReport",""],   // जहाँ "Last Sync:" लिखा है
-  APPS_SCRIPT_URL:"",                           // वैकल्पिक: doGet वाला URL, JSON {values:[[...]]}
-  POLL:60,
-  NA:"Patwari Not Assigned"
+  SHEET_ID:"1dafxm2UDPL7idfc3AIx7M0dkuPU0PCBo73Z2DYtbNk4", // आपकी Google Sheet (Anyone with the link: Viewer)
+  SHEET_NAME:"RegistryReport",                              // गाँव-स्तर के डेटा वाली शीट
+  PUB_ID:"2PACX-1vRg7ZcTDpAThoH-VaTxgyXD_pXZk7ET63mZam2DTQ6VCxOWV00jemsOWkqvv0j6cS9JEFrJEtnHjj56", // Publish to web वाली ID
+  PUB_GID:"",                                               // वैकल्पिक: RegistryReport टैब का gid (URL में gid=... ), भरने पर पहले यही लिंक चलेगा
+  SYNC_SHEETS:["Sheet1","RegistryReport"],                  // "Last Sync:" इन टैब में भी खोजा जाएगा
+  API:"",                                                   // वैकल्पिक: Apps Script doGet URL (मोबाइल सर्वर पर मास्क)
+  POLL:60, NA:"Patwari Not Assigned"
 };
-/* ================================ */
-let D=[],SYNC='',SD='',DT='',hash='',okSheet='',remain=CFG.POLL,busy=false;
+/* ================================================== */
+let D=[],SYNC='',SD='',hash='',busy=false;
 const F={s:'',t:'',c:'',p:'',st:'',q:''};let tab='tehsil',lim=100,lv='tehsil',sort={},dsel=null,bk=1,T=[];
-const NA=CFG.NA;
-const BS={1:{s:'1 दिन पहले',n:1,sh:'पिछले 1 दिन'},7:{s:'1 सप्ताह पहले',n:7,sh:'पिछला 1 सप्ताह'}};let B=BS[1];
-const lbl=()=>`${B.sh} की प्रगति (डेटा ${SYNC||'—'} तक)`;
-const nf=x=>(+x||0).toLocaleString('en-IN'),pf=(a,b)=>b?a/b*100:0,pt=x=>x.toFixed(2)+'%',esc=s=>String(s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+const NA=CFG.NA,BS={1:{s:'1 दिन पहले',n:1,sh:'1 Day'},7:{s:'1 सप्ताह पहले',n:7,sh:'1 Week'}};let B=BS[1];
+const nf=x=>(+x||0).toLocaleString('en-IN'),pf=(a,b)=>b?a/b*100:0,pt=x=>x.toFixed(2)+'%',esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+const sgn=(x,d=2)=>(x>=0?'+':'−')+Math.abs(x).toFixed(d);
+function maskMob(v){v=String(v==null?'':v).trim();if(!v||v=='-')return'-';if(/x/i.test(v))return v;if(/e\+/i.test(v))return'XXXXXXXXXX';const d=v.replace(/\D/g,'');return d.length<=4?'XXXXXX'+d:'X'.repeat(d.length-4)+d.slice(-4)}
 
 /* ---------- data loading ---------- */
 function parseCSV(t){const rows=[];let r=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==','){r.push(c);c=""}else if(ch=='\n'){r.push(c);rows.push(r);r=[];c=""}else if(ch!='\r')c+=ch}if(c!==""||r.length){r.push(c);rows.push(r)}return rows}
-async function getRows(sheet){
-  if(CFG.APPS_SCRIPT_URL){const r=await fetch(CFG.APPS_SCRIPT_URL+(CFG.APPS_SCRIPT_URL.includes('?')?'&':'?')+'_='+Date.now(),{cache:'no-store'});const j=await r.json();return j.values||j}
-  let u=`https://docs.google.com/spreadsheets/d/${CFG.ID}/gviz/tq?tqx=out:csv&_=${Date.now()}`;if(sheet)u+='&sheet='+encodeURIComponent(sheet);
-  const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return parseCSV(await r.text())}
 const norm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9\u0900-\u097f]/g,'');
-const num=v=>{const s=String(v==null?'':v).replace(/[,\s%+]/g,'').replace('−','-');const n=parseFloat(s);return isNaN(n)?0:n};
-const FIELDS=[['l',/lgd/],['v',/verif/],['pr',/process/],['sb',/submit/],['i',/initiat/],['p1',/day/],['p7',/week/],['cm',/^completed/],['pl',/plot/],['b',/benef/],['h',/halka|हल्का|हलका/],['m',/mobile|phone|मोबाइल/],['pn',/patwari|पटवारी/],['t',/tehsil|तहसील/],['s',/subdiv|sdm|उपखंड/],['c',/court|न्यायालय/],['n',/village|gram|गाँव|गांव|ग्राम/]];
-function mapHeader(row){const map={},used=new Set(),hn=row.map(norm);
-  FIELDS.forEach(([f,re])=>{const j=hn.findIndex((h,x)=>h&&!used.has(x)&&re.test(h));if(j>=0){map[f]=j;used.add(j)}});return map}
-function findSync(rows){for(const r of rows){const k=r.findIndex(c=>/last\s*sync/i.test(c||''));if(k>=0){const v=(r.slice(k+1).find(c=>c&&String(c).trim())||'').trim();if(v)return v}}return''}
+const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[,\s%+]/g,'').replace('−','-'));return isNaN(n)?0:n};
+const EX={n:['villagename'],l:['lgdcode'],pn:['patwari'],pk:['patteh'],i:['registryinitiated'],v:['patwariverification'],sb:['submitted'],pr:['registrationinprocess'],cm:['completed'],pl:['totalplots'],b:['totalbeneficiaries'],c:['court'],t:['tehsil'],s:['subdivision'],h:['halka'],m:['mobile'],p1:['1dayprogress'],p7:['1weekprogress']};
+const FB={n:/village|गाँव|गांव|ग्राम/,l:/lgd/,pn:/^patwari(name)?$/,i:/initiat/,v:/verif/,sb:/submit/,pr:/process/,cm:/^completed/,pl:/plot/,b:/benef/,c:/court|न्यायालय/,t:/tehsil|तहसील/,s:/subdiv|sdm|उपखंड/,h:/^halka$|^हल्का$/,m:/mobile|phone|मोबाइल/,p1:/day/,p7:/week/};
+function mapHeader(row){const hn=row.map(norm),m={},used=new Set();
+  for(const f in EX){const j=hn.findIndex((h,x)=>!used.has(x)&&EX[f].includes(h));if(j>=0){m[f]=j;used.add(j)}}
+  for(const f in FB){if(m[f]!=null)continue;const j=hn.findIndex((h,x)=>h&&!used.has(x)&&FB[f].test(h));if(j>=0){m[f]=j;used.add(j)}}return m}
 function buildData(rows){
   const hi=rows.findIndex(r=>{const m=mapHeader(r);return m.n!=null&&m.pl!=null&&m.cm!=null});if(hi<0)return null;
   const m=mapHeader(rows[hi]),out=[];
   for(let i=hi+1;i<rows.length;i++){const r=rows[i],g=f=>m[f]!=null?String(r[m[f]]==null?'':r[m[f]]).trim():'';
-    const n=g('n');if(!n||/^(total|grand\s*total|sub\s*total|कुल|कुल\s*योग|योग)$/i.test(n.trim()))continue;const pl=num(g('pl'));if(!pl&&!num(g('cm')))continue;
-    const pn=g('pn')||NA,t=g('t')||'—',mob=g('m')||'-';
-    D_push(out,{n,l:g('l'),t,s:g('s')||'—',c:g('c')||'—',pn,h:g('h')||'—',m:mob,pk:t+'|'+pn+'|'+mob,pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(g('cm')),p1:num(g('p1')),p7:num(g('p7'))})}
-  return{out,m,hasP:m.p1!=null||m.p7!=null,head:rows[hi]}}
-function D_push(a,r){r.di=r.dv=r.ds=r.dp=0;r.dc=r.p1;r.e=[0,0,0,0,r.p7];r.a=[0,0,0,0,r.p1];a.push(r)}
+    const n=g('n');if(!n||/^(total|grand\s*total|sub\s*total|कुल|कुल\s*योग|योग)$/i.test(n))continue;
+    const pl=num(g('pl'));if(!pl&&!num(g('cm')))continue;
+    const t=g('t')||'—',pn=g('pn')||NA,p1=num(g('p1')),p7=num(g('p7'));
+    out.push({n,l:g('l'),t,s:g('s')||'—',c:g('c')||'—',pn,h:g('h')||'—',m:maskMob(g('m')),pk:g('pk')||(t+'|'+pn),pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(g('cm')),p1,p7,di:0,dv:0,ds:0,dp:0,dc:p1,a:[0,0,0,0,p1],e:[0,0,0,0,p7]})}
+  return{out,hasP:m.p1!=null&&m.p7!=null}}
+function findSync(rows){for(const r of rows){const k=r.findIndex(c=>/last\s*sync/i.test(c||''));if(k>=0){const v=(r.slice(k+1).find(c=>c&&String(c).trim())||'').trim();if(v)return v}}return''}
+async function fetchCSV(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return parseCSV(await r.text())}
+const gviz=sh=>`https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:csv&_=${Date.now()}`+(sh?'&sheet='+encodeURIComponent(sh):'');
+const pubU=()=>`https://docs.google.com/spreadsheets/d/e/${CFG.PUB_ID}/pub?gid=${CFG.PUB_GID}&single=true&output=csv&_=${Date.now()}`;
 async function loadAll(){
-  const list=CFG.APPS_SCRIPT_URL?['']:[...new Set([okSheet,...CFG.SHEETS].filter(Boolean))].concat(['']);
-  let res=null,rowsMain=null,lastErr='';
-  for(const sh of list){try{const rows=await getRows(sh);const b=buildData(rows);if(b&&b.out.length){res=b;rowsMain=rows;okSheet=sh;break}lastErr=`टैब "${sh}" में गाँव-स्तर के कॉलम (Village / Total plots / Completed) नहीं मिले`}catch(e){lastErr=e.message}}
-  if(!res)throw new Error(lastErr||'डेटा नहीं मिला');
-  let sync=findSync(rowsMain);
-  if(!sync)for(const sh of CFG.SYNC_SHEETS){try{sync=findSync(await getRows(sh));if(sync)break}catch(e){}}
-  return{res,sync}}
+  let rows=null,sync='',err='';
+  if(CFG.API){try{const r=await fetch(CFG.API+(CFG.API.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'});const j=await r.json();if(j.error)throw new Error(j.error);rows=j.values;sync=(j.sync||'').toString().trim()}catch(e){err=e.message;rows=null}}
+  if(!rows&&CFG.PUB_ID&&CFG.PUB_GID){try{const x=await fetchCSV(pubU());if(buildData(x))rows=x}catch(e){err=e.message}}
+  if(!rows&&CFG.SHEET_ID){try{const x=await fetchCSV(gviz(CFG.SHEET_NAME));if(buildData(x))rows=x;else err='RegistryReport में Village / Total Plots / Completed कॉलम नहीं मिले'}catch(e){err=e.message}}
+  if(!rows)throw new Error(err||'data source not available');
+  if(!sync)sync=findSync(rows);
+  if(!sync&&CFG.SHEET_ID)for(const sh of CFG.SYNC_SHEETS){try{sync=findSync(await fetchCSV(gviz(sh)));if(sync)break}catch(e){}}
+  const res=buildData(rows);if(!res||!res.out.length)throw new Error('Village-level columns not found');return{res,sync}}
 
-/* ---------- derived setup ---------- */
+/* ---------- setup ---------- */
 const stOf=r=>r.pl>0&&r.cm>=r.pl?'Fully completed':r.cm>0?'Partly completed':(r.i+r.v+r.sb+r.pr>0?'Started, not completed':'Not started');
-const cs=c=>String(c).replace(/^[^\s]*\.\s*/,''),NF=['pl','b','i','v','sb','pr','cm','di','dv','ds','dp','dc','x16','x14','p1','p7'];
-function setB(k){bk=k;B=BS[k];D.forEach(r=>{[r.di,r.dv,r.ds,r.dp,r.dc]=k==1?r.a:r.e;r.ns=(r.i-r.di)+(r.v-r.dv)+(r.sb-r.ds)+(r.pr-r.dp)+(r.cm-r.dc)==0&&r.i+r.v+r.sb+r.pr+r.cm>0})}
+const cs=c=>String(c).replace(/^[^\s]*\.\s*/,''),NF=['pl','b','i','v','sb','pr','cm','di','dv','ds','dp','dc','p1','p7'];
+function setB(k){bk=k;B=BS[k];D.forEach(r=>{[r.di,r.dv,r.ds,r.dp,r.dc]=k==1?r.a:r.e;r.ns=(r.cm-r.dc)==0&&r.i+r.v+r.sb+r.pr==0&&r.cm>0})}
+function segHTML(){seg.innerHTML='तालिकाओं में बढ़त (Δ) दिखाएँ:'+[[1,'1 Day'],[7,'1 Week']].map(([k,l])=>`<button data-b="${k}" class="${bk==k?'on':''}">${l}</button>`).join('')}
 function setup(){
-  D.forEach(r=>{r.st=stOf(r);r.x16=r.p1;r.x14=r.p7});
+  D.forEach(r=>r.st=stOf(r));
   const u=k=>[...new Set(D.map(r=>r[k]))].sort((a,b)=>String(a).localeCompare(String(b),'hi')),pmap=new Map(D.map(r=>[r.pk,r.t+' - '+r.pn]));
-  const sel=[['s','Subdivision',u('s').map(x=>[x,x])],['t','Tehsil',u('t').map(x=>[x,x])],['c','Court',u('c').map(x=>[x,cs(x)])],['p','Patwari',[...pmap].sort((a,b)=>a[1].localeCompare(b[1],'hi')).map(([k,v])=>[k,v])],['st','Status',['Fully completed','Partly completed','Started, not completed','Not started'].map(x=>[x,x])]];
+  const sel=[['s','Subdivision',u('s').map(x=>[x,x])],['t','Tehsil',u('t').map(x=>[x,x])],['c','Court',u('c').map(x=>[x,cs(x)])],['p','Patwari',[...pmap].sort((a,b)=>a[1].localeCompare(b[1],'hi'))],['st','Status',['Fully completed','Partly completed','Started, not completed','Not started'].map(x=>[x,x])]];
   sel.forEach(([k,,o])=>{if(F[k]&&!o.some(x=>x[0]==F[k]))F[k]=''});
   fl.innerHTML=sel.map(([k,l,o])=>`<div><label>${l}</label><select data-k="${k}"><option value="">All</option>${o.map(([v,t])=>`<option value="${esc(v)}"${F[k]==v?' selected':''}>${esc(t)}</option>`).join('')}</select></div>`).join('')+`<div><label>Search</label><input data-k="q" value="${esc(F.q)}" placeholder="गाँव, LGD, पटवारी या हल्का"></div>`;
-  window.ZPN=(()=>{const m=new Map();D.forEach(r=>{if(r.pn==NA)return;m.set(r.pk,(m.get(r.pk)||0)+r.i+r.v+r.sb+r.pr+r.cm)});return[...m.values()].filter(v=>v==0).length})();
-  T=[['tehsil','Tehsil-wise'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM 50 पटवारी'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
+  const zm=new Map();D.forEach(r=>{if(r.pn!=NA)zm.set(r.pk,(zm.get(r.pk)||0)+r.i+r.v+r.sb+r.pr+r.cm)});window.ZPN=[...zm.values()].filter(v=>v==0).length;
+  T=[['tehsil','Tehsil-wise'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM 20 पटवारी'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
   if(!T.some(x=>x[0]==tab))tab='tehsil';
   tabs.innerHTML=T.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('')+'<button class="pdfb" id="pdfb">📄 PDF डाउनलोड</button>';
-  bs.innerHTML=`<span class="bs">`+[[1,'1 Day progress'],[7,'1 Week progress']].map(([k,l])=>`<button data-b="${k}">${l}</button>`).join('')+'</span>';
-  [...bs.querySelectorAll('button')].forEach(b=>b.classList.toggle('on',b.dataset.b==bk));
-  setB(bk);
-}
+  setB(bk);segHTML()}
 
 /* ---------- listeners (एक बार) ---------- */
 fl.addEventListener('input',e=>{if(!e.target.dataset.k)return;F[e.target.dataset.k]=e.target.value;lim=100;draw()});
 tabs.addEventListener('click',e=>{if(e.target.id=='pdfb'){pdfGo();return}if(e.target.dataset.t){tab=e.target.dataset.t;lim=100;draw()}});
-bs.addEventListener('click',e=>{if(e.target.dataset.b){setB(+e.target.dataset.b);[...bs.querySelectorAll('button')].forEach(b=>b.classList.toggle('on',b.dataset.b==bk));lim=100;draw()}});
-document.getElementById('tabs').parentElement.addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
-
-const pdfGo=()=>{const o=lim;lim=1e9;draw();const css=document.querySelector('style').textContent,body=document.querySelector('.hd').outerHTML+'<div class="w">'+ph.outerHTML+document.querySelector('.top').outerHTML+document.getElementById('pgc').outerHTML+'<div class="card">'+tb.outerHTML+'</div></div>';lim=o;draw();
-const hint='<div class="hb"><b>PDF बनाने के लिए:</b> कीबोर्ड पर <b>Ctrl + P</b> दबाएँ और Destination में <b>Save as PDF</b> चुनें। <button onclick="window.print()">📄 प्रिंट / PDF</button></div>';
-const w=window.open('','_blank');const m=document.getElementById('pm');
-if(!w){showMsg('ब्राउज़र ने नई विंडो रोक दी है। पॉप-अप की अनुमति दें, फिर दोबारा दबाएँ।');return}
-w.document.write('<!DOCTYPE html><html lang="hi" data-theme="light"><head><meta charset="utf-8"><title>Svamitva_'+tab+'_'+SD+'</title><style>'+css+'.hb{background:#fff8e1;color:#5b3d05;padding:10px 14px;font-size:14px;position:sticky;top:0;z-index:5;border-bottom:1px solid #e6c36a}.hb button{margin-left:10px;padding:5px 12px;border-radius:6px;border:1px solid #176b57;background:#176b57;color:#fff;cursor:pointer}@media print{.hb{display:none!important}.ph{display:block}}.ph{display:block}</style></head><body>'+hint+body+'</body></html>');w.document.close();
-showMsg('रिपोर्ट नई विंडो में खुल गई है। वहाँ Ctrl + P दबाकर Save as PDF चुनें।')};
+seg.addEventListener('click',e=>{if(e.target.dataset.b){setB(+e.target.dataset.b);segHTML();lim=100;draw()}});
+document.getElementById('tcard').addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
 function showMsg(t,err){pm.textContent=t;pm.className=err?'err':'';pm.style.display=t?'block':'none'}
+function pdfGo(){const o=lim;lim=1e9;draw();const css=document.querySelector('style').textContent,body=document.querySelector('.hd').outerHTML+'<div class="w">'+ph.outerHTML+document.querySelector('.top').outerHTML+'<div class="card">'+tb.outerHTML+'</div></div>';lim=o;draw();
+const w=window.open('','_blank');if(!w){showMsg('ब्राउज़र ने नई विंडो रोक दी है। पॉप-अप की अनुमति दें, फिर दोबारा दबाएँ।');return}
+w.document.write('<!DOCTYPE html><html lang="hi" data-theme="light"><head><meta charset="utf-8"><title>Svamitva_Shivpuri_'+tab+'_'+SD+'</title><style>'+css+'.hb{background:#fff8e1;color:#5b3d05;padding:10px 14px;font-size:14px;position:sticky;top:0;z-index:5;border-bottom:1px solid #e6c36a}.hb button{margin-left:10px;padding:5px 12px;border-radius:6px;border:1px solid #0f766e;background:#0f766e;color:#fff;cursor:pointer}@media print{.hb{display:none!important}}.ph{display:block}</style></head><body><div class="hb"><b>PDF बनाने के लिए:</b> <b>Ctrl + P</b> दबाएँ और <b>Save as PDF</b> चुनें। <button onclick="window.print()">📄 प्रिंट / PDF</button></div>'+body+'</body></html>');w.document.close();showMsg('रिपोर्ट नई विंडो में खुल गई है। वहाँ Ctrl + P दबाकर Save as PDF चुनें।')}
 
-/* ---------- rendering (मूल लॉजिक) ---------- */
+/* ---------- rendering ---------- */
 const cls=p=>p<1?'lo':p<5?'mi':'hi',DK={i:'di',v:'dv',sb:'ds',pr:'dp',cm:'dc'},SDK=new Set(Object.values(DK));
 const sg=(n,c)=>n?`<span class="dd ${n>0?(c||'up'):'dn'}">${n>0?'+':'−'}${nf(Math.abs(n))}</span>`:'<span class="dz">0</span>',bd=(n,c)=>n?`<sup class="d ${n>0?(c||'up'):'dn'}">${n>0?'+':'−'}${nf(Math.abs(n))}</sup>`:'';
-const fin=g=>{g.pend=g.pl-g.cm;g.pct=pf(g.cm,g.pl);g.oc=g.cm-g.dc;g.opct=pf(g.oc,g.pl);g.dpct=g.pct-g.opct;g.act=g.di+g.dv+g.ds+g.dp+g.dc;return g};
+const fin=g=>{g.pend=g.pl-g.cm;g.pct=pf(g.cm,g.pl);g.oc=g.cm-g.dc;g.opct=pf(g.oc,g.pl);g.dpct=g.pct-g.opct;return g};
 function grp(rows,kf,nm){const m=new Map();rows.forEach(r=>{const k=kf(r);let g=m.get(k);if(!g){g={k:nm?nm(r):k,vil:0,vnl:[],pns:new Set,mbs:new Set,mob:r.m,teh:new Set,hal:new Set};NF.forEach(f=>g[f]=0);m.set(k,g)}g.vil++;g.vnl.push(r.n);g.pns.add(r.pn);g.mbs.add(r.m);NF.forEach(f=>g[f]+=r[f]);g.teh.add(r.t);g.hal.add(r.h)});return[...m.values()].map(g=>fin({...g,vn:g.vnl.join(', '),pnm:[...g.pns].join(', '),mbn:[...g.mbs].join(', '),teh:[...g.teh].join(', '),hal:[...g.hal].join(', ')}))}
 function cell(r,f,t,id){const pg=id.startsWith('pg');
 if(f=='p1'||f=='p7')return`<td>${sg(r[f],'g')}</td>`;
 if(f=='pct')return`<td><span class="pc ${cls(r.pct)}">${pt(r.pct)}</span>${!pg&&r.dpct>0.0004?`<sup class="d g">+${r.dpct.toFixed(2)}pp</sup>`:''}</td>`;
-if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${sg(r[f],f=='dc'?'g':'up')}</td>`;
-if(t=='t'){const v=r[f];return f=='st'?`<td class="l"><span class="sc ${v=='Not started'?'lo':v.startsWith('Started')?'mi':'hi'}">${v}</span></td>`:`<td class="l${f=='c'||f=='vn'||(f=='k'&&id=='court')?' w2':''}">${esc(f=='c'||(f=='k'&&id=='court')?cs(v):v)}</td>`}
-return`<td>${nf(r[f])}${!pg&&DK[f]?bd(r[DK[f]],f=='cm'?'g':'up'):''}</td>`}
-const totRow=(a,cols,id)=>{const T={vil:0};NF.forEach(f=>T[f]=0);a.forEach(r=>{T.vil+=r.vil||0;NF.forEach(f=>T[f]+=r[f])});fin(T);return'<tr class="tot"><td></td>'+cols.map(([f,l,t],j)=>j==0?`<td class="l">Total (${nf(a.length)})</td>`:t=='t'?'<td></td>':cell(T,f,t,id)).join('')+'</tr>'};
+if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${f=='dc'?sg(r[f],'g'):''}</td>`;
+if(t=='t'){const v=r[f];return f=='st'?`<td class="l"><span class="sc ${v=='Not started'?'lo':v.startsWith('Started')?'mi':'hi'}">${v}</span></td>`:`<td class="l${f=='c'||f=='vn'||f=='pnm'||f=='hal'||(f=='k'&&id=='court')?' w2':''}">${esc(f=='c'||(f=='k'&&id=='court')?cs(v):v)}</td>`}
+return`<td>${nf(r[f])}${!pg&&f=='cm'?bd(r.dc,'g'):''}</td>`}
+const totRow=(a,cols,id)=>{const X={vil:0};NF.forEach(f=>X[f]=0);a.forEach(r=>{X.vil+=r.vil||0;NF.forEach(f=>X[f]+=r[f])});fin(X);return'<tr class="tot"><td></td>'+cols.map(([f,l,t],j)=>j==0?`<td class="l">Total (${nf(a.length)})</td>`:t=='t'?'<td></td>':cell(X,f,t,id)).join('')+'</tr>'};
 function tbl(id,rows,cols,limit,def){const s=sort[id]||def||{k:'pct',d:1},a=[...rows].sort((x,y)=>{const p=x[s.k],q=y[s.k];return(typeof p=='number'?p-q:String(p).localeCompare(String(q),'hi'))*s.d||y.pl-x.pl}),sh=limit?a.slice(0,lim):a;
-return`<table data-id="${id}"><thead><tr><th class="l">Sr.</th>${cols.map(([f,l,t])=>`<th data-f="${f}" class="${t=='t'?'l':''}">${l}${s.k==f?(s.d>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody>`+sh.map((r,j)=>`<tr><td class="l sr">${j+1}</td>`+cols.map(([f,l,t])=>cell(r,f,t,id)).join('')+'</tr>').join('')+totRow(a,cols,id)+`</tbody></table>`+(limit&&a.length>lim?`<button class="more" data-more="1">और दिखाएँ (${nf(a.length-lim)} शेष)</button>`:'')+`<div class="note">${nf(a.length)} पंक्तियाँ। क्रम बदलने के लिए कॉलम के शीर्षक पर क्लिक करें।</div>`}
+return`<table data-id="${id}"><thead><tr><th class="l">Sr.</th>${cols.map(([f,l,t])=>`<th data-f="${f}" class="${t=='t'?'l':''}">${l}${s.k==f?(s.d>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody>`+sh.map((r,j)=>`<tr><td class="l sr">${j+1}</td>`+cols.map(([f,l,t])=>cell(r,f,t,id)).join('')+'</tr>').join('')+totRow(a,cols,id)+`</tbody></table>`}
+const tblW=(h,rows,limit)=>`<div class="tw">${h}</div>`+(limit&&rows.length>lim?`<button class="more" data-more="1">और दिखाएँ (${nf(rows.length-lim)} शेष)</button>`:'')+`<div class="note">${nf(rows.length)} पंक्तियाँ। क्रम बदलने के लिए कॉलम के शीर्षक पर क्लिक करें।</div>`;
 const SC=[['i','Registry initiated'],['v','Verification'],['sb','Submitted'],['pr','In process'],['cm','Completed']],tail=[['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %']];
-const vc=[['n','Village','t'],['l','LGD','t'],['t','Tehsil','t'],['c','Court','t'],['pn','Patwari','t'],['h','Halka','t'],['m','Mobile','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending'],['pct','Completion %'],['st','Status','t']];
-const dcols=()=>[['dc','Δ Completed ('+B.n+' दिन)'],['oc','Completed '+B.s],['cm','Completed अब'],['opct','% '+B.s],['pct','% अब']];
+const vc=[['n','Village','t'],['l','LGD','t'],['t','Tehsil','t'],['c','Court','t'],['pn','Patwari','t'],['h','Halka','t'],['m','Mobile','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress'],['st','Status','t']];
+const pvc=[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']];
+const dcols=()=>[['dc','Δ Completed ('+B.sh+')'],['oc','Completed '+B.s],['cm','Completed अब'],['opct','% '+B.s],['pct','% अब']];
 const gP=R=>grp(R,r=>r.pk,r=>r.pn);
 function draw(){if(!D.length)return;const q=F.q.trim().toLowerCase();
 const R=D.filter(r=>(!F.s||r.s==F.s)&&(!F.t||r.t==F.t)&&(!F.c||r.c==F.c)&&(!F.p||r.pk==F.p)&&(!F.st||r.st==F.st)&&(!q||(r.n+' '+r.l+' '+r.pn+' '+r.h).toLowerCase().includes(q))).map(r=>fin({...r}));
-const S=f=>R.reduce((a,r)=>a+r[f],0),pl=S('pl'),cm=S('cm'),dc=S('dc'),p1=pf(cm,pl),p0=pf(cm-dc,pl);
-hp.textContent=pt(p1);hs.textContent=nf(cm)+' / '+nf(pl)+' plots';hd.innerHTML=`<span style="font-size:11px;opacity:.9">${lbl()}</span><br>बढ़त: <b style="display:inline;font-size:inherit">${dc>=0?'+':'−'}${nf(Math.abs(dc))}</b> completed (${(p1-p0>=0?'+':'')+(p1-p0).toFixed(2)} pp)`;
-const zero=R.filter(r=>r.st=='Not started').length,na=R.filter(r=>r.pn==NA).length,ns=R.filter(r=>r.ns).length;
-k.innerHTML=[['Villages',R.length,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g',bd(dc,'g')],['Pending plots',pl-cm,''],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:''],['Patwari not assigned (villages)',na,'r'],...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[]),['Patwaris',new Set(R.filter(r=>r.pn!=NA).map(r=>r.pk)).size,'']].map(([a,b,c,d])=>`<div class="${c}"><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
-const stg=[['Registry initiated','i','di'],['Patwari verification','v','dv'],['Submitted','sb','ds'],['In process','pr','dp'],['Completed','cm','dc']];
-ptt.innerHTML=`प्रगति<small>${lbl()}</small>`;ft.innerHTML=`Stage-wise progress<small>▌ = ${B.s} की स्थिति</small>`;tt.innerHTML=`तहसीलवार Completed की बढ़त<small>${lbl()}</small>`;pg.innerHTML=stg.map(([l,f,d])=>`<div class="ch"><small>${l}</small><b>${sg(S(d),f=='cm'?'g':'up')}</b><span>${nf(S(f)-S(d))} → ${nf(S(f))}</span></div>`).join('');
-rng.innerHTML=`<b>1 Day / 1 Week progress</b> शीट के कॉलम "${D.hdr.p1||'1 day'}" और "${D.hdr.p7||'1 week'}" से लिया गया है · डेटा सिंक: <b>${SYNC||'—'}</b>`;
-const mx=Math.max(1,...stg.map(([l,f,d])=>Math.max(S(f),S(f)-S(d))));
-fn.innerHTML=stg.map(([l,f,d])=>{const nv=S(f),ov=nv-S(d);return`<span>${l}</span><div class="tr"><i class="${f=='cm'?'gi':''}" style="width:${nv/mx*100}%"></i><u style="left:${ov/mx*100}%"></u></div><span>${nf(nv)} <small>(${pt(pf(nv,pl))})</small>${bd(S(d),f=='cm'?'g':'up')}</span>`}).join('')+`<div class="lg">किसी गाँव के अगले चरण में जाने पर पिछले चरण की संख्या घट भी सकती है। Completed की संख्या कभी नहीं घटती।</div>`;
-const tg=grp(R,r=>r.t).sort((a,b)=>b.dc-a.dc||b.cm-a.cm),tm=Math.max(1,...tg.map(g=>g.dc));
-tc.innerHTML=tg.map(g=>`<span>${esc(g.k)}</span><div class="tr"><i class="gi" style="width:${g.dc/tm*100}%"></i></div><span>${sg(g.dc,'g')} <small>total ${nf(g.cm)}</small></span>`).join('');
-ph.textContent='स्वामित्व योजना: प्रगति रिपोर्ट · '+T.find(x=>x[0]==tab)[1]+' · डेटा '+SYNC+' · तुलना: '+lbl();[...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.t==tab));sb.innerHTML='';let h='';
-if(tab=='tehsil')h=tbl('tehsil',grp(R,r=>r.t),[['k','Tehsil','t'],...tail]);
-if(tab=='court')h=tbl('court',grp(R,r=>r.c),[['k','Court','t'],...tail]);
-if(tab=='patwari')h=tbl('patwari',gP(R),[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail,['p1','1 day progress'],['p7','1 week progress']],1);
-if(tab=='bottom'){const s0=gP(R.filter(r=>r.pn!=NA)).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),b50=s0.slice(0,50),sp=b50.reduce((a,g)=>a+g.pl,0),sc=b50.reduce((a,g)=>a+g.cm,0),tie=s0.length>50&&s0[49].pct==s0[50].pct;
-h=`<div class="note" style="margin:0 0 10px">सबसे कम <b>Completion %</b> (Completed ÷ Total plots) वाले ${nf(b50.length)} पटवारी (सबसे कम पहले)। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले। ${tie?'ध्यान दें: 50वें और 51वें पटवारी का Completion % बराबर है। ':''}फ़िल्टर लगाने पर उसी तहसील/कोर्ट के BOTTOM 50 दिखते हैं।</div>`+tbl('bottom',b50,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']],0,{k:'pct',d:1})}
+const S=f=>R.reduce((a,r)=>a+r[f],0),pl=S('pl'),cm=S('cm'),dc=S('dc'),p1=S('p1'),p7=S('p7'),pc=pf(cm,pl);
+hp.textContent=pt(pc);hs.textContent=nf(cm)+' / '+nf(pl)+' plots';hm.style.width=Math.min(100,pc)+'%';
+const pp=d=>pc-pf(cm-d,pl);
+hd1.innerHTML=`<span>1 Day progress</span><b>+${nf(p1)} · ${sgn(pp(p1))} pp</b>`;hd7.innerHTML=`<span>1 Week progress</span><b>+${nf(p7)} · ${sgn(pp(p7))} pp</b>`;
+const na=R.filter(r=>r.pn==NA).length,zero=R.filter(r=>r.st=='Not started').length,ns=R.filter(r=>r.ns).length,npw=new Set(R.filter(r=>r.pn!=NA).map(r=>r.pk)).size;
+k.innerHTML=[['Villages',R.length,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g',bd(dc,'g')],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:''],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d])=>`<div class="kc ${c}"><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
+const avg=p7/7,ratio=avg?(p1/avg-1)*100:0;
+sum.innerHTML=`<div class="sm dy"><small>1 Day progress</small><b>+${nf(p1)}</b></div><div class="sm wk"><small>1 Week progress</small><b>+${nf(p7)}</b></div><div class="sm"><small>साप्ताहिक औसत / दिन</small><b>${nf(Math.round(avg))}</b></div><div class="sm pc"><small>1 Day बनाम साप्ताहिक औसत</small><b class="${ratio>=0?'up':'dn'}">${ratio>=0?'▲':'▼'} ${Math.abs(ratio).toFixed(1)}%</b></div>`;
+const tg=grp(R,r=>r.t).sort((a,b)=>b.pct-a.pct);
+cT.innerHTML=tg.map(g=>{const o=pf(g.cm-g.p7,g.pl);return`<div class="rw"><span class="nm" title="${esc(g.k)}">${esc(g.k)}</span><div class="tr"><i style="width:${Math.min(100,g.pct)}%"></i><u style="left:${Math.min(100,o)}%"></u></div><span class="v">${pt(g.pct)}</span></div>`}).join('');
+const gm=Math.max(1,...tg.map(g=>Math.max(g.p1,g.p7/7)));
+cG.innerHTML=tg.slice().sort((a,b)=>b.p7-a.p7).map(g=>`<div class="rw" style="grid-template-columns:112px minmax(0,1fr) 128px"><span class="nm" title="${esc(g.k)}">${esc(g.k)}</span><div class="gb"><div class="tr a"><i style="width:${g.p1/gm*100}%"></i></div><div class="tr b"><i style="width:${g.p7/7/gm*100}%"></i></div></div><span class="v" style="font-size:12px"><span style="color:var(--dy)">+${nf(g.p1)}</span> · <span style="color:var(--wk)">+${nf(Math.round(g.p7/7))}</span></span></div>`).join('');
+ph.textContent='Svamitva Registry · District Shivpuri · '+T.find(x=>x[0]==tab)[1]+' · Last Updated: '+SYNC;
+[...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.t==tab));sb.innerHTML='';seg.style.display=(tab=='progress'||tab=='top'||tab=='tehsil'||tab=='court'||tab=='patwari'||tab=='village')?'flex':'none';let h='';
+if(tab=='tehsil'){const a=grp(R,r=>r.t);h=tblW(tbl('tehsil',a,[['k','Tehsil','t'],...tail]),a)}
+if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],...tail]),a)}
+if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail,['p1','1 day progress'],['p7','1 week progress']],1),a,1)}
+if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']],1),a,1)}
+if(tab=='village')h=tblW(tbl('village',R,vc,1),R,1);
+if(tab=='bottom'){const s0=gP(R.filter(r=>r.pn!=NA)).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),b20=s0.slice(0,20),sp=b20.reduce((a,g)=>a+g.pl,0),sc=b20.reduce((a,g)=>a+g.cm,0),tie=s0.length>20&&s0[19].pct==s0[20].pct;
+h=`<div class="note" style="margin:0 0 10px">सबसे कम <b>Completion %</b> (Completed ÷ Total plots) वाले ${nf(b20.length)} पटवारी (सबसे कम पहले)। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले। ${tie?'ध्यान दें: 20वें और 21वें पटवारी का Completion % बराबर है। ':''}फ़िल्टर लगाने पर उसी तहसील/कोर्ट के BOTTOM 20 दिखते हैं।</div><div class="tw">`+tbl('bottom',b20,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']],0,{k:'pct',d:1})+'</div>'}
 if(tab=='dist'){const G=gP(R.filter(r=>r.pn!=NA)),TS=[...new Set(G.map(g=>g.teh))].sort((a,b)=>a.localeCompare(b));
 const CB=[['0–50',g=>g.cm<50],['50–100',g=>g.cm>=50&&g.cm<100],['100–200',g=>g.cm>=100&&g.cm<=200],['200 से अधिक',g=>g.cm>200]];
 const PB=[['0–10%',g=>g.pct<10],['10–20%',g=>g.pct>=10&&g.pct<20],['20–30%',g=>g.pct>=20&&g.pct<30],['30–50%',g=>g.pct>=30&&g.pct<50],['50–80%',g=>g.pct>=50&&g.pct<80],['80–100%',g=>g.pct>=80]];
 const cnt=(te,bf)=>G.filter(g=>(te=='*'||g.teh==te)&&bf(g)).length;
-const mk=(ty,BN,title,sub)=>{const cell=(te,bi,n,tot)=>{const on=dsel&&dsel.ty==ty&&dsel.te==te&&dsel.bi==bi;return n?`<td class="ck${on?' dsel':''}${tot?' tt':''}" data-bd="${ty}|${bi}|${te}">${nf(n)}</td>`:`<td class="${tot?'tt':''}"><span class="dz">0</span></td>`};
-const row=te=>`<tr${te=='*'?' class="tot"':''}><td class="l"><b>${te=='*'?'जिला कुल':esc(te)}</b></td>`+BN.map((b,bi)=>cell(te,bi,cnt(te,b[1]),0)).join('')+cell(te,-1,cnt(te,()=>true),1)+'</tr>';
+const mk=(ty,BN,title,sub)=>{const ce=(te,bi,n,tot)=>{const on=dsel&&dsel.ty==ty&&dsel.te==te&&dsel.bi==bi;return n?`<td class="ck${on?' dsel':''}${tot?' tt':''}" data-bd="${ty}|${bi}|${esc(te)}">${nf(n)}</td>`:`<td class="${tot?'tt':''}"><span class="dz">0</span></td>`};
+const row=te=>`<tr${te=='*'?' class="tot"':''}><td class="l"><b>${te=='*'?'जिला कुल':esc(te)}</b></td>`+BN.map((b,bi)=>ce(te,bi,cnt(te,b[1]),0)).join('')+ce(te,-1,cnt(te,()=>true),1)+'</tr>';
 return`<h3>${title}</h3><div class="note" style="margin:-2px 0 6px">${sub}</div><div class="tw"><table class="dt"><thead><tr><th class="l">तहसील</th>${BN.map(b=>`<th>${b[0]}</th>`).join('')}<th>कुल पटवारी</th></tr></thead><tbody>${TS.map(row).join('')}${row('*')}</tbody></table></div>`};
 let lst='';if(dsel){const BN=dsel.ty=='cm'?CB:PB,sub=G.filter(g=>(dsel.te=='*'||g.teh==dsel.te)&&(dsel.bi<0||BN[dsel.bi][1](g)));
-lst=`<div id="dlist"><h3>चयनित सूची: ${dsel.te=='*'?'पूरा जिला':esc(dsel.te)} · ${dsel.ty=='cm'?'Completed प्लॉट':'Completion %'}: ${dsel.bi<0?'सभी':BN[dsel.bi][0]} · ${nf(sub.length)} पटवारी <button class="more" data-clr="1" style="margin:0 0 0 8px;padding:2px 10px">सूची हटाएँ</button></h3>`+(sub.length?tbl('dist',sub,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']],0,{k:dsel.ty=='cm'?'cm':'pct',d:1}):'<div class="note">इस चयन में कोई पटवारी नहीं है।</div>')+'</div>'}
+lst=`<div id="dlist"><h3>चयनित सूची: ${dsel.te=='*'?'पूरा जिला':esc(dsel.te)} · ${dsel.ty=='cm'?'Completed प्लॉट':'Completion %'}: ${dsel.bi<0?'सभी':BN[dsel.bi][0]} · ${nf(sub.length)} पटवारी <button class="more" data-clr="1" style="margin:0 0 0 8px;padding:2px 10px">सूची हटाएँ</button></h3>`+(sub.length?'<div class="tw">'+tbl('dist',sub,pvc,0,{k:dsel.ty=='cm'?'cm':'pct',d:1})+'</div>':'<div class="note">इस चयन में कोई पटवारी नहीं है।</div>')+'</div>'}
 h=mk('cm',CB,'1. Completed प्लॉट के अनुसार पटवारियों की संख्या','श्रेणी: 0–50 = 0 से 49 · 50–100 = 50 से 99 · 100–200 = 100 से 200 · 200 से अधिक = 201 या ज़्यादा। किसी भी संख्या पर क्लिक करके उन पटवारियों की सूची देखें।')+mk('pc',PB,'2. Completion % के अनुसार पटवारियों की संख्या','Completion % = Completed ÷ कुल प्लॉट। श्रेणी: 0–10% में 10% नहीं आता; 80–100% में 100% भी शामिल है। संख्या पर क्लिक करें।')+lst}
-if(tab=='halka'){const hc=[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']];
-h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। <b>1 day progress</b> और <b>1 week progress</b> शीट के इन्हीं कॉलम का हल्के के अनुसार जोड़ हैं। Pending plots = कुल प्लॉट − Completed। डेटा सिंक: ${SYNC||'—'}</div>`+tbl('halka',grp(R,r=>r.t+'|'+r.h,r=>r.h),hc,1)}
-if(tab=='village')h=tbl('village',R,[...vc.slice(0,-2),['p1','1 day progress'],['p7','1 week progress'],...vc.slice(-2)],1);
-if(tab=='progress'){sb.innerHTML='<div class="sb">'+[['tehsil','Tehsil'],['court','Court'],['patwari','Patwari'],['village','Village']].map(([k,l])=>`<button data-lv="${k}" class="${lv==k?'on':''}">${l}-wise</button>`).join('')+'</div>';
+if(tab=='progress'){sb.innerHTML='<div class="sbb">'+[['tehsil','Tehsil'],['court','Court'],['patwari','Patwari'],['village','Village']].map(([k,l])=>`<button data-lv="${k}" class="${lv==k?'on':''}">${l}-wise</button>`).join('')+'</div>';
 const C={tehsil:[grp(R,r=>r.t),[['k','Tehsil','t']]],court:[grp(R,r=>r.c),[['k','Court','t']]],patwari:[gP(R),[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t']]],village:[R,[['n','Village','t'],['t','Tehsil','t'],['pn','Patwari','t'],['h','Halka','t']]]}[lv];
-const ch=C[0].filter(r=>r.di||r.dv||r.ds||r.dp||r.dc);h=`<div class="note" style="margin:0 0 8px">${lbl()}: ${nf(ch.length)} पंक्तियों में बदलाव हुआ।</div>`+tbl('pg_'+lv,ch,[...C[1],...dcols()],1,{k:'pct',d:1})}
-if(tab=='top'){
-const g=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.cm>0).sort((a,b)=>b.cm-a.cm||b.pct-a.pct||b.pl-a.pl).slice(0,10);
-h=`<div class="note" style="margin:0 0 10px">रैंकिंग: सबसे ज़्यादा कुल Completed वाले पटवारी पहले। बराबरी होने पर ज़्यादा Completion % (Completed ÷ Total plots), फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 10 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>+${nf(g.dc)}</b><small>बढ़त: ${B.sh}</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td><td>${sg(g[DK[f]],f=='cm'?'g':'up')}</td></tr>`).join('')+`<tr><td class="l"><b>Completion %</b></td><td colspan="2">${pt(g.opct)} → <b>${pt(g.pct)}</b></td></tr></table></div>`).join('')+'</div>'}
+const ch=C[0].filter(r=>r.dc);h=`<div class="note" style="margin:0 0 8px">${B.sh} progress: ${nf(ch.length)} पंक्तियों में Completed बढ़ा।</div>`+tblW(tbl('pg_'+lv,ch,[...C[1],...dcols()],1,{k:'dc',d:-1}),ch,1)}
+if(tab=='top'){const g=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.cm>0).sort((a,b)=>b.cm-a.cm||b.pct-a.pct||b.pl-a.pl).slice(0,10);
+h=`<div class="note" style="margin:0 0 10px">रैंकिंग: सबसे ज़्यादा कुल Completed वाले पटवारी पहले। बराबरी होने पर ज़्यादा Completion %, फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 10 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>+${nf(g.dc)}</b><small>बढ़त: ${B.sh}</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td></tr>`).join('')+`<tr><td class="l"><b>Completion %</b></td><td>${pt(g.opct)} → <b>${pt(g.pct)}</b></td></tr></table></div>`).join('')+'</div>'}
 if(tab=='zero'){const z=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0);
-h=`<div class="note" style="margin:0 0 10px">ऐसे पटवारी जिनके सभी गाँवों में Registry initiated, Verification, Submitted, In process और Completed, पाँचों में शून्य है, यानी अभी तक कोई काम शुरू नहीं हुआ। कुल <b>${nf(z.length)}</b> पटवारी, <b>${nf(z.reduce((a,g)=>a+g.vil,0))}</b> गाँव, <b>${nf(z.reduce((a,g)=>a+g.pl,0))}</b> प्लॉट।</div>`+tbl('zero',z,[['teh','Tehsil','t'],['k','Patwari','t'],['mob','Mobile','t'],['hal','Halka','t'],['vn','संबद्ध ग्राम','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC],1,{k:'pl',d:-1})}
+h=`<div class="note" style="margin:0 0 10px">ऐसे पटवारी जिनके सभी गाँवों में पाँचों चरण शून्य हैं, यानी अभी तक कोई काम शुरू नहीं हुआ। कुल <b>${nf(z.length)}</b> पटवारी, <b>${nf(z.reduce((a,g)=>a+g.vil,0))}</b> गाँव, <b>${nf(z.reduce((a,g)=>a+g.pl,0))}</b> प्लॉट।</div>`+tblW(tbl('zero',z,[['teh','Tehsil','t'],['k','Patwari','t'],['mob','Mobile','t'],['hal','Halka','t'],['vn','संबद्ध ग्राम','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC],1,{k:'pl',d:-1}),z,1)}
 if(tab=='action'){const a=R.filter(r=>r.st=='Not started'&&r.pl>=100),b=R.filter(r=>r.pn==NA);
-h=`<h3>कार्य शुरू नहीं हुआ, 100+ प्लॉट (${nf(a.length)} गाँव)</h3>`+tbl('a1',a,vc,1)+`<h3>पटवारी नियुक्त नहीं (${nf(b.length)} गाँव)</h3>`+tbl('a2',b,vc,1)}
+h=`<h3 style="margin-top:0">कार्य शुरू नहीं हुआ, 100+ प्लॉट (${nf(a.length)} गाँव)</h3>`+tblW(tbl('a1',a,vc,1),a,1)+(b.length?`<h3>पटवारी नियुक्त नहीं (${nf(b.length)} गाँव)</h3>`+tblW(tbl('a2',b,vc,1),b,1):'')}
 tb.innerHTML=h}
 
 /* ---------- live refresh ---------- */
 function setStatus(kind,txt){dot.className='dot'+(kind=='ok'?'':kind=='err'?' err':' ld');stx.textContent=txt}
 async function refresh(force){
-  if(busy)return;busy=true;setStatus('ld','Updating…');
+  if(busy)return;busy=true;if(!D.length)setStatus('ld','Loading…');
   try{
     const {res,sync}=await loadAll();
-    const hs=sync+'|'+res.out.length+'|'+res.out.reduce((a,r)=>a+r.cm+r.i+r.v+r.sb+r.pr+r.p1+r.p7,0);
-    if(force||hs!==hash){
-      hash=hs;D=res.out;D.hdr={p1:res.head[res.m.p1],p7:res.head[res.m.p7]};SYNC=sync;
-      SD=(sync.split(' ')[0]||'').slice(0,10);
-      setup();draw();
-      if(!res.hasP)showMsg('सूचना: शीट में "1 day / 1 week progress" कॉलम नहीं मिले, इसलिए तुलना में 0 दिख रहा है। कॉलम के हेडर में "1 Day" / "1 Week" शब्द होने चाहिए।');else showMsg('');
-    }
-    lsync.textContent=SYNC||'—';setStatus('ok','Live · '+nf(D.length)+' गाँव · Completed '+nf(D.reduce((a,r)=>a+r.cm,0)));
-  }catch(e){setStatus('err','Connection issue');showMsg('डेटा लोड नहीं हो सका: '+e.message+' · जाँचें कि Sheet "Anyone with the link – Viewer" पर शेयर है। पिछला डेटा स्क्रीन पर बना हुआ है।',true)}
-  busy=false;remain=CFG.POLL}
-setInterval(()=>{remain--;if(remain<=0)refresh();else cdn.textContent=remain+' sec'},1000);
+    const hh=sync+'|'+res.out.length+'|'+res.out.reduce((a,r)=>a+r.cm+r.i+r.v+r.sb+r.pr+r.p1+r.p7+r.pl,0);
+    if(force||hh!==hash){hash=hh;D=res.out;SYNC=sync;SD=(sync.split(' ')[0]||'').slice(0,10);setup();draw();
+      showMsg(res.hasP?'':'सूचना: "1 day progress" / "1 week progress" कॉलम नहीं मिले, इसलिए तुलना 0 दिख रही है।')}
+    lsync.textContent=SYNC||'—';setStatus('ok','Live')
+  }catch(e){console.error('Dashboard data error:',e);setStatus('err','Offline');if(!D.length)showMsg('डेटा अभी उपलब्ध नहीं है। कृपया कुछ देर बाद पुनः प्रयास करें।',true)}
+  busy=false}
+setInterval(()=>refresh(),CFG.POLL*1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 refresh(true);
 </script></body></html>
