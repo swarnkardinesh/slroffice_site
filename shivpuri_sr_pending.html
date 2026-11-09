@@ -57,6 +57,14 @@
     <button id="csv" class="ghost">CSV download</button>
   </div>
 
+  <div class="bar" style="margin-top:8px">
+    <b>Google Sheet sync</b>
+    <input id="sheetUrl" type="text" placeholder="Apps Script Web App URL yahan paste karein" style="flex:1;min-width:240px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)">
+    <label><input id="sheetOn" type="checkbox"> Har refresh par bhejein</label>
+    <button id="sheetNow" class="ghost">Abhi Sheet me bhejein</button>
+    <span id="sheetStatus" class="muted" style="font-size:13px"></span>
+  </div>
+
   <div id="err" class="err"></div>
   <div class="fallback" id="fallback">
     <div class="bar" style="flex-direction:column;align-items:stretch">
@@ -133,6 +141,7 @@ async function load() {
     if (!res.ok) throw new Error("HTTP " + res.status);
     ingest(await res.json());
     $("status").textContent = "Live data - website ki date: " + (META.as_of || "?") + " - fetch: " + new Date().toLocaleTimeString("hi-IN");
+    if ($("sheetOn").checked) pushSheet();
   } catch (e) {
     $("status").textContent = "";
     setError("Live fetch nahi ho paya (" + e.message + ").",
@@ -202,6 +211,40 @@ function downloadCsv() {
   a.download = "sr_pending_" + $("district").value + ".csv";
   a.click();
 }
+
+// ---- Google Sheet sync (aapke apne Apps Script Web App ko POST) ----
+function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+function sheetPayload() {
+  const list = view();
+  return {
+    district: $("district").value,
+    as_of: META.as_of || "",
+    fetched: new Date().toLocaleString("hi-IN"),
+    header: ["#", "SR", "Pad", "Tehsil", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"],
+    rows: list.map((r, i) => [i + 1, r.name, r.designation, r.tehsils, r.pending, r.sub, r.rip, r.over15, r.verified, r.received]),
+  };
+}
+
+async function pushSheet() {
+  const url = $("sheetUrl").value.trim();
+  if (!url) { $("sheetStatus").textContent = "Pehle Web App URL daalein"; return; }
+  if (!ROWS.length) { $("sheetStatus").textContent = "Abhi data nahi hai"; return; }
+  try {
+    // no-cors: jawab padh nahi sakte, par data Sheet tak pahunch jata hai
+    await fetch(url, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(sheetPayload()) });
+    $("sheetStatus").textContent = "Sheet ko bheja: " + new Date().toLocaleTimeString("hi-IN");
+  } catch (e) {
+    $("sheetStatus").textContent = "Bhejne me dikkat: " + e.message;
+  }
+}
+
+$("sheetUrl").value = safeGet("sr_sheet_url") || "";
+$("sheetOn").checked = safeGet("sr_sheet_on") === "1";
+$("sheetUrl").onchange = () => safeSet("sr_sheet_url", $("sheetUrl").value.trim());
+$("sheetOn").onchange = () => safeSet("sr_sheet_on", $("sheetOn").checked ? "1" : "0");
+$("sheetNow").onclick = () => { safeSet("sr_sheet_url", $("sheetUrl").value.trim()); pushSheet(); };
 
 $("refresh").onclick = load;
 $("csv").onclick = downloadCsv;
