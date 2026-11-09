@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SR Pending Registry - Live</title>
+<title>Shivpuri SR Pending Registry - Live</title>
 <style>
   :root { --bg:#f6f7f9; --card:#fff; --ink:#1c2330; --mute:#6b7585; --line:#e3e7ee; --acc:#1f5fd1; --warn:#c0392b; }
   @media (prefers-color-scheme: dark) {
@@ -11,10 +11,10 @@
   }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-  .wrap { max-width:1100px; margin:0 auto; padding:16px; }
+  .wrap { max-width:1200px; margin:0 auto; padding:16px; }
   h1 { font-size:20px; margin:4px 0 12px; }
   .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px; }
-  select, input[type=search], button { font:inherit; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); }
+  select, input[type=search], button { font:inherit; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); max-width:100%; }
   button { cursor:pointer; background:var(--acc); color:#fff; border-color:var(--acc); }
   button.ghost { background:var(--card); color:var(--ink); border-color:var(--line); }
   label { display:flex; gap:6px; align-items:center; color:var(--mute); }
@@ -26,24 +26,50 @@
   .err { background:var(--card); border:1px solid var(--warn); color:var(--warn); border-radius:10px; padding:10px 12px; margin:10px 0; display:none; }
   .err small { color:var(--mute); display:block; margin-top:6px; }
   .tablebox { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:auto; }
-  table { border-collapse:collapse; width:100%; min-width:720px; }
+  table { border-collapse:collapse; width:100%; min-width:900px; }
   th, td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
   th { position:sticky; top:0; background:var(--card); color:var(--mute); font-size:12px; text-transform:uppercase; letter-spacing:.03em; cursor:pointer; user-select:none; }
+  th.nosort { cursor:default; }
   td.n, th.n { text-align:right; font-variant-numeric:tabular-nums; }
   tr:last-child td { border-bottom:0; }
   .hot { color:var(--warn); font-weight:600; }
   .muted { color:var(--mute); }
+  .tag { font-size:11px; color:var(--mute); border:1px solid var(--line); border-radius:6px; padding:1px 5px; margin-left:6px; }
+  a.tel { color:var(--acc); text-decoration:none; }
+  a.tel:hover { text-decoration:underline; }
+  .printhead { display:none; }
+  @page { size: A4 landscape; margin: 10mm; }
+  @media print {
+    :root { --bg:#fff; --card:#fff; --ink:#000; --mute:#444; --line:#bbb; --acc:#000; --warn:#b00020; }
+    body { background:#fff; color:#000; font-size:11px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .wrap { max-width:none; padding:0; }
+    h1, .bar, .err, .fallback, .status, .tag { display:none !important; }
+    .printhead { display:block; margin-bottom:8px; }
+    .printhead h2 { margin:0 0 2px; font-size:16px; }
+    .printhead div { color:#333; }
+    .stats { margin:6px 0; gap:8px; }
+    .stat { padding:4px 10px; min-width:0; }
+    .stat b { font-size:15px; }
+    .tablebox { border:0; overflow:visible; }
+    table { min-width:0; }
+    th, td { padding:3px 5px; white-space:normal; }
+    th { position:static; }
+    thead { display:table-header-group; }
+    tr { page-break-inside:avoid; break-inside:avoid; }
+    a.tel { color:#000; }
+  }
   .fallback { margin-top:10px; display:none; }
   .fallback textarea { width:100%; height:90px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); font:12px monospace; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>SR - Pending Registry (live)</h1>
+  <h1>Shivpuri - SR Pending Registry (live)</h1>
 
   <div class="bar">
-    <select id="district" title="Zila"></select>
-    <input id="q" type="search" placeholder="SR / tehsil khojein">
+    <select id="tehsil" title="Tehsil"></select>
+    <select id="sr" title="SR"></select>
+    <input id="q" type="search" placeholder="Naam / mobile / pad khojein">
     <label><input id="hideZero" type="checkbox"> Pending 0 wale chhupayein</label>
     <label>Auto-refresh
       <select id="auto">
@@ -55,14 +81,7 @@
     </label>
     <button id="refresh">Refresh</button>
     <button id="csv" class="ghost">CSV download</button>
-  </div>
-
-  <div class="bar" style="margin-top:8px">
-    <b>Google Sheet sync</b>
-    <input id="sheetUrl" type="text" placeholder="Apps Script Web App URL yahan paste karein" style="flex:1;min-width:240px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)">
-    <label><input id="sheetOn" type="checkbox"> Har refresh par bhejein</label>
-    <button id="sheetNow" class="ghost">Abhi Sheet me bhejein</button>
-    <span id="sheetStatus" class="muted" style="font-size:13px"></span>
+    <button id="pdf" class="ghost">PDF download</button>
   </div>
 
   <div id="err" class="err"></div>
@@ -75,6 +94,7 @@
     </div>
   </div>
 
+  <div class="printhead" id="printhead"></div>
   <div class="stats" id="stats"></div>
   <div class="status" id="status"></div>
 
@@ -88,31 +108,276 @@
 
 <script>
 const API = "https://services.mpigr.gov.in/svamitva_dashboard/api/sr-report?basis=registered";
-const DEFAULT_DISTRICT = "\u0936\u093f\u0935\u092a\u0941\u0930\u0940"; // Shivpuri
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXCmaXiVtmw94o69Cwqz2R7w1w7pvZ3E3o6LtDcsAVQRKGRYXBRO7SPRbhie6H7jHjSA/exec";
+const DISTRICT = "\u0936\u093f\u0935\u092a\u0941\u0930\u0940"; // Shivpuri
 
-let ROWS = [];          // objects
-let META = {};
-let sortKey = "pending", sortDir = -1;
-let timer = null;
+// Tehsil: [Hindi, English]
+const TEH = {
+  S:["शिवपुरी","Shivpuri"], B:["बदरवास","Badarwas"], BR:["बैराड","Bairad"], K:["कोलारस","Kolaras"],
+  KA:["करैरा","Karera"], KH:["खनियाधाना","Khaniyadhana"], N:["नरवर","Narwar"], P:["पिछोर","Pichore"],
+  PO:["पोहरी","Pohari"], R:["रन्नौद","Ranod"]
+};
+
+// SR contacts: [naam, pad, tehsil-code, mobile]
+const CONTACTS = [
+["Shipra Upadhyay","Tehsildar","S","9589735400"],
+["Shivam Upadhyay","Tehsildar","S","7879453065"],
+["Siddharth Bhushan Sharma","Tehsildar","S","7354342694"],
+["Anil Dhakad","प्रभारी तहसीलदार (Tehsildar In-charge)","S","8269383871"],
+["Ajeet Tomar","Nayab Tehsildar","S","9424084136"],
+["Rajesh Kumar Vatsa","Nayab Tehsildar","S","9993621535 / 9479307979"],
+["Geeta Narwaria","Revenue Inspector","S","9617190708 , 6269116867"],
+["Pramod Kumar Sharma","Revenue Inspector","S","9301265092"],
+["Preeti Verma","Revenue Inspector","S","9425766460"],
+["Aastha Goyal","ADEO","S","8827596573"],
+["Ankit Kushwah","ADEO","S","7773884196"],
+["Laxmi Adiwasi","ADEO","S","7828894751"],
+["Mona Yadav","ADEO","S","6267538214"],
+["Suraj Singh Rathore","ADEO","S","7828716808"],
+["Mukesh Kumar Parashar","PCO (Graduate)","S","9425488383"],
+["Rajendra Tiwari","PCO (Graduate)","S","8120147115"],
+["Rakesh Kumar Gupta","PCO (Graduate)","S","9425488437"],
+["Ramhet Jatav","PCO (Graduate)","S","9893169783"],
+["Salomon Lakra","PCO (Graduate)","S","7987530130"],
+["Shyam Lal","PCO (Graduate)","S","9893381351"],
+["Vishwanath Bhagat","PCO (Graduate)","S","9755572689"],
+["Manoj Kumar Sharma","PCO (Non Graduate)","S","9993279801"],
+["Sachin Bhargava","Tehsildar","B","8269153707"],
+["Akash Rajput","ADEO","B","7000911908"],
+["Dharmesh Singh Rajput","ADEO","B","8770032701"],
+["Savita Yadav","ADEO","B","8109471845"],
+["Badri Lal Marwade","PCO (Non Graduate)","B","9893575985"],
+["Dinesh Kumar Gupta","PCO (Non Graduate)","B","9109847005"],
+["Rajesh Khalkho","PCO (Non Graduate)","B","9584168940"],
+["Sharan Ram Bairagi","PCO","B","9926240076"],
+["Dragpal Singh Bais","Tehsildar","BR","9425117681"],
+["Shailendra Bhargava","Nayab Tehsildar","BR","9074732496"],
+["Pradeep Kumar Bhargava","Tehsildar","K","7049357555"],
+["Ashish Jain","Nayab Tehsildar","K","9329312192"],
+["Manisha Mishra","Nayab Tehsildar","K","8236936833"],
+["Mahendra Korku","Revenue Inspector","K","6269117881"],
+["Hemant Singh Rawat","ADEO","K","9753678640"],
+["Poorvi Jain","ADEO","K","7047874903"],
+["Vivek Singh Yadav","ADEO","K","8517917659"],
+["Om Prakash Shakya","PCO (Graduate)","K","9893520721"],
+["Nirmal Ekka","PCO (Non Graduate)","K","7869036515"],
+["Abhilakh Singh","PCO","K","9977532213"],
+["Ranjeet Singh Kushwah","Tehsildar","KA","7415525231"],
+["Lajjaram Rajoriya","Nayab Tehsildar","KA","8435339746"],
+["Sunil Yadav","Nayab Tehsildar","KA","7585928338"],
+["Amogh Shrivastava","ADEO","KA","9131932374"],
+["Anurag Khare","ADEO","KA","8004908878"],
+["Mona Pandey","ADEO","KA","9770752939"],
+["Ragini Tiwari","ADEO","KA","8770179098"],
+["Balwant Singh Kadam","PCO (Graduate)","KA","9926247186"],
+["Chaturbhuj Arya","PCO (Graduate)","KA","9340414012"],
+["Pramod Kumar Gupta","PCO (Graduate)","KA","9926229329"],
+["Ramkishan Tegar","PCO (Graduate)","KA","9981231832"],
+["Santram Narware","PCO (Graduate)","KA","9977859774"],
+["Gangaram Bhagat","PCO (Non Graduate)","KA","7909791542"],
+["Sanjeev Dubey","PCO (Non Graduate)","KA","9926238554"],
+["Nishikant Jain","Tehsildar","KH","7879040049"],
+["Pratipal Tiwari","Nayab Tehsildar","KH","9340543503"],
+["Krishna Kushwah","ADEO","KH","9993976882"],
+["Peter Kujur","PCO (Non Graduate)","KH","9981888446"],
+["Phool Singh Jarman","PCO (Non Graduate)","KH","9755072298"],
+["Rajesh Kumar Jatav","PCO (Non Graduate)","KH","7898747753"],
+["Suryakant Mishra","PCO (Non Graduate)","KH","8225915197"],
+["Vijay Kumar Tyagi","Tehsildar","N","8817625121"],
+["Deenaram Kakodiya","Revenue Inspector","N","9893085617 , 629118315"],
+["Sandeep Gupta","ADEO","N","8085450056"],
+["Satendra Raje","ADEO","N","8223084652"],
+["Sonam Jain","ADEO","N","9111482350"],
+["Asha Ram Gond","PCO (Graduate)","N","8273922698"],
+["Brajmohan Koli","PCO (Graduate)","N","8269127107"],
+["Phool Singh Mahour","PCO (Graduate)","N","9893823720"],
+["Ramdas Gil","PCO (Graduate)","N","9179569619"],
+["Soneram Adiwasi","PCO (Graduate)","N","9893834751"],
+["Uttam Singh Rajey","PCO (Graduate)","N","9993272111"],
+["Prakash Chandra Shohare","PCO (Non Graduate)","N","7898025701"],
+["Shiv Shankar Singh Gurjar","Tehsildar","P","9981382020"],
+["Pratibha Pandey","Nayab Tehsildar","P","6263992880"],
+["Shubham Garg","Nayab Tehsildar","P","8810303955"],
+["Jugal Kishore Shakya","ADEO","P","9425590605"],
+["Lokendra Singh Rawat","ADEO","P","7000576701"],
+["Satendra Kumar Jha","ADEO","P","8962492334"],
+["Vishal Shivhare","ADEO","P","8278643255"],
+["Amar Singh Suman","PCO (Non Graduate)","P","9617571054"],
+["Jawahar Singh Mathur","PCO (Non Graduate)","P","9826876110"],
+["Rajendra Prasad Morya","PCO (Non Graduate)","P","9926577132"],
+["Rajendra Singh Jadon","PCO (Non Graduate)","P","9425796685"],
+["Ramprasad Bhagat","PCO (Non Graduate)","P","9425764472"],
+["Manoj Kumar Sharma","PCO","P","9977923538"],
+["Kalpna Sharma","Tehsildar","PO","9827275190"],
+["Sarita Bhadouria","Nayab Tehsildar","PO","9826231208"],
+["Anil Lakara","ADEO","PO","7898439869"],
+["Mahendra Pathak","ADEO","PO","7000206854"],
+["Sudhanshu Shankar Bajpai","ADEO","PO","8602544964"],
+["Deen Dayal Sharma","PCO (Graduate)","PO","6260907656"],
+["Rakesh Singh","PCO (Graduate)","PO","9425766392"],
+["Ramkrishan Choudhary","PCO (Graduate)","PO","9425136516"],
+["Kalyan Singh Jatav","—","PO","7000396691"],
+["Ajay Parsediya","Tehsildar","R","7746834788"],
+["Satish Kumar Upadhyaya","Tehsildar","R","9826231264"],
+["Mangilal Ahirwar","Nayab Tehsildar","R","9425720589"]
+].map(c => ({ name:c[0], desig:c[1], teh:TEH[c[2]][0], mobile:c[3] }));
+
+// website aur list ki spelling alag ho to yahan jod sakte hain: "website ka naam": "list ka naam"
+const ALIAS = { "dinadayal sharma": "deen dayal sharma", "anil lakra": "anil lakara" };
+
+let ROWS = [], META = {};
+let sortKey = "pending", sortDir = -1, timer = null, syncMsg = "";
 
 const $ = id => document.getElementById(id);
 const COLS = [
-  ["rank", "#", true],
-  ["name", "SR ka naam", false],
-  ["designation", "Pad", false],
-  ["tehsils", "Tehsil", false],
-  ["pending", "Pending", true],
-  ["sub", "Submitted", true],
-  ["rip", "In Process", true],
-  ["over15", "15 din+", true],
-  ["verified", "Completed", true],
-  ["received", "Kul", true],
+  ["rank", "#", true, false],
+  ["disp", "SR ka naam", false, true],
+  ["designation", "Pad", false, true],
+  ["tehsils", "Tehsil", false, true],
+  ["mobile", "Mobile", false, false],
+  ["pending", "Pending", true, true],
+  ["sub", "Submitted", true, true],
+  ["rip", "In Process", true, true],
+  ["over15", "15 din+", true, true],
+  ["verified", "Completed", true, true],
+  ["received", "Kul", true, true],
 ];
 
-function toObjects(json) {
-  const cols = json.cols;
-  return json.rows.map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])));
+function norm(s) {
+  return String(s || "").normalize("NFC").replace(/[\u200b-\u200d\ufeff]/g, "").toLowerCase()
+    .replace(/[^a-z0-9\u0900-\u097f ]+/g, " ").replace(/\s+/g, " ").trim();
 }
+const tokens = s => norm(s).split(" ").filter(Boolean);
+const tehList = s => String(s || "").split(",").map(norm).filter(Boolean);
+
+function matchContact(row) {
+  const key = norm(row.name);
+  const t = tokens(ALIAS[key] || row.name);
+  if (!t.length) return null;
+  const rt = tehList(row.tehsils);
+  let pool = CONTACTS.filter(c => rt.includes(norm(c.teh)));
+  if (!pool.length) pool = CONTACTS; // tehsil ki spelling na mile to poori list me khojein
+  let best = null, bestScore = 0, cands = 0;
+  for (const c of pool) {
+    const ct = tokens(c.name);
+    const [short, long] = t.length <= ct.length ? [t, ct] : [ct, t];
+    if (!short.every(x => long.includes(x))) continue;
+    cands++;
+    let score = short.length * 10 + (norm(c.desig) === norm(row.designation) ? 1 : 0);
+    if (score > bestScore) { best = c; bestScore = score; }
+  }
+  if (!best) return null;
+  if (pool === CONTACTS && (t.length < 2 || cands > 1)) return null; // bina tehsil match ke sirf pakka match lein
+  return best;
+}
+
+function ingest(json) {
+  if (!json || !Array.isArray(json.rows) || !Array.isArray(json.cols)) throw new Error("JSON ka format alag hai");
+  META = { as_of: json.as_of };
+  const api = json.rows.map(r => Object.fromEntries(json.cols.map((c, i) => [c, r[i]])))
+    .filter(r => String(r.district).normalize("NFC") === DISTRICT.normalize("NFC"));
+  if (!api.length) throw new Error("Shivpuri ka data nahi mila");
+
+  const used = new Set();
+  ROWS = api.map(r => {
+    const assigned = r.status !== "unassigned" && r.name && !String(r.name).startsWith("(");
+    const c = assigned ? matchContact(r) : null;
+    if (c) used.add(c);
+    return { ...r, disp: assigned ? (c ? c.name : r.name) : "(SR assign nahi)", mobile: c ? c.mobile : "", unassigned: !assigned };
+  });
+  // list ke jo SR website ke data me nahi mile
+  CONTACTS.filter(c => !used.has(c)).forEach(c => ROWS.push({
+    district: DISTRICT, tehsils: c.teh, name: c.name, designation: c.desig, disp: c.name, mobile: c.mobile,
+    pending: 0, sub: 0, rip: 0, over15: 0, verified: 0, received: 0, noApi: true,
+  }));
+
+  buildTehsil();
+  buildSr();
+  setError(null);
+  render();
+}
+
+function tehLabel(t) {
+  const e = Object.values(TEH).find(x => norm(x[0]) === norm(t));
+  return e ? `${e[0]} (${e[1]})` : t;
+}
+
+function buildTehsil() {
+  const set = new Set();
+  ROWS.forEach(r => String(r.tehsils || "").split(",").map(x => x.trim()).filter(Boolean).forEach(x => set.add(x)));
+  const order = Object.values(TEH).map(x => norm(x[0]));
+  const list = [...set].sort((a, b) => {
+    const ia = order.indexOf(norm(a)), ib = order.indexOf(norm(b));
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b, "hi");
+  });
+  const cur = $("tehsil").value;
+  $("tehsil").innerHTML = `<option value="">Sabhi Tehsil</option>` + list.map(t => `<option value="${esc(t)}">${esc(tehLabel(t))}</option>`).join("");
+  if (list.includes(cur)) $("tehsil").value = cur;
+}
+
+function inTehsil(r, t) { return !t || tehList(r.tehsils).includes(norm(t)); }
+
+function buildSr() {
+  const t = $("tehsil").value, cur = $("sr").value;
+  const names = [...new Set(ROWS.filter(r => !r.unassigned && inTehsil(r, t)).map(r => r.disp))]
+    .sort((a, b) => a.localeCompare(b, "en"));
+  $("sr").innerHTML = `<option value="">Sabhi SR</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  if (names.includes(cur)) $("sr").value = cur;
+}
+
+function sortRows(list, key, dir) {
+  return list.slice().sort((a, b) => {
+    const x = a[key], y = b[key];
+    if (typeof x === "number" && typeof y === "number") return (x - y) * dir || String(a.disp).localeCompare(b.disp);
+    return String(x ?? "").localeCompare(String(y ?? ""), "hi") * dir;
+  });
+}
+
+function view() {
+  const t = $("tehsil").value, s = $("sr").value, q = $("q").value.trim().toLowerCase(), hz = $("hideZero").checked;
+  let list = ROWS.filter(r => inTehsil(r, t));
+  if (s) list = list.filter(r => r.disp === s);
+  if (hz) list = list.filter(r => r.pending > 0);
+  if (q) list = list.filter(r => (r.disp + " " + r.tehsils + " " + r.designation + " " + r.mobile).toLowerCase().includes(q));
+  return sortRows(list, sortKey, sortDir);
+}
+
+function mobileHtml(m) {
+  if (!m) return `<span class="muted">-</span>`;
+  return String(m).split(/[\/,]/).map(x => x.trim()).filter(Boolean)
+    .map(x => `<a class="tel" href="tel:${x.replace(/[^\d+]/g, "")}">${esc(x)}</a>`).join(" , ");
+}
+
+function render() {
+  const list = view();
+  const sum = k => ROWS.reduce((s, r) => s + (r[k] || 0), 0);
+  const unassigned = ROWS.filter(r => r.unassigned).reduce((s, r) => s + r.pending, 0);
+  $("stats").innerHTML = [
+    ["Kul pending", sum("pending")],
+    ["Bina SR wali pending", unassigned],
+    ["15 din se purani", sum("over15")],
+    ["SR ki sankhya", ROWS.filter(r => !r.unassigned).length],
+  ].map(([l, v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  $("thead").innerHTML = COLS.map(([k, label, num, sortable]) =>
+    `<th class="${num ? "n" : ""} ${sortable ? "" : "nosort"}" data-k="${k}">${label}${k === sortKey ? (sortDir < 0 ? " \u25BC" : " \u25B2") : ""}</th>`).join("");
+
+  $("tbody").innerHTML = list.map((r, i) => `<tr>
+    <td class="n muted">${i + 1}</td>
+    <td>${esc(r.disp)}${r.noApi ? `<span class="tag">website data me nahi</span>` : ""}</td>
+    <td class="muted">${esc(r.designation)}</td>
+    <td class="muted">${esc(r.tehsils)}</td>
+    <td>${mobileHtml(r.mobile)}</td>
+    <td class="n ${r.pending > 0 ? "hot" : "muted"}">${r.pending}</td>
+    <td class="n">${r.sub}</td>
+    <td class="n">${r.rip}</td>
+    <td class="n ${r.over15 > 0 ? "hot" : "muted"}">${r.over15}</td>
+    <td class="n">${r.verified}</td>
+    <td class="n">${r.received}</td>
+  </tr>`).join("") || `<tr><td colspan="11" class="muted">Koi row nahi mili</td></tr>`;
+}
+
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
 function setError(msg, hint) {
   const e = $("err");
@@ -122,16 +387,24 @@ function setError(msg, hint) {
   $("fallback").style.display = "block";
 }
 
-function ingest(json) {
-  if (!json || !Array.isArray(json.rows) || !Array.isArray(json.cols)) throw new Error("JSON ka format alag hai");
-  META = { as_of: json.as_of, basis: json.basis };
-  ROWS = toObjects(json);
-  const dists = [...new Set(ROWS.map(r => r.district))].sort((a, b) => a.localeCompare(b, "hi"));
-  const sel = $("district"), cur = sel.value || DEFAULT_DISTRICT;
-  sel.innerHTML = dists.map(d => `<option value="${d}">${d}</option>`).join("");
-  sel.value = dists.includes(cur) ? cur : dists[0];
-  setError(null);
-  render();
+// Google Sheet: poori Shivpuri list (filter se alag), pending ke ghatte kram me
+async function pushSheet() {
+  const all = sortRows(ROWS, "pending", -1);
+  const payload = {
+    district: "Shivpuri",
+    as_of: META.as_of || "",
+    fetched: new Date().toLocaleString("hi-IN"),
+    header: ["#", "SR", "Pad", "Tehsil", "Mobile", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"],
+    rows: all.map((r, i) => [i + 1, r.disp, r.designation, r.tehsils, r.mobile, r.pending, r.sub, r.rip, r.over15, r.verified, r.received]),
+  };
+  try {
+    // no-cors: jawab padh nahi sakte, par data Sheet tak pahunch jata hai
+    await fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+    syncMsg = " - Sheet sync: " + new Date().toLocaleTimeString("hi-IN");
+  } catch (e) {
+    syncMsg = " - Sheet sync nahi hua (" + e.message + ")";
+  }
+  $("status").textContent = $("status").textContent.split(" - Sheet sync")[0] + syncMsg;
 }
 
 async function load() {
@@ -141,57 +414,13 @@ async function load() {
     if (!res.ok) throw new Error("HTTP " + res.status);
     ingest(await res.json());
     $("status").textContent = "Live data - website ki date: " + (META.as_of || "?") + " - fetch: " + new Date().toLocaleTimeString("hi-IN");
-    if ($("sheetOn").checked) pushSheet();
+    pushSheet();
   } catch (e) {
     $("status").textContent = "";
     setError("Live fetch nahi ho paya (" + e.message + ").",
       "Sambhavit karan: website dusre page ko API call karne ki anumati (CORS) nahi deti. Neeche backup se JSON load kar sakte hain.");
   }
 }
-
-function view() {
-  const d = $("district").value, q = $("q").value.trim().toLowerCase(), hz = $("hideZero").checked;
-  let list = ROWS.filter(r => r.district === d);
-  if (hz) list = list.filter(r => r.pending > 0);
-  if (q) list = list.filter(r => (r.name + " " + r.tehsils + " " + r.designation).toLowerCase().includes(q));
-  list.sort((a, b) => {
-    const x = a[sortKey], y = b[sortKey];
-    if (typeof x === "number" && typeof y === "number") return (x - y) * sortDir || String(a.name).localeCompare(b.name);
-    return String(x ?? "").localeCompare(String(y ?? ""), "hi") * sortDir;
-  });
-  return list;
-}
-
-function render() {
-  const list = view();
-  const all = ROWS.filter(r => r.district === $("district").value);
-  const sum = k => all.reduce((s, r) => s + (r[k] || 0), 0);
-  const unassigned = all.filter(r => r.status === "unassigned").reduce((s, r) => s + r.pending, 0);
-  $("stats").innerHTML = [
-    ["Kul pending", sum("pending")],
-    ["Bina SR wali pending", unassigned],
-    ["15 din se purani", sum("over15")],
-    ["SR ki sankhya", all.filter(r => r.status !== "unassigned").length],
-  ].map(([l, v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
-
-  $("thead").innerHTML = COLS.map(([k, label, num]) =>
-    `<th class="${num ? "n" : ""}" data-k="${k}">${label}${k === sortKey ? (sortDir < 0 ? " \u25BC" : " \u25B2") : ""}</th>`).join("");
-
-  $("tbody").innerHTML = list.map((r, i) => `<tr>
-    <td class="n muted">${i + 1}</td>
-    <td>${esc(r.name)}</td>
-    <td class="muted">${esc(r.designation)}</td>
-    <td class="muted">${esc(r.tehsils)}</td>
-    <td class="n ${r.pending > 0 ? "hot" : "muted"}">${r.pending}</td>
-    <td class="n">${r.sub}</td>
-    <td class="n">${r.rip}</td>
-    <td class="n ${r.over15 > 0 ? "hot" : "muted"}">${r.over15}</td>
-    <td class="n">${r.verified}</td>
-    <td class="n">${r.received}</td>
-  </tr>`).join("") || `<tr><td colspan="10" class="muted">Koi row nahi mili</td></tr>`;
-}
-
-function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
 
 function setTimer() {
   clearInterval(timer);
@@ -201,59 +430,51 @@ function setTimer() {
 
 function downloadCsv() {
   const list = view();
-  const head = ["SR", "Pad", "Tehsil", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"];
+  const head = ["SR", "Pad", "Tehsil", "Mobile", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"];
   const q = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const lines = [head.map(q).join(",")].concat(list.map(r =>
-    [r.name, r.designation, r.tehsils, r.pending, r.sub, r.rip, r.over15, r.verified, r.received].map(q).join(",")));
+    [r.disp, r.designation, r.tehsils, r.mobile, r.pending, r.sub, r.rip, r.over15, r.verified, r.received].map(q).join(",")));
   const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "sr_pending_" + $("district").value + ".csv";
+  a.download = "shivpuri_sr_pending.csv";
   a.click();
 }
 
-// ---- Google Sheet sync (aapke apne Apps Script Web App ko POST) ----
-function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-
-function sheetPayload() {
-  const list = view();
-  return {
-    district: $("district").value,
-    as_of: META.as_of || "",
-    fetched: new Date().toLocaleString("hi-IN"),
-    header: ["#", "SR", "Pad", "Tehsil", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"],
-    rows: list.map((r, i) => [i + 1, r.name, r.designation, r.tehsils, r.pending, r.sub, r.rip, r.over15, r.verified, r.received]),
-  };
+// PDF: browser ka print dialog khulta hai, wahan "Save as PDF" chunein. Hindi text sahi aata hai.
+function fillPrintHead() {
+  const t = $("tehsil").value, s = $("sr").value, q = $("q").value.trim();
+  const f = [];
+  if (t) f.push("Tehsil: " + t);
+  if (s) f.push("SR: " + s);
+  if (q) f.push("Khoj: " + q);
+  if ($("hideZero").checked) f.push("Pending 0 wale chhupaye gaye");
+  $("printhead").innerHTML =
+    `<h2>Shivpuri - SR Pending Registry Report</h2>` +
+    `<div>Website data ki date: ${esc(META.as_of || "?")} &nbsp;|&nbsp; Report banane ka samay: ${esc(new Date().toLocaleString("hi-IN"))}</div>` +
+    `<div>Filter: ${f.length ? esc(f.join(" | ")) : "Koi nahi (poori Shivpuri list)"} &nbsp;|&nbsp; Kul rows: ${view().length}</div>`;
 }
-
-async function pushSheet() {
-  const url = $("sheetUrl").value.trim();
-  if (!url) { $("sheetStatus").textContent = "Pehle Web App URL daalein"; return; }
-  if (!ROWS.length) { $("sheetStatus").textContent = "Abhi data nahi hai"; return; }
-  try {
-    // no-cors: jawab padh nahi sakte, par data Sheet tak pahunch jata hai
-    await fetch(url, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(sheetPayload()) });
-    $("sheetStatus").textContent = "Sheet ko bheja: " + new Date().toLocaleTimeString("hi-IN");
-  } catch (e) {
-    $("sheetStatus").textContent = "Bhejne me dikkat: " + e.message;
-  }
-}
-
-$("sheetUrl").value = safeGet("sr_sheet_url") || "";
-$("sheetOn").checked = safeGet("sr_sheet_on") === "1";
-$("sheetUrl").onchange = () => safeSet("sr_sheet_url", $("sheetUrl").value.trim());
-$("sheetOn").onchange = () => safeSet("sr_sheet_on", $("sheetOn").checked ? "1" : "0");
-$("sheetNow").onclick = () => { safeSet("sr_sheet_url", $("sheetUrl").value.trim()); pushSheet(); };
+window.addEventListener("beforeprint", fillPrintHead);
+$("pdf").onclick = () => {
+  if (!ROWS.length) { alert("Pehle data load hone dein."); return; }
+  const old = document.title;
+  document.title = "Shivpuri_SR_Pending_" + (META.as_of || "report"); // PDF ka default file name
+  fillPrintHead();
+  window.print();
+  setTimeout(() => { document.title = old; }, 1000);
+};
 
 $("refresh").onclick = load;
 $("csv").onclick = downloadCsv;
 $("auto").onchange = setTimer;
-$("district").onchange = $("q").oninput = $("hideZero").onchange = render;
+$("tehsil").onchange = () => { buildSr(); render(); };
+$("sr").onchange = $("hideZero").onchange = render;
+$("q").oninput = render;
 $("thead").onclick = e => {
   const k = e.target.closest("th")?.dataset.k;
-  if (!k || k === "rank") return;
-  if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = (k === "name" || k === "designation" || k === "tehsils") ? 1 : -1; }
+  const col = COLS.find(c => c[0] === k);
+  if (!col || !col[3]) return;
+  if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = col[2] ? -1 : 1; }
   render();
 };
 $("file").onchange = async e => {
