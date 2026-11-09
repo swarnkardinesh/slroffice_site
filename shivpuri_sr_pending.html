@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SR Pending Registry - Live</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1c2330; --mute:#6b7585; --line:#e3e7ee; --acc:#1f5fd1; --warn:#c0392b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12161d; --card:#1b212b; --ink:#e8ecf3; --mute:#98a2b3; --line:#2b3340; --acc:#6aa0ff; --warn:#ff7a6b; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:1100px; margin:0 auto; padding:16px; }
+  h1 { font-size:20px; margin:4px 0 12px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px; }
+  select, input[type=search], button { font:inherit; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); }
+  button { cursor:pointer; background:var(--acc); color:#fff; border-color:var(--acc); }
+  button.ghost { background:var(--card); color:var(--ink); border-color:var(--line); }
+  label { display:flex; gap:6px; align-items:center; color:var(--mute); }
+  .stats { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 14px; min-width:140px; }
+  .stat b { display:block; font-size:22px; }
+  .stat span { color:var(--mute); font-size:12px; }
+  .status { margin:8px 0; color:var(--mute); font-size:13px; }
+  .err { background:var(--card); border:1px solid var(--warn); color:var(--warn); border-radius:10px; padding:10px 12px; margin:10px 0; display:none; }
+  .err small { color:var(--mute); display:block; margin-top:6px; }
+  .tablebox { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:auto; }
+  table { border-collapse:collapse; width:100%; min-width:720px; }
+  th, td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { position:sticky; top:0; background:var(--card); color:var(--mute); font-size:12px; text-transform:uppercase; letter-spacing:.03em; cursor:pointer; user-select:none; }
+  td.n, th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  tr:last-child td { border-bottom:0; }
+  .hot { color:var(--warn); font-weight:600; }
+  .muted { color:var(--mute); }
+  .fallback { margin-top:10px; display:none; }
+  .fallback textarea { width:100%; height:90px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); font:12px monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SR - Pending Registry (live)</h1>
+
+  <div class="bar">
+    <select id="district" title="Zila"></select>
+    <input id="q" type="search" placeholder="SR / tehsil khojein">
+    <label><input id="hideZero" type="checkbox"> Pending 0 wale chhupayein</label>
+    <label>Auto-refresh
+      <select id="auto">
+        <option value="0">Band</option>
+        <option value="60">1 min</option>
+        <option value="300" selected>5 min</option>
+        <option value="900">15 min</option>
+      </select>
+    </label>
+    <button id="refresh">Refresh</button>
+    <button id="csv" class="ghost">CSV download</button>
+  </div>
+
+  <div id="err" class="err"></div>
+  <div class="fallback" id="fallback">
+    <div class="bar" style="flex-direction:column;align-items:stretch">
+      <div><b>Backup:</b> website se JSON file save karke yahan chunein (ya text paste karein).</div>
+      <input type="file" id="file" accept=".json,application/json,text/plain">
+      <textarea id="paste" placeholder="Yahan JSON paste karein"></textarea>
+      <div><button id="usePaste" class="ghost">Paste kiya hua use karein</button></div>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="status" id="status"></div>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr id="thead"></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API = "https://services.mpigr.gov.in/svamitva_dashboard/api/sr-report?basis=registered";
+const DEFAULT_DISTRICT = "\u0936\u093f\u0935\u092a\u0941\u0930\u0940"; // Shivpuri
+
+let ROWS = [];          // objects
+let META = {};
+let sortKey = "pending", sortDir = -1;
+let timer = null;
+
+const $ = id => document.getElementById(id);
+const COLS = [
+  ["rank", "#", true],
+  ["name", "SR ka naam", false],
+  ["designation", "Pad", false],
+  ["tehsils", "Tehsil", false],
+  ["pending", "Pending", true],
+  ["sub", "Submitted", true],
+  ["rip", "In Process", true],
+  ["over15", "15 din+", true],
+  ["verified", "Completed", true],
+  ["received", "Kul", true],
+];
+
+function toObjects(json) {
+  const cols = json.cols;
+  return json.rows.map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])));
+}
+
+function setError(msg, hint) {
+  const e = $("err");
+  if (!msg) { e.style.display = "none"; $("fallback").style.display = "none"; return; }
+  e.innerHTML = msg + (hint ? "<small>" + hint + "</small>" : "");
+  e.style.display = "block";
+  $("fallback").style.display = "block";
+}
+
+function ingest(json) {
+  if (!json || !Array.isArray(json.rows) || !Array.isArray(json.cols)) throw new Error("JSON ka format alag hai");
+  META = { as_of: json.as_of, basis: json.basis };
+  ROWS = toObjects(json);
+  const dists = [...new Set(ROWS.map(r => r.district))].sort((a, b) => a.localeCompare(b, "hi"));
+  const sel = $("district"), cur = sel.value || DEFAULT_DISTRICT;
+  sel.innerHTML = dists.map(d => `<option value="${d}">${d}</option>`).join("");
+  sel.value = dists.includes(cur) ? cur : dists[0];
+  setError(null);
+  render();
+}
+
+async function load() {
+  $("status").textContent = "Data la rahe hain...";
+  try {
+    const res = await fetch(API, { headers: { accept: "application/json" }, cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    ingest(await res.json());
+    $("status").textContent = "Live data - website ki date: " + (META.as_of || "?") + " - fetch: " + new Date().toLocaleTimeString("hi-IN");
+  } catch (e) {
+    $("status").textContent = "";
+    setError("Live fetch nahi ho paya (" + e.message + ").",
+      "Sambhavit karan: website dusre page ko API call karne ki anumati (CORS) nahi deti. Neeche backup se JSON load kar sakte hain.");
+  }
+}
+
+function view() {
+  const d = $("district").value, q = $("q").value.trim().toLowerCase(), hz = $("hideZero").checked;
+  let list = ROWS.filter(r => r.district === d);
+  if (hz) list = list.filter(r => r.pending > 0);
+  if (q) list = list.filter(r => (r.name + " " + r.tehsils + " " + r.designation).toLowerCase().includes(q));
+  list.sort((a, b) => {
+    const x = a[sortKey], y = b[sortKey];
+    if (typeof x === "number" && typeof y === "number") return (x - y) * sortDir || String(a.name).localeCompare(b.name);
+    return String(x ?? "").localeCompare(String(y ?? ""), "hi") * sortDir;
+  });
+  return list;
+}
+
+function render() {
+  const list = view();
+  const all = ROWS.filter(r => r.district === $("district").value);
+  const sum = k => all.reduce((s, r) => s + (r[k] || 0), 0);
+  const unassigned = all.filter(r => r.status === "unassigned").reduce((s, r) => s + r.pending, 0);
+  $("stats").innerHTML = [
+    ["Kul pending", sum("pending")],
+    ["Bina SR wali pending", unassigned],
+    ["15 din se purani", sum("over15")],
+    ["SR ki sankhya", all.filter(r => r.status !== "unassigned").length],
+  ].map(([l, v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  $("thead").innerHTML = COLS.map(([k, label, num]) =>
+    `<th class="${num ? "n" : ""}" data-k="${k}">${label}${k === sortKey ? (sortDir < 0 ? " \u25BC" : " \u25B2") : ""}</th>`).join("");
+
+  $("tbody").innerHTML = list.map((r, i) => `<tr>
+    <td class="n muted">${i + 1}</td>
+    <td>${esc(r.name)}</td>
+    <td class="muted">${esc(r.designation)}</td>
+    <td class="muted">${esc(r.tehsils)}</td>
+    <td class="n ${r.pending > 0 ? "hot" : "muted"}">${r.pending}</td>
+    <td class="n">${r.sub}</td>
+    <td class="n">${r.rip}</td>
+    <td class="n ${r.over15 > 0 ? "hot" : "muted"}">${r.over15}</td>
+    <td class="n">${r.verified}</td>
+    <td class="n">${r.received}</td>
+  </tr>`).join("") || `<tr><td colspan="10" class="muted">Koi row nahi mili</td></tr>`;
+}
+
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function setTimer() {
+  clearInterval(timer);
+  const s = +$("auto").value;
+  if (s > 0) timer = setInterval(load, s * 1000);
+}
+
+function downloadCsv() {
+  const list = view();
+  const head = ["SR", "Pad", "Tehsil", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"];
+  const q = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const lines = [head.map(q).join(",")].concat(list.map(r =>
+    [r.name, r.designation, r.tehsils, r.pending, r.sub, r.rip, r.over15, r.verified, r.received].map(q).join(",")));
+  const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sr_pending_" + $("district").value + ".csv";
+  a.click();
+}
+
+$("refresh").onclick = load;
+$("csv").onclick = downloadCsv;
+$("auto").onchange = setTimer;
+$("district").onchange = $("q").oninput = $("hideZero").onchange = render;
+$("thead").onclick = e => {
+  const k = e.target.closest("th")?.dataset.k;
+  if (!k || k === "rank") return;
+  if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = (k === "name" || k === "designation" || k === "tehsils") ? 1 : -1; }
+  render();
+};
+$("file").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { ingest(JSON.parse(await f.text())); $("status").textContent = "File se data - website ki date: " + (META.as_of || "?"); }
+  catch (err) { alert("File padhne me dikkat: " + err.message); }
+};
+$("usePaste").onclick = () => {
+  try { ingest(JSON.parse($("paste").value)); $("status").textContent = "Paste kiye data se - website ki date: " + (META.as_of || "?"); }
+  catch (err) { alert("JSON sahi nahi hai: " + err.message); }
+};
+
+load();
+setTimer();
+</script>
+</body>
+</html>
