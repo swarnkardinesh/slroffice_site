@@ -118,109 +118,10 @@ const TEH = {
   PO:["पोहरी","Pohari"], R:["रन्नौद","Ranod"]
 };
 
-// SR contacts: [naam, pad, tehsil-code, mobile]
+// SR contacts (PDF "sr_mobile_pdf" se): [naam, pad, tehsil, mobile]
+// Ye list sirf mobile number dhoondhne ke kaam aati hai. Table me rows sirf website ke data (98) se banti hain.
 const CONTACTS = [
-["Shipra Upadhyay","Tehsildar","S","9589735400"],
-["Shivam Upadhyay","Tehsildar","S","7879453065"],
-["Siddharth Bhushan Sharma","Tehsildar","S","7354342694"],
-["Anil Dhakad","प्रभारी तहसीलदार (Tehsildar In-charge)","S","8269383871"],
-["Ajeet Tomar","Nayab Tehsildar","S","9424084136"],
-["Rajesh Kumar Vatsa","Nayab Tehsildar","S","9993621535 / 9479307979"],
-["Geeta Narwaria","Revenue Inspector","S","9617190708 , 6269116867"],
-["Pramod Kumar Sharma","Revenue Inspector","S","9301265092"],
-["Preeti Verma","Revenue Inspector","S","9425766460"],
-["Aastha Goyal","ADEO","S","8827596573"],
-["Ankit Kushwah","ADEO","S","7773884196"],
-["Laxmi Adiwasi","ADEO","S","7828894751"],
-["Mona Yadav","ADEO","S","6267538214"],
-["Suraj Singh Rathore","ADEO","S","7828716808"],
-["Mukesh Kumar Parashar","PCO (Graduate)","S","9425488383"],
-["Rajendra Tiwari","PCO (Graduate)","S","8120147115"],
-["Rakesh Kumar Gupta","PCO (Graduate)","S","9425488437"],
-["Ramhet Jatav","PCO (Graduate)","S","9893169783"],
-["Salomon Lakra","PCO (Graduate)","S","7987530130"],
-["Shyam Lal","PCO (Graduate)","S","9893381351"],
-["Vishwanath Bhagat","PCO (Graduate)","S","9755572689"],
-["Manoj Kumar Sharma","PCO (Non Graduate)","S","9993279801"],
-["Sachin Bhargava","Tehsildar","B","8269153707"],
-["Akash Rajput","ADEO","B","7000911908"],
-["Dharmesh Singh Rajput","ADEO","B","8770032701"],
-["Savita Yadav","ADEO","B","8109471845"],
-["Badri Lal Marwade","PCO (Non Graduate)","B","9893575985"],
-["Dinesh Kumar Gupta","PCO (Non Graduate)","B","9109847005"],
-["Rajesh Khalkho","PCO (Non Graduate)","B","9584168940"],
-["Sharan Ram Bairagi","PCO","B","9926240076"],
-["Dragpal Singh Bais","Tehsildar","BR","9425117681"],
-["Shailendra Bhargava","Nayab Tehsildar","BR","9074732496"],
-["Pradeep Kumar Bhargava","Tehsildar","K","7049357555"],
-["Ashish Jain","Nayab Tehsildar","K","9329312192"],
-["Manisha Mishra","Nayab Tehsildar","K","8236936833"],
-["Mahendra Korku","Revenue Inspector","K","6269117881"],
-["Hemant Singh Rawat","ADEO","K","9753678640"],
-["Poorvi Jain","ADEO","K","7047874903"],
-["Vivek Singh Yadav","ADEO","K","8517917659"],
-["Om Prakash Shakya","PCO (Graduate)","K","9893520721"],
-["Nirmal Ekka","PCO (Non Graduate)","K","7869036515"],
-["Abhilakh Singh","PCO","K","9977532213"],
-["Ranjeet Singh Kushwah","Tehsildar","KA","7415525231"],
-["Lajjaram Rajoriya","Nayab Tehsildar","KA","8435339746"],
-["Sunil Yadav","Nayab Tehsildar","KA","7585928338"],
-["Amogh Shrivastava","ADEO","KA","9131932374"],
-["Anurag Khare","ADEO","KA","8004908878"],
-["Mona Pandey","ADEO","KA","9770752939"],
-["Ragini Tiwari","ADEO","KA","8770179098"],
-["Balwant Singh Kadam","PCO (Graduate)","KA","9926247186"],
-["Chaturbhuj Arya","PCO (Graduate)","KA","9340414012"],
-["Pramod Kumar Gupta","PCO (Graduate)","KA","9926229329"],
-["Ramkishan Tegar","PCO (Graduate)","KA","9981231832"],
-["Santram Narware","PCO (Graduate)","KA","9977859774"],
-["Gangaram Bhagat","PCO (Non Graduate)","KA","7909791542"],
-["Sanjeev Dubey","PCO (Non Graduate)","KA","9926238554"],
-["Nishikant Jain","Tehsildar","KH","7879040049"],
-["Pratipal Tiwari","Nayab Tehsildar","KH","9340543503"],
-["Krishna Kushwah","ADEO","KH","9993976882"],
-["Peter Kujur","PCO (Non Graduate)","KH","9981888446"],
-["Phool Singh Jarman","PCO (Non Graduate)","KH","9755072298"],
-["Rajesh Kumar Jatav","PCO (Non Graduate)","KH","7898747753"],
-["Suryakant Mishra","PCO (Non Graduate)","KH","8225915197"],
-["Vijay Kumar Tyagi","Tehsildar","N","8817625121"],
-["Deenaram Kakodiya","Revenue Inspector","N","9893085617 , 629118315"],
-["Sandeep Gupta","ADEO","N","8085450056"],
-["Satendra Raje","ADEO","N","8223084652"],
-["Sonam Jain","ADEO","N","9111482350"],
-["Asha Ram Gond","PCO (Graduate)","N","8273922698"],
-["Brajmohan Koli","PCO (Graduate)","N","8269127107"],
-["Phool Singh Mahour","PCO (Graduate)","N","9893823720"],
-["Ramdas Gil","PCO (Graduate)","N","9179569619"],
-["Soneram Adiwasi","PCO (Graduate)","N","9893834751"],
-["Uttam Singh Rajey","PCO (Graduate)","N","9993272111"],
-["Prakash Chandra Shohare","PCO (Non Graduate)","N","7898025701"],
-["Shiv Shankar Singh Gurjar","Tehsildar","P","9981382020"],
-["Pratibha Pandey","Nayab Tehsildar","P","6263992880"],
-["Shubham Garg","Nayab Tehsildar","P","8810303955"],
-["Jugal Kishore Shakya","ADEO","P","9425590605"],
-["Lokendra Singh Rawat","ADEO","P","7000576701"],
-["Satendra Kumar Jha","ADEO","P","8962492334"],
-["Vishal Shivhare","ADEO","P","8278643255"],
-["Amar Singh Suman","PCO (Non Graduate)","P","9617571054"],
-["Jawahar Singh Mathur","PCO (Non Graduate)","P","9826876110"],
-["Rajendra Prasad Morya","PCO (Non Graduate)","P","9926577132"],
-["Rajendra Singh Jadon","PCO (Non Graduate)","P","9425796685"],
-["Ramprasad Bhagat","PCO (Non Graduate)","P","9425764472"],
-["Manoj Kumar Sharma","PCO","P","9977923538"],
-["Kalpna Sharma","Tehsildar","PO","9827275190"],
-["Sarita Bhadouria","Nayab Tehsildar","PO","9826231208"],
-["Anil Lakara","ADEO","PO","7898439869"],
-["Mahendra Pathak","ADEO","PO","7000206854"],
-["Sudhanshu Shankar Bajpai","ADEO","PO","8602544964"],
-["Deen Dayal Sharma","PCO (Graduate)","PO","6260907656"],
-["Rakesh Singh","PCO (Graduate)","PO","9425766392"],
-["Ramkrishan Choudhary","PCO (Graduate)","PO","9425136516"],
-["Kalyan Singh Jatav","—","PO","7000396691"],
-["Ajay Parsediya","Tehsildar","R","7746834788"],
-["Satish Kumar Upadhyaya","Tehsildar","R","9826231264"],
-["Mangilal Ahirwar","Nayab Tehsildar","R","9425720589"]
-].map(c => ({ name:c[0], desig:c[1], teh:TEH[c[2]][0], mobile:c[3] }));
+["Pramod Kumar Sharma","Revenue Inspector","शिवपुरी","9301265092"],["Shivam Upadhyay","Tehsildar","शिवपुरी","7879453065"],["Vishwanath Bhagat","PCO (Graduate)","शिवपुरी","9755572689"],["Siddharth Bhushan Sharma","Tehsildar","शिवपुरी","7354342694"],["Rajesh Kumar Vatsa","Nayab Tehsildar","शिवपुरी","9993621535"],["Geeta Narwaria","Revenue Inspector","शिवपुरी","9617190708"],["Anil Dhakad","भार तहसीलदार","शिवपुरी","8269383871"],["Rajendra Tiwari","PCO (Graduate)","शिवपुरी","8120147115"],["Preeti Verma","Revenue Inspector","शिवपुरी","9425766460"],["Aastha Goyal","ADEO","शिवपुरी","8827596573"],["Ankit Kushwah","ADEO","शिवपुरी","7773884196"],["Salomon Lakra","PCO (Graduate)","शिवपुरी","7987530130"],["Laxmi Adiwasi","ADEO","शिवपुरी","7828894751"],["Manoj Kumar Sharma","PCO (Non Graduate)","शिवपुरी","9993279801"],["Rakesh Kumar Gupta","PCO (Graduate)","शिवपुरी","9425488437"],["Ramhet Jatav","PCO (Graduate)","शिवपुरी","9893169783"],["Mukesh Kumar Parashar","PCO (Graduate)","शिवपुरी","9425488383"],["Ajeet Tomar","Nayab Tehsildar","शिवपुरी","9424084136"],["Mona Yadav","ADEO","शिवपुरी","6267538214"],["Shipra Upadhyay","Tehsildar","शिवपुरी","9589735400"],["Shyam Lal","PCO (Graduate)","शिवपुरी","9893381351"],["Suraj Singh Rathore","ADEO","शिवपुरी","7828716808"],["Satish Kumar Upadhyaya","Tehsildar","रन्नौद","9826231264"],["Ajay Parsediya","Tehsildar","रन्नौद","7746834788"],["Mangilal Ahirwar","Nayab Tehsildar","रन्नौद","9425720589"],["Shailendra Bhargava","Nayab Tehsildar","बैराड","9074732496"],["Dragpal Singh Bais","Tehsildar","बैराड","9425117681"],["Sachin Bhargava","Tehsildar","बदरवास","8269153707"],["Dharmesh Singh Rajput","ADEO","बदरवास","8770032701"],["Akash Rajput","ADEO","बदरवास","7000911908"],["Savita Yadav","ADEO","बदरवास","8109471845"],["Rajesh Khalkho","PCO (Non Graduate)","बदरवास","9584168940"],["Badri Lal Marwade","PCO (Non Graduate)","बदरवास","9893575985"],["Dinesh Kumar Gupta","PCO (Non Graduate)","बदरवास","9109847005"],["Sharan Ram Bairagi","PCO","बदरवास","9926240076"],["Kalpna Sharma","Tehsildar","पोहरी","9827275190"],["Ramkrishan Choudhary","PCO (Graduate)","पोहरी","9425136516"],["Sarita Bhadouria","Nayab Tehsildar","पोहरी","9826231208"],["Sudhanshu Shankar Bajpai","ADEO","पोहरी","8602544964"],["Anil Lakara","ADEO","पोहरी","7898439869"],["Deen Dayal Sharma","PCO (Graduate)","पोहरी","6260907656"],["Kalyan Singh Jatav","—","पोहरी","7000396691"],["Mahendra Pathak","ADEO","पोहरी","7000206854"],["Rakesh Singh","PCO (Graduate)","पोहरी","9425766392"],["Pratibha Pandey","Nayab Tehsildar","पिछोर","6263992880"],["Lokendra Singh Rawat","ADEO","पिछोर","7000576701"],["Ramprasad Bhagat","PCO (Non Graduate)","पिछोर","9425764472"],["Shubham Garg","Nayab Tehsildar","पिछोर","8810303955"],["Jugal Kishore Shakya","ADEO","पिछोर","9425590605"],["Satendra Kumar Jha","ADEO","पिछोर","8962492334"],["Amar Singh Suman","PCO (Non Graduate)","पिछोर","9617571054"],["Jawahar Singh Mathur","PCO (Non Graduate)","पिछोर","9826876110"],["Manoj Kumar Sharma","PCO","पिछोर","9977923538"],["Rajendra Prasad Morya","PCO (Non Graduate)","पिछोर","9926577132"],["Rajendra Singh Jadon","PCO (Non Graduate)","पिछोर","9425796685"],["Shiv Shankar Singh Gurjar","Tehsildar","पिछोर","9981382020"],["Vishal Shivhare","ADEO","पिछोर","8278643255"],["Vijay Kumar Tyagi","Tehsildar","नरवर","8817625121"],["Sonam Jain","ADEO","नरवर","9111482350"],["Soneram Adiwasi","PCO (Graduate)","नरवर","9893834751"],["Asha Ram Gond","PCO (Graduate)","नरवर","8273922698"],["Phool Singh Mahour","PCO (Graduate)","नरवर","9893823720"],["Prakash Chandra Shohare","PCO (Non Graduate)","नरवर","7898025701"],["Ramdas Gil","PCO (Graduate)","नरवर","9179569619"],["Sandeep Gupta","ADEO","नरवर","8085450056"],["Brajmohan Koli","PCO (Graduate)","नरवर","8269127107"],["Deenaram Kakodiya","Revenue Inspector","नरवर","9893085617"],["Satendra Raje","ADEO","नरवर","8223084652"],["Uttam Singh Rajey","PCO (Graduate)","नरवर","9993272111"],["Rajesh Kumar Jatav","PCO (Non Graduate)","खनियाधाना","7898747753"],["Krishna Kushwah","ADEO","खनियाधाना","9993976882"],["Nishikant Jain","Tehsildar","खनियाधाना","7879040049"],["Pratipal Tiwari","Nayab Tehsildar","खनियाधाना","9340543503"],["Suryakant Mishra","PCO (Non Graduate)","खनियाधाना","8225915197"],["Phool Singh Jarman","PCO (Non Graduate)","खनियाधाना","9755072298"],["Peter Kujur","PCO (Non Graduate)","खनियाधाना","9981888446"],["Manisha Mishra","Nayab Tehsildar","कोलारस","8236936833"],["Ashish Jain","Nayab Tehsildar","कोलारस","9329312192"],["Pradeep Kumar Bhargava","Tehsildar","कोलारस","7049357555"],["Poorvi Jain","ADEO","कोलारस","7047874903"],["Vivek Singh Yadav","ADEO","कोलारस","8517917659"],["Abhilakh Singh","PCO","कोलारस","9977532213"],["Hemant Singh Rawat","ADEO","कोलारस","9753678640"],["Mahendra Korku","Revenue Inspector","कोलारस","6269117881"],["Nirmal Ekka","PCO (Non Graduate)","कोलारस","7869036515"],["Om Prakash Shakya","PCO (Graduate)","कोलारस","9893520721"],["Ranjeet Singh Kushwah","Tehsildar","करैरा","7415525231"],["Sanjeev Dubey","PCO (Non Graduate)","करैरा","9926238554"],["Sunil Yadav","Nayab Tehsildar","करैरा","7585928338"],["Ramkishan Tegar","PCO (Graduate)","करैरा","9981231832"],["Gangaram Bhagat","PCO (Non Graduate)","करैरा","7909791542"],["Lajjaram Rajoriya","Nayab Tehsildar","करैरा","8435339746"],["Anurag Khare","ADEO","करैरा","8004908878"],["Amogh Shrivastava","ADEO","करैरा","9131932374"],["Mona Pandey","ADEO","करैरा","9770752939"],["Santram Narware","PCO (Graduate)","करैरा","9977859774"],["Balwant Singh Kadam","PCO (Graduate)","करैरा","9926247186"],["Chaturbhuj Arya","PCO (Graduate)","करैरा","9340414012"],["Pramod Kumar Gupta","PCO (Graduate)","करैरा","9926229329"],["Ragini Tiwari","ADEO","करैरा","8770179098"]].map(c => ({ name:c[0], desig:c[1], teh:c[2], mobile:c[3] }));
 
 // website aur list ki spelling alag ho to yahan jod sakte hain: "website ka naam": "list ka naam"
 const ALIAS = { "dinadayal sharma": "deen dayal sharma", "anil lakra": "anil lakara" };
@@ -278,18 +179,13 @@ function ingest(json) {
     .filter(r => String(r.district).normalize("NFC") === DISTRICT.normalize("NFC"));
   if (!api.length) throw new Error("Shivpuri ka data nahi mila");
 
-  const used = new Set();
+  // Rows sirf website ke data se (Excel ke 98 = SR + "SR assign nahi" wali rows).
+  // PDF list ke jo naam website data me nahi hain, unki extra rows ab nahi jodi jaati.
   ROWS = api.map(r => {
     const assigned = r.status !== "unassigned" && r.name && !String(r.name).startsWith("(");
     const c = assigned ? matchContact(r) : null;
-    if (c) used.add(c);
     return { ...r, disp: assigned ? (c ? c.name : r.name) : "(SR assign nahi)", mobile: c ? c.mobile : "", unassigned: !assigned };
   });
-  // list ke jo SR website ke data me nahi mile
-  CONTACTS.filter(c => !used.has(c)).forEach(c => ROWS.push({
-    district: DISTRICT, tehsils: c.teh, name: c.name, designation: c.desig, disp: c.name, mobile: c.mobile,
-    pending: 0, sub: 0, rip: 0, over15: 0, verified: 0, received: 0, noApi: true,
-  }));
 
   buildTehsil();
   buildSr();
@@ -357,6 +253,7 @@ function render() {
     ["Bina SR wali pending", unassigned],
     ["15 din se purani", sum("over15")],
     ["SR ki sankhya", ROWS.filter(r => !r.unassigned).length],
+    ["Kul rows", ROWS.length],
   ].map(([l, v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
 
   $("thead").innerHTML = COLS.map(([k, label, num, sortable]) =>
@@ -364,7 +261,7 @@ function render() {
 
   $("tbody").innerHTML = list.map((r, i) => `<tr>
     <td class="n muted">${i + 1}</td>
-    <td>${esc(r.disp)}${r.noApi ? `<span class="tag">website data me nahi</span>` : ""}</td>
+    <td>${esc(r.disp)}</td>
     <td class="muted">${esc(r.designation)}</td>
     <td class="muted">${esc(r.tehsils)}</td>
     <td>${mobileHtml(r.mobile)}</td>
