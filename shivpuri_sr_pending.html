@@ -250,7 +250,7 @@ function render() {
   const unassigned = ROWS.filter(r => r.unassigned).reduce((s, r) => s + r.pending, 0);
   $("stats").innerHTML = [
     ["Total pending", sum("pending")],
-    ["Bina SR wali pending", unassigned],
+    ["Pendency Without SR", unassigned],
     ["15 din se purani", sum("over15")],
     ["SR ki sankhya", ROWS.filter(r => !r.unassigned).length],
     ["Kul rows", ROWS.length],
