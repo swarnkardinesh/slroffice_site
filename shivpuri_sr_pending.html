@@ -207,7 +207,7 @@ function buildTehsil() {
     return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b, "hi");
   });
   const cur = $("tehsil").value;
-  $("tehsil").innerHTML = `<option value="">Sabhi Tehsil</option>` + list.map(t => `<option value="${esc(t)}">${esc(tehLabel(t))}</option>`).join("");
+  $("tehsil").innerHTML = `<option value="">All Tehsil</option>` + list.map(t => `<option value="${esc(t)}">${esc(tehLabel(t))}</option>`).join("");
   if (list.includes(cur)) $("tehsil").value = cur;
 }
 
@@ -217,7 +217,7 @@ function buildSr() {
   const t = $("tehsil").value, cur = $("sr").value;
   const names = [...new Set(ROWS.filter(r => !r.unassigned && inTehsil(r, t)).map(r => r.disp))]
     .sort((a, b) => a.localeCompare(b, "en"));
-  $("sr").innerHTML = `<option value="">Sabhi SR</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  $("sr").innerHTML = `<option value="">All SR</option>` + names.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join("");
   if (names.includes(cur)) $("sr").value = cur;
 }
 
