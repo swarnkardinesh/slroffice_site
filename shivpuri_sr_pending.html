@@ -310,7 +310,7 @@ async function load() {
     const res = await fetch(API, { headers: { accept: "application/json" }, cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     ingest(await res.json());
-    $("status").textContent = "Live data - website ki date: " + (META.as_of || "?") + " - fetch: " + new Date().toLocaleTimeString("hi-IN");
+    $("status").textContent = "Live data - Last updated: " + (META.as_of || "?") + " - fetch: " + new Date().toLocaleTimeString("hi-IN");
     pushSheet();
   } catch (e) {
     $("status").textContent = "";
@@ -348,7 +348,7 @@ function fillPrintHead() {
   if ($("hideZero").checked) f.push("Pending 0 wale chhupaye gaye");
   $("printhead").innerHTML =
     `<h2>Shivpuri - SR Pending Registry Report</h2>` +
-    `<div>Website data ki date: ${esc(META.as_of || "?")} &nbsp;|&nbsp; Report banane ka samay: ${esc(new Date().toLocaleString("hi-IN"))}</div>` +
+    `<div>Last Updated: ${esc(META.as_of || "?")} &nbsp;|&nbsp; Report preparation time: ${esc(new Date().toLocaleString("hi-IN"))}</div>` +
     `<div>Filter: ${f.length ? esc(f.join(" | ")) : "Koi nahi (poori Shivpuri list)"} &nbsp;|&nbsp; Kul rows: ${view().length}</div>`;
 }
 window.addEventListener("beforeprint", fillPrintHead);
