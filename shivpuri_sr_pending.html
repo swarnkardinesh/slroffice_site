@@ -349,7 +349,7 @@ function fillPrintHead() {
   $("printhead").innerHTML =
     `<h2>Shivpuri - SR Pending Registry Report</h2>` +
     `<div>Last Updated: ${esc(META.as_of || "?")} &nbsp;|&nbsp; Report preparation time: ${esc(new Date().toLocaleString("hi-IN"))}</div>` +
-    `<div>Filter: ${f.length ? esc(f.join(" | ")) : "Koi nahi (poori Shivpuri list)"} &nbsp;|&nbsp; Kul rows: ${view().length}</div>`;
+    `<div>Filter: ${f.length ? esc(f.join(" | ")) : "None (the complete Shivpuri list)"} &nbsp;|&nbsp; Total rows: ${view().length}</div>`;
 }
 window.addEventListener("beforeprint", fillPrintHead);
 $("pdf").onclick = () => {
