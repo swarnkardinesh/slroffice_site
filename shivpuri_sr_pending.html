@@ -69,7 +69,7 @@
   <div class="bar">
     <select id="tehsil" title="Tehsil"></select>
     <select id="sr" title="SR"></select>
-    <input id="q" type="search" placeholder="Naam / mobile / pad khojein">
+    <input id="q" type="search" placeholder="Search by Naam / mobile / Designation">
     <label><input id="hideZero" type="checkbox"> Pending 0 wale chhupayein</label>
     <label>Auto-refresh
       <select id="auto">
@@ -327,7 +327,7 @@ function setTimer() {
 
 function downloadCsv() {
   const list = view();
-  const head = ["SR", "Pad", "Tehsil", "Mobile", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"];
+  const head = ["SR", "Designation", "Tehsil", "Mobile", "Pending", "Submitted", "In Process", "15 din+", "Completed", "Kul"];
   const q = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const lines = [head.map(q).join(",")].concat(list.map(r =>
     [r.disp, r.designation, r.tehsils, r.mobile, r.pending, r.sub, r.rip, r.over15, r.verified, r.received].map(q).join(",")));
