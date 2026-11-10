@@ -251,9 +251,9 @@ function render() {
   $("stats").innerHTML = [
     ["Total pending", sum("pending")],
     ["Pendency Without SR", unassigned],
-    ["15 din se purani", sum("over15")],
-    ["SR ki sankhya", ROWS.filter(r => !r.unassigned).length],
-    ["Kul rows", ROWS.length],
+    ["Pending more than 15 days", sum("over15")],
+    ["Total Asigned SR", ROWS.filter(r => !r.unassigned).length],
+    ["Total rows", ROWS.length],
   ].map(([l, v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
 
   $("thead").innerHTML = COLS.map(([k, label, num, sortable]) =>
