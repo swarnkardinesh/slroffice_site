@@ -36,7 +36,7 @@ select,input{width:100%;padding:8px 10px;border:1px solid var(--ln);border-radiu
 .sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
 .sm{border-radius:12px;padding:9px 13px;background:var(--bg)}.sm small{display:block;color:var(--mut);font-size:11.5px}.sm b{font-size:21px;font-weight:800}.sm.dy b{color:var(--dy)}.sm.wk b{color:var(--wk)}.sm.pc b.up{color:var(--up)}.sm.pc b.dn{color:#c0392b}
 .rw{display:grid;grid-template-columns:112px minmax(0,1fr) 118px;gap:10px;align-items:center;margin:9px 0;font-size:13px}.rw .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rw .v{text-align:right;font-weight:700}
-.tr{background:var(--ln);height:13px;border-radius:7px;position:relative}.tr i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--bar),var(--ac))}.tr u{position:absolute;top:-3px;width:2px;height:19px;background:var(--ink);opacity:.65}
+.tr{background:var(--ln);height:13px;border-radius:7px;position:relative}.tr i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--bar),var(--ac))}.tr.stk{display:flex;overflow:hidden}.tr.stk i{height:100%;border-radius:0}.hs{font-size:9.5px;font-weight:500;text-transform:none;letter-spacing:0;opacity:.8}.tr u{position:absolute;top:-3px;width:2px;height:19px;background:var(--ink);opacity:.65}
 .gb{display:flex;flex-direction:column;gap:4px}.gb .tr{height:9px;border-radius:5px}.gb .a i{background:var(--dy)}.gb .b i{background:var(--wk)}
 .lgd{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--mut);margin-bottom:6px}.lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;align-items:center}.tabs button,.sbb button,.seg button{border:1px solid var(--ln);background:var(--sf);color:var(--ink);padding:8px 14px;border-radius:99px;font:inherit;font-weight:500;cursor:pointer;box-shadow:var(--sh);transition:.15s}.tabs button:hover{border-color:var(--ac)}
@@ -61,7 +61,7 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 .dt td{text-align:center}.dt td.l{text-align:left}.dt td.ck{cursor:pointer;font-weight:700;color:var(--ac)}.dt td.ck:hover{background:var(--acb);text-decoration:underline}.dt td.dsel,.dt td.dsel:hover{background:var(--ac)!important;color:#fff}.dt td.tt{font-weight:700;background:var(--acb)}
 .foot{text-align:center;color:var(--mut);font-size:12px;margin-top:6px}.ph{display:none}
 @media(max-width:768px){.act-grp{width:100%;margin-left:0;margin-top:4px}.act-grp button{flex:1;justify-content:center;text-align:center;padding:8px 10px;font-size:12.5px}}
-@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.top,.card:not(#tcard),.tabs,.sbb,.seg,.more,.note,.foot{display:none!important}.hd{padding:8px 14px 24px}.w{margin-top:8px}.ph{display:block;font-weight:700;font-size:12.5px;margin:0 0 8px;padding:8px 10px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;color:#0f1f2e}.tw{overflow:visible;max-height:none;border:none}table{font-size:9.5px}th,td{padding:4px 5px;white-space:normal}th{position:static}tr.tot td{position:static}thead{display:table-header-group}tr{break-inside:avoid}#tcard{box-shadow:none;border:none;padding:0}}
+@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff!important;color:#0f1f2e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.top,.card:not(#tcard),.tabs,.sbb,.seg,.more,.note,.foot,#pm{display:none!important}.hd{padding:10px 14px 16px!important}.w{margin-top:8px!important}.ph{display:block!important;font-weight:700;font-size:12px;margin:0 0 8px;padding:8px 12px;background:#f1f5f9!important;border:1px solid #cbd5e1;border-radius:8px;color:#0f1f2e!important}.tw{overflow:visible!important;max-height:none!important;border:none!important}table{font-size:9.5px;border-collapse:collapse}th,td{padding:4px 5px;white-space:normal;border:1px solid #cbd5e1}th{position:static!important;background:#e6f4f1!important;color:#0b3b5c!important}tr.tot td{position:static!important;background:#e6f4f1!important}thead{display:table-header-group}tr{break-inside:avoid}#tcard{box-shadow:none!important;border:none!important;padding:0!important;background:#fff!important}}
 </style></head><body>
 <header class="hd"><div class="in"><div class="hdr">
  <div class="brand"><div class="logo">🏛️</div><div><h1>Svamitva Registry : Live Progress Dashboard</h1><span class="dist">District Shivpuri</span></div></div>
@@ -72,8 +72,8 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 <div class="fl" id="fl"></div>
 <div class="ph" id="ph"></div>
 <section class="top"><div class="hero"><div class="l">कुल Completion %</div><b class="big" id="hp">—</b><div class="s" id="hs"></div><div class="meter"><i id="hm" style="width:0"></i></div><div class="gd" id="hd1"></div><div class="gd" id="hd7"></div></div><div class="k" id="k"></div></section>
-<section class="card"><h2>प्रगति तुलना: 1 Day बनाम 1 Week</h2><div class="sub">1 Day / 1 Week progress = इस अवधि में Completed प्लॉट की बढ़त</div><div class="sum" id="sum"></div>
-<div class="g2"><div><h3 style="margin-top:0">तहसील-वार Completion %</h3><div class="note" style="margin:0 0 8px">काली रेखा ▏ = 1 सप्ताह पहले की स्थिति</div><div id="cT"></div></div>
+<section class="card"><h2>प्रगति तुलना: 1 Day बनाम 1 Week</h2><div class="sub"><b>1 Day Progress</b> = पिछले दिन सुबह 9 बजे से आज सुबह 9 बजे तक Completed की बढ़त (रोज़ 9 AM पर तैयार) · <b>1 Week Progress</b> = पिछले 1 सप्ताह में Completed की बढ़त</div><div class="sum" id="sum"></div>
+<div class="g2"><div><h3 style="margin-top:0">तहसील-वार स्थिति: कितना पूरा, कितना बाकी</h3><div class="lgd"><span><i style="background:var(--ac)"></i>1 सप्ताह पहले तक Completed</span><span><i style="background:var(--wk)"></i>पिछले 1 सप्ताह में बढ़ा</span><span><i style="background:var(--ln);border:1px solid var(--mut)"></i>बाकी (Pending)</span></div><div id="cT"></div></div>
 <div><h3 style="margin-top:0">तहसील-वार गति: 1 Day बनाम साप्ताहिक औसत (प्रति दिन)</h3><div class="lgd"><span><i style="background:var(--dy)"></i>1 Day</span><span><i style="background:var(--wk)"></i>1 Week का औसत/दिन</span></div><div id="cG"></div></div></div></section>
 <div class="tabs" id="tabs"></div>
 <div class="card" id="tcard"><div class="seg" id="seg"></div><div id="sb"></div><div id="tb"></div></div>
@@ -82,12 +82,9 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 <script>
 /* ===================== CONFIG ===================== */
 const CFG={
-  SHEET_ID:"1dafxm2UDPL7idfc3AIx7M0dkuPU0PCBo73Z2DYtbNk4", // आपकी Google Sheet (Anyone with the link: Viewer)
-  SHEET_NAME:"RegistryReport",                              // गाँव-स्तर के डेटा वाली शीट
-  PUB_ID:"2PACX-1vRg7ZcTDpAThoH-VaTxgyXD_pXZk7ET63mZam2DTQ6VCxOWV00jemsOWkqvv0j6cS9JEFrJEtnHjj56", // Publish to web वाली ID
-  PUB_GID:"",                                               // वैकल्पिक: RegistryReport टैब का gid (URL में gid=... ), भरने पर पहले यही लिंक चलेगा
-  SYNC_SHEETS:["Sheet1","RegistryReport"],                  // "Last Sync:" इन टैब में भी खोजा जाएगा
-  API:"",                                                   // वैकल्पिक: Apps Script doGet URL (मोबाइल सर्वर पर मास्क)
+  SHEET_ID:"1dafxm2UDPL7idfc3AIx7M0dkuPU0PCBo73Z2DYtbNk4", // Google Sheet ID (Anyone with the link: Viewer)
+  SHEET_NAME:"RegistryReport",                              // पूरा डेटा, हेडिंग और अपडेट का समय इसी शीट से
+  API_KEY:"",                                               // वैकल्पिक: Google Drive API key (शीट में टाइम-स्टैम्प सेल न हो तब फ़ाइल का modified time दिखाने हेतु)
   POLL:60, NA:"Patwari Not Assigned"
 };
 /* ================================================== */
@@ -103,7 +100,7 @@ function parseCSV(t){const rows=[];let r=[],c="",q=false;for(let i=0;i<t.length;
 const norm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9\u0900-\u097f]/g,'');
 const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[,\s%+]/g,'').replace('−','-'));return isNaN(n)?0:n};
 const EX={n:['villagename'],l:['lgdcode'],pn:['patwari'],pk:['patteh'],i:['registryinitiated'],v:['patwariverification'],sb:['submitted'],pr:['registrationinprocess'],cm:['completed'],pl:['totalplots'],b:['totalbeneficiaries'],c:['court'],t:['tehsil'],s:['subdivision'],h:['halka'],m:['mobile'],p1:['1dayprogress'],p7:['1weekprogress']};
-const FB={n:/village|गाँव|गांव|ग्राम/,l:/lgd/,pn:/^patwari(name)?$/,i:/initiat/,v:/verif/,sb:/submit/,pr:/process/,cm:/^completed/,pl:/plot/,b:/benef/,c:/court|न्यायालय/,t:/tehsil|तहसील/,s:/subdiv|sdm|उपखंड/,h:/^halka$|^हल्का$/,m:/mobile|phone|मोबाइल/,p1:/day/,p7:/week/};
+const FB={n:/village|गाँव|गांव|ग्राम/,l:/lgd/,pn:/^patwari(name)?$|^पटवारी$/,i:/initiat/,v:/verif/,sb:/submit/,pr:/process/,cm:/^completed|^पूर्ण/,pl:/plot|प्लॉट/,b:/benef|हितग्राही/,c:/court|न्यायालय/,t:/tehsil|तहसील/,s:/subdiv|sdm|उपखंड/,h:/^halka$|^हल्का$/,m:/mobile|phone|मोबाइल/,p1:/day/,p7:/week/};
 function mapHeader(row){const hn=row.map(norm),m={},used=new Set();
   for(const f in EX){const j=hn.findIndex((h,x)=>!used.has(x)&&EX[f].includes(h));if(j>=0){m[f]=j;used.add(j)}}
   for(const f in FB){if(m[f]!=null)continue;const j=hn.findIndex((h,x)=>h&&!used.has(x)&&FB[f].test(h));if(j>=0){m[f]=j;used.add(j)}}return m}
@@ -116,19 +113,22 @@ function buildData(rows){
     const t=g('t')||'—',pn=g('pn')||NA,p1=num(g('p1')),p7=num(g('p7'));
     out.push({n,l:g('l'),t,s:g('s')||'—',c:g('c')||'—',pn,h:g('h')||'—',m:maskMob(g('m')),pk:g('pk')||(t+'|'+pn),pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(g('cm')),p1,p7,di:0,dv:0,ds:0,dp:0,dc:p1,a:[0,0,0,0,p1],e:[0,0,0,0,p7]})}
   return{out,hasP:m.p1!=null&&m.p7!=null}}
-function findSync(rows){for(const r of rows){const k=r.findIndex(c=>/last\s*sync/i.test(c||''));if(k>=0){const v=(r.slice(k+1).find(c=>c&&String(c).trim())||'').trim();if(v)return v}}return''}
-async function fetchCSV(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return parseCSV(await r.text())}
-const gviz=sh=>`https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:csv&_=${Date.now()}`+(sh?'&sheet='+encodeURIComponent(sh):'');
-const pubU=()=>`https://docs.google.com/spreadsheets/d/e/${CFG.PUB_ID}/pub?gid=${CFG.PUB_GID}&single=true&output=csv&_=${Date.now()}`;
+const STAMP=/last\s*(sync|synced|update|updated|refresh|refreshed)|updated\s*(on|at)|sync(ed)?\s*(time|on|at)|अंतिम\s*(अपडेट|सिंक)|अपडेट\s*(समय|तिथि)/i,DTV=/\d{1,4}[-\/.]\d{1,2}[-\/.]\d{1,4}|\d{1,2}:\d{2}/;
+function findStamp(rows){
+  for(let i=0;i<rows.length;i++){const r=rows[i];
+    for(let k=0;k<r.length;k++){if(!STAMP.test(r[k]||''))continue;
+      const inl=String(r[k]).split(/[:：]\s*/);if(inl.length>1&&DTV.test(inl.slice(1).join(':')))return inl.slice(1).join(':').trim();
+      const side=r.slice(k+1).find(c=>c&&DTV.test(String(c)));if(side)return String(side).trim();
+      for(let j=i+1;j<Math.min(rows.length,i+8);j++){const v=rows[j]&&rows[j][k];if(v&&DTV.test(String(v)))return String(v).trim()}}}
+  return''}
+const fmtIST=d=>{const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).formatToParts(d).reduce((a,x)=>(a[x.type]=x.value,a),{});return`${p.day}-${p.month}-${p.year} ${p.hour}:${p.minute}:${p.second} ${String(p.dayPeriod||'').toUpperCase()}`};
+async function driveStamp(){if(!CFG.API_KEY)return'';try{const r=await fetch(`https://www.googleapis.com/drive/v3/files/${CFG.SHEET_ID}?fields=modifiedTime&key=${CFG.API_KEY}`,{cache:'no-store'});const j=await r.json();return j.modifiedTime?fmtIST(new Date(j.modifiedTime)):''}catch(e){return''}}
 async function loadAll(){
-  let rows=null,sync='',err='';
-  if(CFG.API){try{const r=await fetch(CFG.API+(CFG.API.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'});const j=await r.json();if(j.error)throw new Error(j.error);rows=j.values;sync=(j.sync||'').toString().trim()}catch(e){err=e.message;rows=null}}
-  if(!rows&&CFG.PUB_ID&&CFG.PUB_GID){try{const x=await fetchCSV(pubU());if(buildData(x))rows=x}catch(e){err=e.message}}
-  if(!rows&&CFG.SHEET_ID){try{const x=await fetchCSV(gviz(CFG.SHEET_NAME));if(buildData(x))rows=x;else err='RegistryReport में Village / Total Plots / Completed कॉलम नहीं मिले'}catch(e){err=e.message}}
-  if(!rows)throw new Error(err||'data source not available');
-  if(!sync)sync=findSync(rows);
-  if(!sync&&CFG.SHEET_ID)for(const sh of CFG.SYNC_SHEETS){try{sync=findSync(await fetchCSV(gviz(sh)));if(sync)break}catch(e){}}
-  const res=buildData(rows);if(!res||!res.out.length)throw new Error('Village-level columns not found');return{res,sync}}
+  const r=await fetch(`https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CFG.SHEET_NAME)}&_=${Date.now()}`,{cache:'no-store'});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const rows=parseCSV(await r.text()),res=buildData(rows);
+  if(!res||!res.out.length)throw new Error('"'+CFG.SHEET_NAME+'" में Village Name / Total Plots / Completed कॉलम नहीं मिले');
+  return{res,sync:findStamp(rows)}}
 
 /* ---------- setup ---------- */
 const stOf=r=>r.pl>0&&r.cm>=r.pl?'Fully completed':r.cm>0?'Partly completed':(r.i+r.v+r.sb+r.pr>0?'Started, not completed':'Not started');
@@ -162,7 +162,7 @@ tabs.addEventListener('click',e=>{
 });
 seg.addEventListener('click',e=>{if(e.target.dataset.b){setB(+e.target.dataset.b);segHTML();lim=100;draw()}});
 document.getElementById('tcard').addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
-function showMsg(t,err){pm.textContent=t;pm.className=err?'err':'';pm.style.display=t?'block':'none';if(t&&!err)setTimeout(()=>{if(pm.textContent===t)pm.style.display='none'},5000)}
+function showMsg(t,err){pm.textContent=t;pm.className=err?'err':'';pm.style.display=t?'block':'none';if(t&&!err)setTimeout(()=>{if(pm.textContent===t)pm.style.display='none'},4500)}
 
 /* ---------- Filter summary helper ---------- */
 function getFilterSummary(){
@@ -174,7 +174,7 @@ function getFilterSummary(){
   if(F.st)parts.push('Status: '+F.st);
   if(F.q.trim())parts.push('Search: "'+F.q.trim()+'"');
   if(tab=='bottom')parts.push('Criteria: जिले के कुल Completion % ('+pt(getDistrictPct())+') से कम');
-  if(tab=='progress')parts.push('Level: '+lv.toUpperCase()+'-wise ('+B.sh+')');
+  if(tab=='progress')parts.push('Level: '+lv.toUpperCase()+'-wise');
   if(tab=='dist'&&dsel)parts.push('Selected Group: '+(dsel.te=='*'?'पूरा जिला':dsel.te)+' ('+(dsel.ty=='cm'?'Completed प्लॉट':'Completion %')+')');
   return parts.length?parts.join('  |  '):'सभी तहसील एवं ग्राम (All District Data)';
 }
@@ -202,20 +202,20 @@ async function exportPDF(mode){
   // क्लीन PDF कंटेनर (बिना KPI कार्ड्स और चार्ट्स के)
   const tabTitle=(T.find(x=>x[0]==tab)||['','Report'])[1];
   const filterText=getFilterSummary();
-  const wrapper=document.createElement('div');
-  wrapper.style.cssText='width:1080px;background:#ffffff;color:#0f1f2e;font-family:"Inter","Noto Sans Devanagari",sans-serif;padding:0;margin:0;';
-  wrapper.innerHTML=`
+  const host=document.createElement('div');
+  host.style.cssText='position:fixed;left:-10000px;top:0;width:1080px;background:#ffffff;z-index:-1;';
+  host.innerHTML=`
     <style>
-      .pdf-wrap{background:#fff;color:#0f1f2e;padding:10px}
-      .pdf-hd{background:linear-gradient(120deg,#0b3b5c,#0f766e);color:#fff;padding:14px 18px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-      .pdf-hd h1{margin:0;font-size:20px;font-weight:800}
+      .pdf-wrap{background:#fff;color:#0f1f2e;padding:10px;font-family:"Inter","Noto Sans Devanagari",sans-serif;width:1060px}
+      .pdf-hd{background:#0b3b5c;color:#fff;padding:14px 18px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+      .pdf-hd h1{margin:0;font-size:20px;font-weight:800;color:#fff}
       .pdf-dist{display:inline-block;margin-top:4px;background:#fff;color:#0b3b5c;font-weight:700;font-size:12px;padding:2px 10px;border-radius:99px}
-      .pdf-meta{text-align:right;font-size:11.5px;line-height:1.45}
+      .pdf-meta{text-align:right;font-size:11.5px;line-height:1.45;color:#fff}
       .pdf-flt{background:#f1f5f9;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#0f1f2e}
       .pdf-flt b{color:#0b3b5c}
       .pdf-wrap .tw{overflow:visible!important;max-height:none!important;border:1px solid #cbd5e1;border-radius:6px;margin-bottom:10px}
-      .pdf-wrap table{width:100%;border-collapse:collapse;font-size:10px}
-      .pdf-wrap th,.pdf-wrap td{padding:5px 6px;border:1px solid #cbd5e1;white-space:normal;position:static!important}
+      .pdf-wrap table{width:100%;border-collapse:collapse;font-size:10px;color:#0f1f2e}
+      .pdf-wrap th,.pdf-wrap td{padding:5px 6px;border:1px solid #cbd5e1;white-space:normal;position:static!important;color:#0f1f2e}
       .pdf-wrap th{background:#e6f4f1!important;color:#0b3b5c!important;font-weight:700}
       .pdf-wrap tr.tot td{background:#e6f4f1!important;font-weight:800}
       .pdf-wrap .more,.pdf-wrap button{display:none!important}
@@ -223,7 +223,7 @@ async function exportPDF(mode){
       .pdf-wrap .note{font-size:10.5px;color:#475569;margin:4px 0 6px}
       .pdf-ft{text-align:right;font-size:10px;color:#64748b;margin-top:6px}
     </style>
-    <div class="pdf-wrap">
+    <div class="pdf-wrap" id="pdfTarget">
       <div class="pdf-hd">
         <div>
           <h1>🏛️ Svamitva Registry : Progress Report</h1>
@@ -241,49 +241,55 @@ async function exportPDF(mode){
       <div class="pdf-ft">Generated from Svamitva Live Dashboard · District Shivpuri</div>
     </div>
   `;
+  document.body.appendChild(host);
+  const targetEl=host.querySelector('#pdfTarget');
 
-  lim=prevLim;
-  draw();
+  // बड़ी टेबल होने पर कैनवास की मेमोरी सीमा न टूटे, इसके लिए ऑटो-स्केल तय करना
+  const rowCount=targetEl.querySelectorAll('tr').length;
+  const canvasScale=rowCount>250?1.15:rowCount>120?1.4:1.75;
 
   const fileName=`Svamitva_Shivpuri_${tab}_${SD||'Report'}.pdf`;
   const opt={
     margin:[6,6,6,6],
     filename:fileName,
-    image:{type:'jpeg',quality:0.95},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',windowWidth:1100},
+    image:{type:'jpeg',quality:0.92},
+    html2canvas:{scale:canvasScale,useCORS:true,logging:false,backgroundColor:'#ffffff',windowWidth:1080},
     jsPDF:{unit:'mm',format:'a4',orientation:'landscape'},
     pagebreak:{mode:['css','legacy'],avoid:['tr']}
   };
 
   try{
-    if(typeof html2pdf==='undefined')throw new Error('PDF लाइब्रेरी लोड नहीं हुई, कृपया इंटरनेट जांचें।');
-    if(mode==='share'){
-      const pdfBlob=await html2pdf().set(opt).from(wrapper).outputPdf('blob');
-      const file=new File([pdfBlob],fileName,{type:'application/pdf'});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        await navigator.share({
-          files:[file],
-          title:'Svamitva Progress Report - District Shivpuri',
-          text:`Svamitva Registry (${tabTitle}) - District Shivpuri | Last Updated: ${SYNC}`
-        });
-        showMsg('✅ PDF सफलतापूर्वक शेयर की गई।');
-      }else{
-        const url=URL.createObjectURL(pdfBlob);
-        const a=document.createElement('a');a.href=url;a.download=fileName;a.click();
-        setTimeout(()=>URL.revokeObjectURL(url),5000);
-        showMsg('आपके ब्राउज़र में डायरेक्ट फाइल शेयर उपलब्ध नहीं है, इसलिए PDF डाउनलोड कर दी गई है।');
-      }
+    if(typeof html2pdf==='undefined')throw new Error('NO_LIB');
+    await new Promise(r=>setTimeout(r,60));
+    const worker=html2pdf().set(opt).from(targetEl);
+    const pdfBlob=await worker.outputPdf('blob');
+    const file=new File([pdfBlob],fileName,{type:'application/pdf'});
+
+    if(mode==='share'&&navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({
+        files:[file],
+        title:'Svamitva Progress Report - District Shivpuri',
+        text:`Svamitva Registry (${tabTitle}) - District Shivpuri | Last Updated: ${SYNC}`
+      });
     }else{
-      await html2pdf().set(opt).from(wrapper).save();
-      showMsg('✅ PDF फ़ाइल डाउनलोड हो गई है: '+fileName);
+      const url=URL.createObjectURL(pdfBlob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url),8000);
     }
   }catch(err){
     if(err&&err.name!=='AbortError'){
-      console.error('PDF Export Error:',err);
-      showMsg('PDF बनाने में समस्या आई, प्रिंट विकल्प खुल रहा है...',true);
+      // बिना कोई एरर मैसेज दिखाए सीधे स्वच्छ प्रिंट / Save as PDF संवाद खोलें
       window.print();
     }
   }finally{
+    if(host.parentNode)host.parentNode.removeChild(host);
+    lim=prevLim;
+    draw();
     btnD.disabled=false;btnS.disabled=false;
     btnD.innerHTML=origD;btnS.innerHTML=origS;
   }
@@ -360,18 +366,19 @@ const fin=g=>{g.pend=g.pl-g.cm;g.pct=pf(g.cm,g.pl);g.oc=g.cm-g.dc;g.opct=pf(g.oc
 function grp(rows,kf,nm){const m=new Map();rows.forEach(r=>{const k=kf(r);let g=m.get(k);if(!g){g={k:nm?nm(r):k,vil:0,vnl:[],pns:new Set,mbs:new Set,mob:r.m,teh:new Set,hal:new Set};NF.forEach(f=>g[f]=0);m.set(k,g)}g.vil++;g.vnl.push(r.n);g.pns.add(r.pn);g.mbs.add(r.m);NF.forEach(f=>g[f]+=r[f]);g.teh.add(r.t);g.hal.add(r.h)});return[...m.values()].map(g=>fin({...g,vn:g.vnl.join(', '),pnm:[...g.pns].join(', '),mbn:[...g.mbs].join(', '),teh:[...g.teh].join(', '),hal:[...g.hal].join(', ')}))}
 function cell(r,f,t,id){const pg=id.startsWith('pg');
 if(f=='p1'||f=='p7')return`<td>${sg(r[f],'g')}</td>`;
-if(f=='pct')return`<td><span class="pc ${cls(r.pct)}">${pt(r.pct)}</span>${!pg&&r.dpct>0.0004?`<sup class="d g">+${r.dpct.toFixed(2)}pp</sup>`:''}</td>`;
+if(f=='pct')return`<td><span class="pc ${cls(r.pct)}">${pt(r.pct)}</span></td>`;
 if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${f=='dc'?sg(r[f],'g'):''}</td>`;
 if(t=='t'){const v=r[f];return f=='st'?`<td class="l"><span class="sc ${v=='Not started'?'lo':v.startsWith('Started')?'mi':'hi'}">${v}</span></td>`:`<td class="l${f=='c'||f=='vn'||f=='pnm'||f=='hal'||(f=='k'&&id=='court')?' w2':''}">${esc(f=='c'||(f=='k'&&id=='court')?cs(v):v)}</td>`}
-return`<td>${nf(r[f])}${!pg&&f=='cm'?bd(r.dc,'g'):''}</td>`}
+return`<td>${nf(r[f])}</td>`}
 const totRow=(a,cols,id)=>{const X={vil:0};NF.forEach(f=>X[f]=0);a.forEach(r=>{X.vil+=r.vil||0;NF.forEach(f=>X[f]+=r[f])});fin(X);return'<tr class="tot"><td></td>'+cols.map(([f,l,t],j)=>j==0?`<td class="l">Total (${nf(a.length)})</td>`:t=='t'?'<td></td>':cell(X,f,t,id)).join('')+'</tr>'};
 function tbl(id,rows,cols,limit,def){const s=sort[id]||def||{k:'pct',d:1},a=[...rows].sort((x,y)=>{const p=x[s.k],q=y[s.k];return(typeof p=='number'?p-q:String(p).localeCompare(String(q),'hi'))*s.d||y.pl-x.pl}),sh=limit?a.slice(0,lim):a;
 return`<table data-id="${id}"><thead><tr><th class="l">Sr.</th>${cols.map(([f,l,t])=>`<th data-f="${f}" class="${t=='t'?'l':''}">${l}${s.k==f?(s.d>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody>`+sh.map((r,j)=>`<tr><td class="l sr">${j+1}</td>`+cols.map(([f,l,t])=>cell(r,f,t,id)).join('')+'</tr>').join('')+totRow(a,cols,id)+`</tbody></table>`}
 const tblW=(h,rows,limit)=>`<div class="tw">${h}</div>`+(limit&&rows.length>lim?`<button class="more" data-more="1">और दिखाएँ (${nf(rows.length-lim)} शेष)</button>`:'')+`<div class="note">${nf(rows.length)} पंक्तियाँ। क्रम बदलने के लिए कॉलम के शीर्षक पर क्लिक करें।</div>`;
-const SC=[['i','Registry initiated'],['v','Verification'],['sb','Submitted'],['pr','In process'],['cm','Completed']],tail=[['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %']];
-const vc=[['n','Village','t'],['l','LGD','t'],['t','Tehsil','t'],['c','Court','t'],['pn','Patwari','t'],['h','Halka','t'],['m','Mobile','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress'],['st','Status','t']];
-const pvc=[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']];
-const dcols=()=>[['dc','Δ Completed ('+B.sh+')'],['oc','Completed '+B.s],['cm','Completed अब'],['opct','% '+B.s],['pct','% अब']];
+const P1=['p1','1 Day Progress<br><span class="hs">prev 9 AM → 9 AM</span>'],P7=['p7','1 Week Progress'],PP=[P1,P7];
+const SC=[['i','Registry initiated'],['v','Verification'],['sb','Submitted'],['pr','In process'],['cm','Completed']],tail=[['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP];
+const vc=[['n','Village','t'],['l','LGD','t'],['t','Tehsil','t'],['c','Court','t'],['pn','Patwari','t'],['h','Halka','t'],['m','Mobile','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending'],['pct','Completion %'],...PP,['st','Status','t']];
+const pvc=[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP];
+const dcols=()=>[['pl','Plots'],['cm','Completed'],['pct','Completion %'],...PP];
 const gP=R=>grp(R,r=>r.pk,r=>r.pn);
 function getDistrictPct(){const tPl=D.reduce((a,r)=>a+r.pl,0),tCm=D.reduce((a,r)=>a+r.cm,0);return pf(tCm,tPl)}
 function getFilteredRows(){const q=F.q.trim().toLowerCase();return D.filter(r=>(!F.s||r.s==F.s)&&(!F.t||r.t==F.t)&&(!F.c||r.c==F.c)&&(!F.p||r.pk==F.p)&&(!F.st||r.st==F.st)&&(!q||(r.n+' '+r.l+' '+r.pn+' '+r.h).toLowerCase().includes(q))).map(r=>fin({...r}))}
@@ -382,24 +389,24 @@ const S=f=>R.reduce((a,r)=>a+r[f],0),pl=S('pl'),cm=S('cm'),dc=S('dc'),p1=S('p1')
 const distPct=getDistrictPct();
 hp.textContent=pt(pc);hs.textContent=nf(cm)+' / '+nf(pl)+' plots';hm.style.width=Math.min(100,pc)+'%';
 const pp=d=>pc-pf(cm-d,pl);
-hd1.innerHTML=`<span>1 Day progress</span><b>+${nf(p1)} · ${sgn(pp(p1))} pp</b>`;hd7.innerHTML=`<span>1 Week progress</span><b>+${nf(p7)} · ${sgn(pp(p7))} pp</b>`;
+hd1.innerHTML=`<span>1 Day Progress (9 AM → 9 AM)</span><b>+${nf(p1)} · ${sgn(pp(p1))} pp</b>`;hd7.innerHTML=`<span>1 Week Progress</span><b>+${nf(p7)} · ${sgn(pp(p7))} pp</b>`;
 const na=R.filter(r=>r.pn==NA).length,zero=R.filter(r=>r.st=='Not started').length,ns=R.filter(r=>r.ns).length,npw=new Set(R.filter(r=>r.pn!=NA).map(r=>r.pk)).size;
-k.innerHTML=[['Villages',R.length,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g',bd(dc,'g')],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:''],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d])=>`<div class="kc ${c}"><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
+k.innerHTML=[['Villages',R.length,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g'],['1 Day Progress (9 AM → 9 AM)',p1,'o'],['1 Week Progress',p7,'p'],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:''],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d])=>`<div class="kc ${c}"><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
 const avg=p7/7,ratio=avg?(p1/avg-1)*100:0;
-sum.innerHTML=`<div class="sm dy"><small>1 Day progress</small><b>+${nf(p1)}</b></div><div class="sm wk"><small>1 Week progress</small><b>+${nf(p7)}</b></div><div class="sm"><small>साप्ताहिक औसत / दिन</small><b>${nf(Math.round(avg))}</b></div><div class="sm pc"><small>1 Day बनाम साप्ताहिक औसत</small><b class="${ratio>=0?'up':'dn'}">${ratio>=0?'▲':'▼'} ${Math.abs(ratio).toFixed(1)}%</b></div>`;
+sum.innerHTML=`<div class="sm dy"><small>1 Day Progress (9 AM → 9 AM)</small><b>+${nf(p1)}</b></div><div class="sm wk"><small>1 Week Progress</small><b>+${nf(p7)}</b></div><div class="sm"><small>साप्ताहिक औसत / दिन</small><b>${nf(Math.round(avg))}</b></div><div class="sm pc"><small>1 Day बनाम साप्ताहिक औसत</small><b class="${ratio>=0?'up':'dn'}">${ratio>=0?'▲':'▼'} ${Math.abs(ratio).toFixed(1)}%</b></div>`;
 const tg=grp(R,r=>r.t).sort((a,b)=>b.pct-a.pct);
-cT.innerHTML=tg.map(g=>{const o=pf(g.cm-g.p7,g.pl);return`<div class="rw"><span class="nm" title="${esc(g.k)}">${esc(g.k)}</span><div class="tr"><i style="width:${Math.min(100,g.pct)}%"></i><u style="left:${Math.min(100,o)}%"></u></div><span class="v">${pt(g.pct)}</span></div>`}).join('');
+cT.innerHTML=tg.map(g=>{const b0=pf(g.cm-g.p7,g.pl),w=pf(g.p7,g.pl);return`<div class="rw"><span class="nm" title="${esc(g.k)}">${esc(g.k)}</span><div class="tr stk" title="1 सप्ताह पहले तक ${pt(b0)} · पिछले 1 सप्ताह में +${w.toFixed(2)}% · बाकी ${pt(100-g.pct)}"><i style="width:${b0}%;background:var(--ac)"></i><i style="width:${w}%;background:var(--wk)"></i></div><span class="v">${pt(g.pct)}</span></div>`}).join('');
 const gm=Math.max(1,...tg.map(g=>Math.max(g.p1,g.p7/7)));
 cG.innerHTML=tg.slice().sort((a,b)=>b.p7-a.p7).map(g=>`<div class="rw" style="grid-template-columns:112px minmax(0,1fr) 128px"><span class="nm" title="${esc(g.k)}">${esc(g.k)}</span><div class="gb"><div class="tr a"><i style="width:${g.p1/gm*100}%"></i></div><div class="tr b"><i style="width:${g.p7/7/gm*100}%"></i></div></div><span class="v" style="font-size:12px"><span style="color:var(--dy)">+${nf(g.p1)}</span> · <span style="color:var(--wk)">+${nf(Math.round(g.p7/7))}</span></span></div>`).join('');
 ph.innerHTML=`<b>Svamitva Registry · District Shivpuri</b> · Report: ${esc(T.find(x=>x[0]==tab)[1])} · Last Updated: ${esc(SYNC)}<br><span style="font-weight:500;font-size:11.5px">Filters: ${esc(getFilterSummary())}</span>`;
-[...tabs.children].forEach(b=>{if(b.dataset.t)b.classList.toggle('on',b.dataset.t==tab)});sb.innerHTML='';seg.style.display=(tab=='progress'||tab=='top'||tab=='bottom'||tab=='tehsil'||tab=='court'||tab=='patwari'||tab=='village')?'flex':'none';let h='';
+[...tabs.children].forEach(b=>{if(b.dataset.t)b.classList.toggle('on',b.dataset.t==tab)});sb.innerHTML='';seg.style.display='none';let h='';
 if(tab=='tehsil'){const a=grp(R,r=>r.t);h=tblW(tbl('tehsil',a,[['k','Tehsil','t'],...tail]),a)}
 if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],...tail]),a)}
-if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail,['p1','1 day progress'],['p7','1 week progress']],1),a,1)}
-if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']],1),a,1)}
+if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail],1),a,1)}
+if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP],1),a,1)}
 if(tab=='village')h=tblW(tbl('village',R,vc,1),R,1);
 if(tab=='bottom'){const belowDist=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.pct<distPct).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),sp=belowDist.reduce((a,g)=>a+g.pl,0),sc=belowDist.reduce((a,g)=>a+g.cm,0);
-h=`<div class="note" style="margin:0 0 10px">जिले के कुल <b>Completion % (${pt(distPct)})</b> से कम Completion % वाले कुल <b>${nf(belowDist.length)}</b> पटवारी (सबसे कम % पहले)। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के अंतर्गत जिले के औसत से कम प्रतिशत वाले पटवारी दिखते हैं।</div>`+tblW(tbl('bottom',belowDist,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['p1','1 day progress'],['p7','1 week progress']],1,{k:'pct',d:1}),belowDist,1)}
+h=`<div class="note" style="margin:0 0 10px">जिले के कुल <b>Completion % (${pt(distPct)})</b> से कम Completion % वाले कुल <b>${nf(belowDist.length)}</b> पटवारी (सबसे कम % पहले)। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के अंतर्गत जिले के औसत से कम प्रतिशत वाले पटवारी दिखते हैं।</div>`+tblW(tbl('bottom',belowDist,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP],1,{k:'pct',d:1}),belowDist,1)}
 if(tab=='dist'){const G=gP(R.filter(r=>r.pn!=NA)),TS=[...new Set(G.map(g=>g.teh))].sort((a,b)=>a.localeCompare(b));
 const CB=[['0–50',g=>g.cm<50],['50–100',g=>g.cm>=50&&g.cm<100],['100–200',g=>g.cm>=100&&g.cm<=200],['200 से अधिक',g=>g.cm>200]];
 const PB=[['0–10%',g=>g.pct<10],['10–20%',g=>g.pct>=10&&g.pct<20],['20–30%',g=>g.pct>=20&&g.pct<30],['30–50%',g=>g.pct>=30&&g.pct<50],['50–80%',g=>g.pct>=50&&g.pct<80],['80–100%',g=>g.pct>=80]];
@@ -412,9 +419,9 @@ lst=`<div id="dlist"><h3>चयनित सूची: ${dsel.te=='*'?'पूर
 h=mk('cm',CB,'1. Completed प्लॉट के अनुसार पटवारियों की संख्या','श्रेणी: 0–50 = 0 से 49 · 50–100 = 50 से 99 · 100–200 = 100 से 200 · 200 से अधिक = 201 या ज़्यादा। किसी भी संख्या पर क्लिक करके उन पटवारियों की सूची देखें।')+mk('pc',PB,'2. Completion % के अनुसार पटवारियों की संख्या','Completion % = Completed ÷ कुल प्लॉट। श्रेणी: 0–10% में 10% नहीं आता; 80–100% में 100% भी शामिल है। संख्या पर क्लिक करें।')+lst}
 if(tab=='progress'){sb.innerHTML='<div class="sbb">'+[['tehsil','Tehsil'],['court','Court'],['patwari','Patwari'],['village','Village']].map(([k,l])=>`<button data-lv="${k}" class="${lv==k?'on':''}">${l}-wise</button>`).join('')+'</div>';
 const C={tehsil:[grp(R,r=>r.t),[['k','Tehsil','t']]],court:[grp(R,r=>r.c),[['k','Court','t']]],patwari:[gP(R),[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t']]],village:[R,[['n','Village','t'],['t','Tehsil','t'],['pn','Patwari','t'],['h','Halka','t']]]}[lv];
-const ch=C[0].filter(r=>r.dc);h=`<div class="note" style="margin:0 0 8px">${B.sh} progress: ${nf(ch.length)} पंक्तियों में Completed बढ़ा।</div>`+tblW(tbl('pg_'+lv,ch,[...C[1],...dcols()],1,{k:'dc',d:-1}),ch,1)}
+const ch=C[0].filter(r=>r.p1||r.p7);h=`<div class="note" style="margin:0 0 8px">जिन ${nf(ch.length)} पंक्तियों में पिछले 1 Day या 1 Week में Completed बढ़ा, वही यहाँ दिख रही हैं।</div>`+tblW(tbl('pg_'+lv,ch,[...C[1],...dcols()],1,{k:'p7',d:-1}),ch,1)}
 if(tab=='top'){const g=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.cm>0).sort((a,b)=>b.cm-a.cm||b.pct-a.pct||b.pl-a.pl).slice(0,10);
-h=`<div class="note" style="margin:0 0 10px">रैंकिंग: सबसे ज़्यादा कुल Completed वाले पटवारी पहले। बराबरी होने पर ज़्यादा Completion %, फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 10 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>+${nf(g.dc)}</b><small>बढ़त: ${B.sh}</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td></tr>`).join('')+`<tr><td class="l"><b>Completion %</b></td><td>${pt(g.opct)} → <b>${pt(g.pct)}</b></td></tr></table></div>`).join('')+'</div>'}
+h=`<div class="note" style="margin:0 0 10px">रैंकिंग: सबसे ज़्यादा कुल Completed वाले पटवारी पहले। बराबरी होने पर ज़्यादा Completion %, फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 10 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>+${nf(g.p1)}</b><small>1 Day</small></div><div><b>+${nf(g.p7)}</b><small>1 Week</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td></tr>`).join('')+`</table></div>`).join('')+'</div>'}
 if(tab=='zero'){const z=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0);
 h=`<div class="note" style="margin:0 0 10px">ऐसे पटवारी जिनके सभी गाँवों में पाँचों चरण शून्य हैं, यानी अभी तक कोई काम शुरू नहीं हुआ। कुल <b>${nf(z.length)}</b> पटवारी, <b>${nf(z.reduce((a,g)=>a+g.vil,0))}</b> गाँव, <b>${nf(z.reduce((a,g)=>a+g.pl,0))}</b> प्लॉट।</div>`+tblW(tbl('zero',z,[['teh','Tehsil','t'],['k','Patwari','t'],['mob','Mobile','t'],['hal','Halka','t'],['vn','संबद्ध ग्राम','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC],1,{k:'pl',d:-1}),z,1)}
 if(tab=='action'){const a=R.filter(r=>r.st=='Not started'&&r.pl>=100),b=R.filter(r=>r.pn==NA);
@@ -427,10 +434,14 @@ async function refresh(force){
   if(busy)return;busy=true;if(!D.length)setStatus('ld','Loading…');
   try{
     const {res,sync}=await loadAll();
-    const hh=sync+'|'+res.out.length+'|'+res.out.reduce((a,r)=>a+r.cm+r.i+r.v+r.sb+r.pr+r.p1+r.p7+r.pl,0);
-    if(force||hh!==hash){hash=hh;D=res.out;SYNC=sync;SD=(sync.split(' ')[0]||'').slice(0,10);setup();draw();
+    const hh=res.out.length+'|'+res.out.reduce((a,r)=>a+r.cm+r.i+r.v+r.sb+r.pr+r.p1+r.p7+r.pl,0);
+    let st=sync,approx=false;
+    if(!st)st=await driveStamp();
+    if(!st){approx=true;let o={};try{o=JSON.parse(localStorage.getItem('svm_chg')||'{}')}catch(e){}
+      if(o.h!==hh){o={h:hh,t:fmtIST(new Date())};try{localStorage.setItem('svm_chg',JSON.stringify(o))}catch(e){}}st=o.t}
+    if(force||hh!==hash||st!==SYNC){hash=hh;D=res.out;SYNC=st;SD=(st.split(' ')[0]||'').slice(0,10);setup();draw();
       showMsg(res.hasP?'':'सूचना: "1 day progress" / "1 week progress" कॉलम नहीं मिले, इसलिए तुलना 0 दिख रही है।')}
-    lsync.textContent=SYNC||'—';setStatus('ok','Live')
+    lsync.textContent=SYNC||'—';lsync.title=approx?'शीट में अपडेट-टाइम सेल नहीं मिला; यह समय पेज द्वारा नया डेटा पहचानने का है':'';setStatus('ok','Live')
   }catch(e){console.error('Dashboard data error:',e);setStatus('err','Offline');if(!D.length)showMsg('डेटा अभी उपलब्ध नहीं है। कृपया कुछ देर बाद पुनः प्रयास करें।',true)}
   busy=false}
 setInterval(()=>refresh(),CFG.POLL*1000);
