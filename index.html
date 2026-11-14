@@ -59,13 +59,13 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 
 #busybox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(11,18,25,.94);color:#fff;align-items:center;justify-content:center;text-align:center;padding:20px}#busybox .bx{max-width:340px}#busybox .sp{width:44px;height:44px;border:4px solid rgba(255,255,255,.25);border-top-color:#2dd4bf;border-radius:50%;margin:0 auto 14px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#bmsg{font-weight:600}
 .pdfhost{position:fixed;top:0;left:0;z-index:1;background:#fff;pointer-events:none}
-.pdfpage{background:#fff;color:#111;font-family:Inter,"Noto Sans Devanagari",Arial,sans-serif;font-size:11px;line-height:1.35;box-sizing:border-box;font-variant-numeric:tabular-nums}
+.pdfpage{background:#fff;color:#111;font-family:Inter,"Noto Sans Devanagari",Arial,sans-serif;font-size:10px;line-height:1.3;box-sizing:border-box;font-variant-numeric:tabular-nums}
 .pdfpage .ph1{border-bottom:2px solid #0b3b5c;padding-bottom:7px;margin-bottom:8px}.pdfpage h1{font-size:21px;margin:0;color:#0b3b5c;font-weight:800}.pdfpage .d2{font-weight:700;color:#0f766e;font-size:13px}
 .pdfpage .mt{display:flex;flex-wrap:wrap;gap:2px 26px;font-size:11.5px;margin-top:5px}.pdfpage .fl2{margin-top:5px;background:#f1f5f8;border:1px solid #cfd8de;padding:4px 8px;font-size:11.5px}.pdfpage .df{margin-top:4px;font-size:10px;color:#555}
 .pdfpage .ph2{border-bottom:1px solid #0b3b5c;padding-bottom:4px;margin-bottom:6px;font-size:10.5px;color:#222}.pdfpage .ph2 span{color:#555}
 .pdfpage .st{font-size:13.5px;font-weight:700;margin:8px 0 5px;color:#0b3b5c}
-.pdfpage table{border-collapse:collapse;width:100%;table-layout:auto}.pdfpage th,.pdfpage td{border:1px solid #9aa7b2;padding:3px 6px;vertical-align:middle}
-.pdfpage th{background:#dfe9ef;color:#0b3b5c;font-weight:700;text-align:center;font-size:10.5px}.pdfpage td.n{text-align:right;white-space:nowrap}.pdfpage td.t{text-align:left;max-width:300px}
+.pdfpage table{border-collapse:collapse;width:100%;table-layout:auto}.pdfpage.nat table{width:auto}.pdfpage th,.pdfpage td{border:1px solid #9aa7b2;padding:2px 4px;vertical-align:middle}
+.pdfpage th{background:#dfe9ef;color:#0b3b5c;font-weight:700;text-align:center;font-size:9.5px}.pdfpage td.n{text-align:right;white-space:nowrap}.pdfpage td.t{text-align:left;max-width:190px}
 .pdfpage tbody tr:nth-child(even) td{background:#f8fafb}.pdfpage tr.tot td{font-weight:700;background:#e8eff3}
 </style></head><body>
 <header class="hd"><div class="in"><div class="hdr">
@@ -148,7 +148,7 @@ function setup(){
   sel.forEach(([k,,o])=>{if(F[k]&&!o.some(x=>x[0]==F[k]))F[k]=''});
   fl.innerHTML=sel.map(([k,l,o])=>`<div><label>${l}</label><select data-k="${k}"><option value="">All</option>${o.map(([v,t])=>`<option value="${esc(v)}"${F[k]==v?' selected':''}>${esc(t)}</option>`).join('')}</select></div>`).join('')+`<div><label>Search</label><input data-k="q" value="${esc(F.q)}" placeholder="गाँव, LGD, पटवारी या हल्का"></div>`;
   const zm=new Map();D.forEach(r=>{if(r.pn!=NA)zm.set(r.pk,(zm.get(r.pk)||0)+r.i+r.v+r.sb+r.pr+r.cm)});window.ZPN=[...zm.values()].filter(v=>v==0).length;
-  T=[['tehsil','Tehsil-wise'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM 20 पटवारी'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
+  T=[['tehsil','Tehsil-wise'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM पटवारी (जिले के % से कम)'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
   if(!T.some(x=>x[0]==tab))tab='tehsil';
   tabs.innerHTML=T.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('')+'<button class="pdfb" id="pdfb">📄 PDF डाउनलोड</button><button class="pdfb xlb" id="xlb">📊 Excel डाउनलोड</button>';
   setB(bk);segHTML()}
@@ -166,7 +166,7 @@ const busyEl=document.getElementById('busybox'),busyUI=(m)=>{busyEl.style.displa
 const NUMR=/^[+−\-]?[\d,]+(\.\d+)?%?$/,cellTxt=el=>{const c=el.cloneNode(true);c.querySelectorAll('br').forEach(b=>b.replaceWith('\n'));return c.textContent.replace(/[ \t]+/g,' ').replace(/ ?\n ?/g,'\n').replace(/\s*[▲▼]$/,'').trim()};
 const repName=()=>{let n=(T.find(x=>x[0]==tab)||['',tab])[1].replace(/^[^A-Za-z\u0900-\u097F]+/,'').trim();if(tab=='progress')n+=' – '+lv+'-wise';return n};
 function filterInfo(){
-  if(tab=='bottom')return'पूरा जिला · फ़िल्टर लागू नहीं · सबसे कम Completion % वाले 20 पटवारी';
+  if(tab=='bottom')return'पूरा जिला · फ़िल्टर लागू नहीं · वे पटवारी जिनका Completion % जिले के कुल Completion % ('+pt(pf(D.reduce((a,r)=>a+r.cm,0),D.reduce((a,r)=>a+r.pl,0)))+') से कम है';
   const a=[];if(F.s)a.push('Subdivision: '+F.s);if(F.t)a.push('Tehsil: '+F.t);if(F.c)a.push('Court: '+cs(F.c));
   if(F.p){const r=D.find(x=>x.pk==F.p);a.push('Patwari: '+(r?r.pn+' ('+r.t+')':F.p))}
   if(F.st)a.push('Status: '+F.st);if(F.q.trim())a.push('Search: "'+F.q.trim()+'"');
@@ -198,6 +198,9 @@ async function exportExcel(){
   busyUI('')}
 /* ----- PDF ----- */
 const esc2=s=>esc(s).replace(/\n/g,'<br>');
+function dropCol(sec,c){sec.head.splice(c,1);sec.num.splice(c,1);sec.rows.forEach(r=>r.splice(c,1))}
+function dropByName(M,re){let n=0;M.sections.forEach(sec=>{const c=sec.head.findIndex(h=>re.test(h.replace(/\n/g,' ')));if(c>0&&sec.head.length>8){dropCol(sec,c);n++}});return n}
+function naturalW(host,M){host.style.width='4000px';host.innerHTML=M.sections.map((s,i)=>`<div class="pdfpage nat" data-n="${i}">${tableHTML(s,s.rows.map((_,j)=>j))}</div>`).join('');return Math.ceil(Math.max(...[...host.querySelectorAll('.nat table')].map(t=>t.offsetWidth)))}
 function tableHTML(sec,idx){
   return'<table><thead><tr>'+sec.head.map(h=>`<th>${esc2(h)}</th>`).join('')+'</tr></thead><tbody>'+idx.map(j=>`<tr${j==sec.tot?' class="tot"':''}>`+sec.rows[j].map((c,i)=>`<td class="${sec.num[i]?'n':'t'}">${esc2(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table>'}
 const hdrHTML=(m,full)=>full?`<div class="ph1"><h1>${esc(m.title)}</h1><div class="d2">${esc(m.sub)}</div><div class="mt"><span><b>Report:</b> ${esc(m.rep)}</span><span><b>${esc(m.upd)}</b></span><span>${esc(m.gen)}</span></div><div class="fl2"><b>Filters:</b> ${esc(m.flt)}</div><div class="df">${esc(m.def)}</div></div>`:`<div class="ph2"><b>${esc(m.title)}</b> · ${esc(m.sub)} · ${esc(m.rep)} · ${esc(m.upd)}<br><span>Filters: ${esc(m.flt)}</span></div>`;
@@ -215,9 +218,16 @@ async function exportPDF(){
   if(!D.length)return;busyUI('PDF तैयार हो रहा है…');let host=null;
   try{
     await Promise.all([loadLib(LIB.pdf),loadLib(LIB.h2c)]);if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    const M=reportModel(),mt=metaInfo(),{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-    const PW=297,PH=210,MG=8,maxC=Math.max(...M.sections.map(s=>s.head.length)),W=Math.max(1100,Math.min(1800,74*maxC)),k=(PW-2*MG)/W,usable=(PH-MG-12)/k;
-    host=document.createElement('div');host.className='pdfhost';host.style.width=W+'px';document.body.appendChild(host);
+    const M=reportModel(),mt=metaInfo(),{jsPDF}=window.jspdf;
+    const MG=8;
+    host=document.createElement('div');host.className='pdfhost';document.body.appendChild(host);
+    let nw=naturalW(host,M),dropped=[];
+    if(nw>1450&&dropByName(M,/^Villages$/)){dropped.push('Villages');nw=naturalW(host,M)}
+    if(nw>1450&&dropByName(M,/^Beneficiaries$/)){dropped.push('Beneficiaries');nw=naturalW(host,M)}
+    const W=Math.max(1000,nw+4),big=W>1750,PW=big?420:297,PH=big?297:210,k=(PW-2*MG)/W,usable=(PH-MG-12)/k;
+    const doc=new jsPDF({orientation:'landscape',unit:'mm',format:big?'a3':'a4'});
+    host.style.width=W+'px';
+    if(dropped.length)mt.def+='  ·  PDF में जगह के लिए छोड़े गए कॉलम: '+dropped.join(', ')+' (Excel में सभी कॉलम उपलब्ध)';
     host.innerHTML=`<div class="pdfpage" data-m="1">${hdrHTML(mt,true)}</div><div class="pdfpage" data-m="2">${hdrHTML(mt,false)}</div>`+M.sections.map((s,i)=>`<div class="pdfpage" data-s="${i}">${s.title?`<div class="st">${esc(s.title)}</div>`:''}${tableHTML(s,s.rows.map((_,j)=>j))}</div>`).join('');
     const h1=host.querySelector('[data-m="1"]').offsetHeight,h2=host.querySelector('[data-m="2"]').offsetHeight;
     const secs=M.sections.map((s,i)=>{const box=host.querySelector(`[data-s="${i}"]`),t=box.querySelector('table'),st=box.querySelector('.st');
@@ -228,7 +238,7 @@ async function exportPDF(){
       host.innerHTML=`<div class="pdfpage" id="pdfcur">${hdrHTML(mt,p==0)}`+pages[p].parts.map(pt_=>{const s=M.sections[pt_.i];return(s.title?`<div class="st">${esc(s.title)}${pt_.cont?' (जारी)':''}</div>`:'')+tableHTML(s,pt_.rows)}).join('')+'</div>';
       await new Promise(r=>setTimeout(r,30));
       const el=host.firstChild,cv=await window.html2canvas(el,{scale:SCL,backgroundColor:'#ffffff',logging:false,useCORS:true,scrollX:0,scrollY:0,width:W,windowWidth:W});
-      if(p>0)doc.addPage('a4','landscape');
+      if(p>0)doc.addPage(big?'a3':'a4','landscape');
       doc.addImage(cv.toDataURL('image/jpeg',0.9),'JPEG',MG,MG,PW-2*MG,(cv.height/cv.width)*(PW-2*MG),undefined,'FAST');
       cv.width=cv.height=0}
     const n=doc.getNumberOfPages();doc.setFontSize(8);doc.setTextColor(90);
@@ -245,7 +255,7 @@ function grp(rows,kf,nm){const m=new Map();rows.forEach(r=>{const k=kf(r);let g=
 function cell(r,f,t,id){const pg=id.startsWith('pg');
 if(f=='p1'||f=='p7')return`<td>${sg(r[f],'g')}</td>`;
 if(f=='pct')return`<td><span class="pc ${cls(r.pct)}">${pt(r.pct)}</span></td>`;
-if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${f=='dc'?sg(r[f],'g'):''}</td>`;
+if(f=='dd')return`<td><span class="dd ${r.dd<0?'dn':'g'}">${sgn(r.dd)}</span></td>`;if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${f=='dc'?sg(r[f],'g'):''}</td>`;
 if(t=='t'){const v=r[f];return f=='st'?`<td class="l"><span class="sc ${v=='Not started'?'lo':v.startsWith('Started')?'mi':'hi'}">${v}</span></td>`:`<td class="l${f=='c'||f=='vn'||f=='pnm'||f=='hal'||(f=='k'&&id=='court')?' w2':''}">${esc(f=='c'||(f=='k'&&id=='court')?cs(v):v)}</td>`}
 return`<td>${nf(r[f])}</td>`}
 const totRow=(a,cols,id)=>{const X={vil:0};NF.forEach(f=>X[f]=0);a.forEach(r=>{X.vil+=r.vil||0;NF.forEach(f=>X[f]+=r[f])});fin(X);return'<tr class="tot"><td></td>'+cols.map(([f,l,t],j)=>j==0?`<td class="l">Total (${nf(a.length)})</td>`:t=='t'?'<td></td>':cell(X,f,t,id)).join('')+'</tr>'};
@@ -279,8 +289,8 @@ if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],.
 if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail],1),a,1)}
 if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP],1),a,1)}
 if(tab=='village')h=tblW(tbl('village',R,vc,1),R,1);
-if(tab=='bottom'){const s0=gP(D.filter(r=>r.pn!=NA)).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),b20=s0.slice(0,20),sp=b20.reduce((a,g)=>a+g.pl,0),sc=b20.reduce((a,g)=>a+g.cm,0),tie=s0.length>20&&s0[19].pct==s0[20].pct;
-h=`<div class="note" style="margin:0 0 10px">पूरे जिले के सभी ${nf(s0.length)} पटवारियों में से सबसे कम <b>Completion %</b> (Completed ÷ Total plots) वाले 20 पटवारी, सबसे कम पहले। (इस सूची पर ऊपर के फ़िल्टर लागू नहीं होते।) इन 20 के पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले। ${tie?'ध्यान दें: 20वें और 21वें पटवारी का Completion % बराबर है।':''}</div><div class="tw">`+tbl('bottom',b20,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP],0,{k:'pct',d:1})+'</div>'}
+if(tab=='bottom'){const dcm=D.reduce((a,r)=>a+r.cm,0),dpl=D.reduce((a,r)=>a+r.pl,0),dpc=pf(dcm,dpl),all=gP(D.filter(r=>r.pn!=NA)),bt=all.filter(g=>g.pct<dpc).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),sp=bt.reduce((a,g)=>a+g.pl,0),sc=bt.reduce((a,g)=>a+g.cm,0);bt.forEach(g=>g.dd=g.pct-dpc);
+h=`<div class="note" style="margin:0 0 10px">जिले का कुल Completion % <b>${pt(dpc)}</b> है। जिन पटवारियों का Completion % इससे <b>कम</b> है, वही BOTTOM पटवारी माने गए हैं: कुल <b>${nf(bt.length)}</b> पटवारी (जिले के ${nf(all.length)} में से), सबसे कम % पहले। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले। (इस सूची पर ऊपर के फ़िल्टर लागू नहीं होते।)</div><div class="tw">`+tbl('bottom',bt,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['dd','vs District % (pp)'],...PP],0,{k:'pct',d:1})+'</div>'}
 if(tab=='dist'){const G=gP(R.filter(r=>r.pn!=NA)),TS=[...new Set(G.map(g=>g.teh))].sort((a,b)=>a.localeCompare(b));
 const CB=[['0–50',g=>g.cm<50],['50–100',g=>g.cm>=50&&g.cm<100],['100–200',g=>g.cm>=100&&g.cm<=200],['200 से अधिक',g=>g.cm>200]];
 const PB=[['0–10%',g=>g.pct<10],['10–20%',g=>g.pct>=10&&g.pct<20],['20–30%',g=>g.pct>=20&&g.pct<30],['30–50%',g=>g.pct>=30&&g.pct<50],['50–80%',g=>g.pct>=50&&g.pct<80],['80–100%',g=>g.pct>=80]];
