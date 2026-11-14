@@ -66,7 +66,7 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 .pdfpage .st{font-size:13.5px;font-weight:700;margin:8px 0 5px;color:#0b3b5c}
 .pdfpage table{border-collapse:collapse;width:100%;table-layout:auto}.pdfpage.nat table{width:auto}.pdfpage th,.pdfpage td{border:1px solid #9aa7b2;padding:2px 4px;vertical-align:middle}
 .pdfpage th{background:#dfe9ef;color:#0b3b5c;font-weight:700;text-align:center;font-size:9.5px}.pdfpage td.n{text-align:right;white-space:nowrap}.pdfpage td.t{text-align:left;max-width:190px}
-.pdfpage tbody tr:nth-child(even) td{background:#f8fafb}.pdfpage tr.tot td{font-weight:700;background:#e8eff3}
+.pdfpage th{position:static!important;top:auto!important;z-index:auto!important;cursor:default}.pdfpage td{color:#111}.pdfpage tbody tr:nth-child(even) td{background:#f8fafb}.pdfpage tbody tr.tot td{position:static!important;bottom:auto!important;font-weight:700;background:#e8eff3!important;color:#111!important;border-top:2px solid #0b3b5c}
 </style></head><body>
 <header class="hd"><div class="in"><div class="hdr">
  <div class="brand"><div class="logo">🏛️</div><div><h1>Svamitva Registry : Live Progress Dashboard</h1><span class="dist">District Shivpuri</span></div></div>
@@ -166,11 +166,12 @@ const busyEl=document.getElementById('busybox'),busyUI=(m)=>{busyEl.style.displa
 const NUMR=/^[+−\-]?[\d,]+(\.\d+)?%?$/,cellTxt=el=>{const c=el.cloneNode(true);c.querySelectorAll('br').forEach(b=>b.replaceWith('\n'));return c.textContent.replace(/[ \t]+/g,' ').replace(/ ?\n ?/g,'\n').replace(/\s*[▲▼]$/,'').trim()};
 const repName=()=>{let n=(T.find(x=>x[0]==tab)||['',tab])[1].replace(/^[^A-Za-z\u0900-\u097F]+/,'').trim();if(tab=='progress')n+=' – '+lv+'-wise';return n};
 function filterInfo(){
-  if(tab=='bottom')return'पूरा जिला · फ़िल्टर लागू नहीं · वे पटवारी जिनका Completion % जिले के कुल Completion % ('+pt(pf(D.reduce((a,r)=>a+r.cm,0),D.reduce((a,r)=>a+r.pl,0)))+') से कम है';
   const a=[];if(F.s)a.push('Subdivision: '+F.s);if(F.t)a.push('Tehsil: '+F.t);if(F.c)a.push('Court: '+cs(F.c));
   if(F.p){const r=D.find(x=>x.pk==F.p);a.push('Patwari: '+(r?r.pn+' ('+r.t+')':F.p))}
   if(F.st)a.push('Status: '+F.st);if(F.q.trim())a.push('Search: "'+F.q.trim()+'"');
-  return a.length?a.join('  |  '):'कोई फ़िल्टर नहीं (पूरा जिला)'}
+  let t=a.length?a.join('  |  '):'कोई फ़िल्टर नहीं (पूरा जिला)';
+  if(tab=='bottom')t+='  ||  शर्त: Completion % < जिले का कुल Completion % ('+pt(pf(D.reduce((x,r)=>x+r.cm,0),D.reduce((x,r)=>x+r.pl,0)))+')';
+  return t}
 const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date()),flt:filterInfo(),def:'Completion % = Completed ÷ Total plots  ·  1 Day Progress = prev 9 AM → today 9 AM  ·  Mobile numbers masked (last 4 digits only)'});
 function reportModel(){
   const oLim=lim;lim=1e9;EXP=true;let sections=[];
@@ -255,7 +256,7 @@ function grp(rows,kf,nm){const m=new Map();rows.forEach(r=>{const k=kf(r);let g=
 function cell(r,f,t,id){const pg=id.startsWith('pg');
 if(f=='p1'||f=='p7')return`<td>${sg(r[f],'g')}</td>`;
 if(f=='pct')return`<td><span class="pc ${cls(r.pct)}">${pt(r.pct)}</span></td>`;
-if(f=='dd')return`<td><span class="dd ${r.dd<0?'dn':'g'}">${sgn(r.dd)}</span></td>`;if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${f=='dc'?sg(r[f],'g'):''}</td>`;
+if(f=='opct')return`<td>${pt(r.opct)}</td>`;if(SDK.has(f))return`<td>${f=='dc'?sg(r[f],'g'):''}</td>`;
 if(t=='t'){const v=r[f];return f=='st'?`<td class="l"><span class="sc ${v=='Not started'?'lo':v.startsWith('Started')?'mi':'hi'}">${v}</span></td>`:`<td class="l${f=='c'||f=='vn'||f=='pnm'||f=='hal'||(f=='k'&&id=='court')?' w2':''}">${esc(f=='c'||(f=='k'&&id=='court')?cs(v):v)}</td>`}
 return`<td>${nf(r[f])}</td>`}
 const totRow=(a,cols,id)=>{const X={vil:0};NF.forEach(f=>X[f]=0);a.forEach(r=>{X.vil+=r.vil||0;NF.forEach(f=>X[f]+=r[f])});fin(X);return'<tr class="tot"><td></td>'+cols.map(([f,l,t],j)=>j==0?`<td class="l">Total (${nf(a.length)})</td>`:t=='t'?'<td></td>':cell(X,f,t,id)).join('')+'</tr>'};
@@ -289,8 +290,8 @@ if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],.
 if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail],1),a,1)}
 if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP],1),a,1)}
 if(tab=='village')h=tblW(tbl('village',R,vc,1),R,1);
-if(tab=='bottom'){const dcm=D.reduce((a,r)=>a+r.cm,0),dpl=D.reduce((a,r)=>a+r.pl,0),dpc=pf(dcm,dpl),all=gP(D.filter(r=>r.pn!=NA)),bt=all.filter(g=>g.pct<dpc).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),sp=bt.reduce((a,g)=>a+g.pl,0),sc=bt.reduce((a,g)=>a+g.cm,0);bt.forEach(g=>g.dd=g.pct-dpc);
-h=`<div class="note" style="margin:0 0 10px">जिले का कुल Completion % <b>${pt(dpc)}</b> है। जिन पटवारियों का Completion % इससे <b>कम</b> है, वही BOTTOM पटवारी माने गए हैं: कुल <b>${nf(bt.length)}</b> पटवारी (जिले के ${nf(all.length)} में से), सबसे कम % पहले। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले। (इस सूची पर ऊपर के फ़िल्टर लागू नहीं होते।)</div><div class="tw">`+tbl('bottom',bt,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],['dd','vs District % (pp)'],...PP],0,{k:'pct',d:1})+'</div>'}
+if(tab=='bottom'){const dpc=pf(D.reduce((a,r)=>a+r.cm,0),D.reduce((a,r)=>a+r.pl,0)),all=gP(R.filter(r=>r.pn!=NA)),bt=all.filter(g=>g.pct<dpc).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),sp=bt.reduce((a,g)=>a+g.pl,0),sc=bt.reduce((a,g)=>a+g.cm,0);
+h=`<div class="note" style="margin:0 0 10px">जिले का कुल Completion % <b>${pt(dpc)}</b> है। ऊपर के फ़िल्टर के अनुसार चुने गए ${nf(all.length)} पटवारियों में से जिनका Completion % इससे <b>कम</b> है, वही BOTTOM पटवारी हैं: कुल <b>${nf(bt.length)}</b> पटवारी, सबसे कम % पहले। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले।</div><div class="tw">`+tbl('bottom',bt,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pend','Pending plots'],['pct','Completion %'],...PP],0,{k:'pct',d:1})+'</div>'}
 if(tab=='dist'){const G=gP(R.filter(r=>r.pn!=NA)),TS=[...new Set(G.map(g=>g.teh))].sort((a,b)=>a.localeCompare(b));
 const CB=[['0–50',g=>g.cm<50],['50–100',g=>g.cm>=50&&g.cm<100],['100–200',g=>g.cm>=100&&g.cm<=200],['200 से अधिक',g=>g.cm>200]];
 const PB=[['0–10%',g=>g.pct<10],['10–20%',g=>g.pct>=10&&g.pct<20],['20–30%',g=>g.pct>=20&&g.pct<30],['30–50%',g=>g.pct>=30&&g.pct<50],['50–80%',g=>g.pct>=50&&g.pct<80],['80–100%',g=>g.pct>=80]];
