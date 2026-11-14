@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shivpuri Patwari Pending Registry - Live</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1c2330; --mute:#6b7585; --line:#e3e7ee; --acc:#1f5fd1; --warn:#c0392b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12161d; --card:#1b212b; --ink:#e8ecf3; --mute:#98a2b3; --line:#2b3340; --acc:#6aa0ff; --warn:#ff7a6b; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:1250px; margin:0 auto; padding:16px; }
+  h1 { font-size:20px; margin:4px 0 12px; }
+  .bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px; }
+  select, input[type=search], button { font:inherit; padding:7px 10px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); max-width:100%; }
+  button { cursor:pointer; background:var(--acc); color:#fff; border-color:var(--acc); }
+  button:disabled { opacity:.6; cursor:default; }
+  button.ghost { background:var(--card); color:var(--ink); border-color:var(--line); }
+  label { display:flex; gap:6px; align-items:center; color:var(--mute); }
+  .stats { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0 4px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 14px; min-width:130px; }
+  .stat b { display:block; font-size:22px; }
+  .stat span { color:var(--mute); font-size:12px; }
+  .note { color:var(--mute); font-size:12px; margin:4px 0 8px; }
+  .status { margin:8px 0; color:var(--mute); font-size:13px; }
+  .err { background:var(--card); border:1px solid var(--warn); color:var(--warn); border-radius:10px; padding:10px 12px; margin:10px 0; display:none; }
+  .err small { color:var(--mute); display:block; margin-top:6px; }
+  .tablebox { background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:auto; }
+  table { border-collapse:collapse; width:100%; min-width:1000px; }
+  th, td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { position:sticky; top:0; background:var(--card); color:var(--mute); font-size:12px; text-transform:uppercase; letter-spacing:.03em; cursor:pointer; user-select:none; }
+  th.nosort { cursor:default; }
+  td.n, th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  tr:last-child td { border-bottom:0; }
+  .hot { color:var(--warn); font-weight:600; }
+  .muted { color:var(--mute); }
+  .tag { font-size:11px; color:var(--mute); border:1px solid var(--line); border-radius:6px; padding:1px 5px; margin-left:6px; white-space:nowrap; }
+  .tag[title] { border-color:var(--warn); color:var(--warn); }
+  a.tel { color:var(--acc); text-decoration:none; }
+  a.tel:hover { text-decoration:underline; }
+  .fallback { margin-top:10px; display:none; }
+  .fallback textarea { width:100%; height:90px; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); font:12px monospace; }
+
+  /* PDF report ke page (screen se bahar render hote hain, hamesha light theme) */
+  .rp { width:1122px; height:794px; padding:24px 28px; background:#fff; color:#000; position:relative; overflow:hidden; font:13px/1.2 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Devanagari",sans-serif; }
+  .rp .rh h2 { margin:0 0 4px; font-size:20px; }
+  .rp .rh div { color:#333; line-height:18px; }
+  .rp .rh2 { height:28px; font-size:13px; color:#333; }
+  .rp .rs { display:flex; gap:10px; margin:8px 0 10px; }
+  .rp .rs div { border:1px solid #bbb; border-radius:6px; padding:4px 12px; }
+  .rp .rs b { display:block; font-size:18px; }
+  .rp .rs span { font-size:11px; color:#444; }
+  .rp .rt { width:100%; table-layout:fixed; border-collapse:collapse; }
+  .rp .rt th, .rp .rt td { height:26px; padding:0 6px; border-bottom:1px solid #ccc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:left; }
+  .rp .rt th { background:#eee; font-size:11px; text-transform:none; letter-spacing:0; position:static; cursor:default; color:#000; }
+  .rp .rt .n { text-align:right; }
+  .rp .rt .hot { color:#b00020; font-weight:700; }
+  .rp .rt td.mm { white-space:normal; font-size:10px; line-height:11px; }
+  .rp .rf { position:absolute; right:28px; bottom:10px; font-size:11px; color:#555; }
+
+  @page { size: A4 landscape; margin: 10mm; }
+  @media print {
+    :root { --bg:#fff; --card:#fff; --ink:#000; --mute:#444; --line:#bbb; --acc:#000; --warn:#b00020; }
+    body { background:#fff; color:#000; font-size:11px; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .wrap { max-width:none; padding:0; }
+    .bar, .err, .fallback, .status { display:none !important; }
+    .tablebox { border:0; overflow:visible; }
+    table { min-width:0; }
+    th, td { padding:3px 5px; white-space:normal; }
+    th { position:static; }
+    tr { break-inside:avoid; }
+    a.tel { color:#000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Shivpuri - Patwari Pending Registry (live)</h1>
+
+  <div class="bar">
+    <select id="tehsil" title="Tehsil"></select>
+    <select id="pat" title="Patwari"></select>
+    <input id="q" type="search" placeholder="Naam / halka / RI mandal / mobile khojein">
+    <label><input id="hideZero" type="checkbox"> Pending 0 wale chhupayein</label>
+    <label>Auto-refresh
+      <select id="auto">
+        <option value="0">Band</option>
+        <option value="300">5 min</option>
+        <option value="900" selected>15 min</option>
+        <option value="1800">30 min</option>
+        <option value="3600">1 ghanta</option>
+      </select>
+    </label>
+    <button id="refresh">Refresh</button>
+    <button id="csv" class="ghost">CSV download</button>
+    <button id="pdf" class="ghost">PDF banayein</button>
+  </div>
+  <div class="bar" id="pdfbox" style="display:none;margin-top:8px">
+    <span id="pdfmsg" class="muted"></span>
+    <button id="pdfShare" class="ghost" style="display:none">Share karein</button>
+    <button id="pdfSave" class="ghost" style="display:none">Download / Save</button>
+    <button id="pdfOpen" class="ghost" style="display:none">PDF dekhein</button>
+  </div>
+
+  <div id="err" class="err"></div>
+  <div class="fallback" id="fallback">
+    <div class="bar" style="flex-direction:column;align-items:stretch">
+      <div><b>Backup:</b> website se JSON file save karke yahan chunein (ya text paste karein).</div>
+      <input type="file" id="file" accept=".json,application/json,text/plain">
+      <textarea id="paste" placeholder="Yahan JSON paste karein"></textarea>
+      <div><button id="usePaste" class="ghost">Paste kiya hua use karein</button></div>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+  <div class="note">Pending = Registry Initiated + Patwari Verification in Process. 15 din+ = 15 din se zyada purane pending. Upar ke dabbe chune hue filter ke anusar hain. Mobile number Gram Suchna Excel (14-11-2026) se hain. API ek hi naam ke kai patwariyon ka data jodkar deti hai, aise rows par laal tag lagta hai aur har mobile ke saath tehsil aur halka dikhta hai.</div>
+  <div class="status" id="status"></div>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr id="thead"></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const API = "https://services.mpigr.gov.in/svamitva_dashboard/api/patwari-report?basis=forwarded";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXCmaXiVtmw94o69Cwqz2R7w1w7pvZ3E3o6LtDcsAVQRKGRYXBRO7SPRbhie6H7jHjSA/exec";
+const SHEET_TAB = "Patwari Pending";
+const DISTRICT = "शिवपुरी"; // Shivpuri
+
+// Tehsil: [Hindi, English]
+const TEHSILS = [
+  ["शिवपुरी","Shivpuri"], ["बदरवास","Badarwas"], ["बैराड","Bairad"], ["कोलारस","Kolaras"], ["करैरा","Karera"],
+  ["खनियाधाना","Khaniyadhana"], ["नरवर","Narwar"], ["पिछोर","Pichore"], ["पोहरी","Pohari"], ["रन्नौद","Ranod"]
+];
+
+// Patwari ke mobile (Gram Suchna Excel, 14-11-2026, sirf Shivpuri). Format: [tehsil, halka code, naam, mobile, RI mandal]
+// Halka code "" = Excel me bhukod short tha (naam + tehsil se match hota hai).
+const CONTACTS = [
+["करैरा", "00101", "Atul Pandey", "9406570803", "सिरसौद"],
+["करैरा", "00102", "Rahul Sharma", "9713719551", "सिरसौद"],
+["करैरा", "00103", "Rahul Sharma", "9713719551", "सिरसौद"],
+["करैरा", "00104", "Abhishek Mishra", "7692929129", "सिरसौद"],
+["करैरा", "00105", "Rajesh Kumar", "9039092788", "सिरसौद"],
+["करैरा", "00106", "Hariprasad Adiwasi", "9993486236", "करैरा"],
+["करैरा", "00107", "Raj Bahadur Jatav", "9893101553", "सिरसौद"],
+["करैरा", "00108", "Jitendra Pal Singh", "9893779934", "सिरसौद"],
+["करैरा", "00109", "BHUMAN SINGH BAMANIYA", "8085134514", "सिरसौद"],
+["करैरा", "00110", "Kamal Singh Adiwasi", "9993486246", "सिरसौद"],
+["करैरा", "00111", "Saurabh Sharma", "9039632423", "सिरसौद"],
+["करैरा", "00112", "Jitendra Kumar Raje", "8770455635", "सिरसौद"],
+["करैरा", "00113", "Shriram Koli", "9406981032", "सिरसौद"],
+["करैरा", "00114", "Sandeep Kumar Nagar", "9981603799", "सिरसौद"],
+["करैरा", "00115", "Akhalesh Kumar Joshi", "9179587590", "सिरसौद"],
+["करैरा", "00116", "Rakesh Kumar Gupta", "9425735319", "सिरसौद"],
+["करैरा", "00117", "Madho Singh Rajey", "9752719471", "करैरा"],
+["करैरा", "00118", "Puspendra Gupta", "8878035321", "करैरा"],
+["करैरा", "00119", "Anita Singh Parihar", "8821820066", "सिरसौद"],
+["करैरा", "00120", "Kamal Kishor Pandel", "7354022146", "सिरसौद"],
+["करैरा", "00121", "Arjun Singh Gurjar", "9893363665", "सिरसौद"],
+["करैरा", "00122", "Vijay Kumar Pakhare", "9753521852", "सिरसौद"],
+["करैरा", "00123", "Vijay Raghuwanshi", "9630100110", "सिरसौद"],
+["करैरा", "00124", "Arti Koli", "7898937420", "सिरसौद"],
+["करैरा", "00125", "Balram Singh Dhakar", "8962191964", "करैरा"],
+["करैरा", "00126", "Vindra Raje", "8461004898", "सिरसौद"],
+["करैरा", "00127", "Kamal Singh Jatav", "8359963616", "करैरा"],
+["करैरा", "00128", "Narendra Singh Rithauriya", "9009386966", "करैरा"],
+["करैरा", "00129", "Narendra Singh Rithauriya", "9009386966", "करैरा"],
+["करैरा", "00130", "Neha Chaurasiya", "7773821574", "करैरा"],
+["करैरा", "00131", "Prarthana Bhargava", "8720066100", "करैरा"],
+["करैरा", "00132", "Usha Bhainaya", "9753604085", "करैरा"],
+["करैरा", "00133", "Rajeev Dubey", "7879850249", "करैरा"],
+["करैरा", "00134", "Hari Shankar Dubey", "9406570369", "करैरा"],
+["करैरा", "00135", "Rajeev Dubey", "7879850249", "करैरा"],
+["करैरा", "00136", "Neeraj Kumar Rajpoot", "9981650328", "करैरा"],
+["करैरा", "00137", "Prabhakar Bhargav", "9754065648", "करैरा"],
+["करैरा", "00138", "Satyendra Kumar Sharma", "8878591167", "करैरा"],
+["करैरा", "00139", "Sukhlal Jatav", "9179964432", "करैरा"],
+["करैरा", "00140", "Neeraj Sharma", "6269916757", "करैरा"],
+["करैरा", "00141", "Pushpendra Sharma", "9425765078", "करैरा"],
+["करैरा", "00142", "Priyanka Sharma", "7692927696", "करैरा"],
+["करैरा", "00143", "Mohanlal Mewafros", "6260619697", "करैरा"],
+["करैरा", "00144", "Dharmendra Sahu", "9098235462", "करैरा"],
+["करैरा", "00145", "Anita Singh Parihar", "8821820066", "करैरा"],
+["करैरा", "00146", "Pawan Kumar Sahu", "8982831871", "करैरा"],
+["करैरा", "00147", "Ashish Sharma", "8889985201", "करैरा"],
+["करैरा", "00148", "Deepak Mehoriya", "8989239425", "करैरा"],
+["करैरा", "00149", "Subodh Kumar Tiwari", "9425488628", "दिनारा"],
+["करैरा", "00150", "Sanghpriya Khanna", "7389954559", "दिनारा"],
+["करैरा", "00151", "Deepesh Sharma", "7566738723", "दिनारा"],
+["करैरा", "00152", "Dinesh Singh Sikarwar", "7773831781", "दिनारा"],
+["करैरा", "00153", "Umesh Kumar Sahu", "7509238356", "दिनारा"],
+["करैरा", "00154", "Sandeep Kumar Sahu", "8435927748", "दिनारा"],
+["करैरा", "00155", "Puspendra Gupta", "8878035321", "दिनारा"],
+["करैरा", "00156", "Avnish Shrivastav", "9713100698", "दिनारा"],
+["करैरा", "00157", "Shailesh Kumar Shrivastava", "9926858378", "दिनारा"],
+["करैरा", "00158", "Jeetendra Singh Rawat", "7805021907", "करैरा"],
+["करैरा", "00159", "Rakesh Shrivastava", "9753802701", "करैरा"],
+["करैरा", "00160", "Anand Kumar Sharma", "9584409419", "दिनारा"],
+["करैरा", "00161", "Rambabu Puri Goswami", "8602733590", "दिनारा"],
+["करैरा", "00162", "Surendra Shakya", "9098947597", "दिनारा"],
+["करैरा", "00163", "Manoj Singh", "8878267185", "दिनारा"],
+["करैरा", "00164", "Shilpee Gupta", "9171720922", "दिनारा"],
+["करैरा", "00165", "Harishankar Tyagi", "9826296479", "दिनारा"],
+["करैरा", "00166", "Pavan Bhargava", "9630947707", "दिनारा"],
+["करैरा", "00167", "Santosh Rawat", "8964006108", "दिनारा"],
+["करैरा", "00168", "Bhanu Pratap Singh", "9617640709", "दिनारा"],
+["करैरा", "00169", "Arti Gurjar", "7223922097", "दिनारा"],
+["करैरा", "00170", "Mohammad Sadiq", "9630650755", "दिनारा"],
+["करैरा", "00171", "Swati Mathur", "7879944305", "दिनारा"],
+["करैरा", "00172", "Bhanu Pratap Singh", "9617640709", "दिनारा"],
+["करैरा", "00173", "Santosh Kumar Suman", "9826857806", "दिनारा"],
+["करैरा", "00174", "Harishankar Tyagi", "9826296479", "दिनारा"],
+["करैरा", "00175", "Mahesh Kumar Gupta", "9907691002", "दिनारा"],
+["करैरा", "00176", "Ramnaresh Singh Jadoun", "8223839062", "दिनारा"],
+["करैरा", "00177", "Lalit Gautam", "6269118606", "दिनारा"],
+["करैरा", "00178", "Arvind Parihar", "8966064089", "दिनारा"],
+["कोलारस", "00081", "Piyush Rajput", "8839561625", "कोलारस"],
+["कोलारस", "00101", "Bholaram Lodhi", "9575374490", "खरई"],
+["कोलारस", "00102", "Ashish Sharma", "8770216685", "खरई"],
+["कोलारस", "00103", "Ashish Gupta", "9691032017", "खरई"],
+["कोलारस", "00104", "Rajat Kushwah", "8839028770", "खरई"],
+["कोलारस", "00105", "Krishan Kant Sharma", "8770306891", "खरई"],
+["कोलारस", "00106", "Lokesh Bijole", "8109963381", "खरई"],
+["कोलारस", "00107", "Sunman Singh Khande", "9685123845", "खरई"],
+["कोलारस", "00108", "Dinesh Parihar", "9630390876", "खरई"],
+["कोलारस", "00109", "Ashish Gupta", "9691032017", "खरई"],
+["कोलारस", "00110", "Brajesh Kumar Pandey", "9630004392", "खरई"],
+["कोलारस", "00111", "Ashok Kumar Khandekar", "9174135320", "खरई"],
+["कोलारस", "00112", "Govind Puri Goswami", "9589818560", "खरई"],
+["कोलारस", "00113", "Sunil Upadhyay", "8815825912", "खरई"],
+["कोलारस", "00114", "Brajesh Kumar Pandey", "9630004392", "खरई"],
+["कोलारस", "00115", "Akash Sharma", "9074461437", "खरई"],
+["कोलारस", "00116", "Girraj Gupta", "8989409680", "खरई"],
+["कोलारस", "00117", "Reshma Bhagat", "9575415409", "खरई"],
+["कोलारस", "00118", "Shailendra Sharma", "9516587872", "खरई"],
+["कोलारस", "00119", "Neha Gupta", "8349036312", "खरई"],
+["कोलारस", "00120", "Manisha Lodhi", "7999867307", "खरई"],
+["कोलारस", "00121", "Yogendra Shakya", "7770919360", "खरई"],
+["कोलारस", "00122", "Shikha Batham", "8878001438", "खरई"],
+["कोलारस", "00123", "Yogendra Shakya", "7770919360", "खरई"],
+["कोलारस", "00124", "Niharika Arora", "7489579140", "कोलारस"],
+["कोलारस", "00125", "Girraj Singh Dhakar", "9755665152", "कोलारस"],
+["कोलारस", "00126", "Adarsh Shrivastava", "9977743321", "कोलारस"],
+["कोलारस", "00127", "Govind Das Adiwasi", "7999937220", "कोलारस"],
+["कोलारस", "00128", "Ajay Singh Raghuwanshi", "9179886232", "कोलारस"],
+["कोलारस", "00129", "Gaurav Awasthi", "9993920478", "कोलारस"],
+["कोलारस", "00130", "Anil Bhagoriya", "9827005240", "कोलारस"],
+["कोलारस", "00131", "Mukesh Kumar Shrivastava", "8225928521", "कोलारस"],
+["कोलारस", "00132", "Subhash Rawat", "7835868236", "कोलारस"],
+["कोलारस", "00133", "Santosh Gupta", "9993551751", "कोलारस"],
+["कोलारस", "00134", "Lokendra Dhakad", "9584808975", "कोलारस"],
+["कोलारस", "00135", "Ajay Gupta", "7024040697", "कोलारस"],
+["कोलारस", "00136", "Swati Shivhare", "9111702645", "कोलारस"],
+["कोलारस", "00137", "Shailendra Dhakar", "9584938625", "कोलारस"],
+["कोलारस", "00138", "Rajesh Kumar Ateriya", "8770472969", "कोलारस"],
+["कोलारस", "00139", "Yogesh Garg", "9755129163", "कोलारस"],
+["कोलारस", "00140", "Sandeep Shrivastava", "9425752234", "कोलारस"],
+["कोलारस", "00141", "Rameshwar Dayal Raman", "9425765706", "कोलारस"],
+["कोलारस", "00142", "Surendra Singh Suryavanshi", "7898653202", "कोलारस"],
+["कोलारस", "00143", "Amod Kumar Shrivastava", "9479348700", "कोलारस"],
+["कोलारस", "00144", "Meena Raman", "9340491760", "कोलारस"],
+["कोलारस", "00145", "Ativeer Jain", "9407561820", "कोलारस"],
+["कोलारस", "00146", "Vijay Pratap Singh", "8962355120", "कोलारस"],
+["कोलारस", "00147", "Poonam Sen", "8770734042", "लुकवासा"],
+["कोलारस", "00148", "Vipin Singh", "6264271482", "लुकवासा"],
+["कोलारस", "00149", "Shubham Sharma", "8269296376", "लुकवासा"],
+["कोलारस", "00150", "Amisha Singh Kushwah", "8770293845", "लुकवासा"],
+["कोलारस", "00151", "Piyush Rajput", "8839561625", "लुकवासा"],
+["कोलारस", "00152", "Parath Singh Kirar", "7697426577", "लुकवासा"],
+["कोलारस", "00153", "Naresh Rathor", "9179857896", "लुकवासा"],
+["कोलारस", "00154", "Chanchal Raghuwanshi", "8269009196", "लुकवासा"],
+["कोलारस", "00155", "Chanchal Raghuwanshi", "8269009196", "लुकवासा"],
+["कोलारस", "00156", "Jyoti Sisodiya", "7415730720", "लुकवासा"],
+["कोलारस", "00157", "Praveen Kumar Raghuwanshi", "9893252709", "लुकवासा"],
+["कोलारस", "00158", "Ajay Singh Raghuwanshi", "9179886232", "लुकवासा"],
+["कोलारस", "00159", "Bhupendra Singh Raghuwanshi", "7987220789", "लुकवासा"],
+["कोलारस", "00160", "Abhinav Kumar Arya", "9340994652", "लुकवासा"],
+["कोलारस", "00161", "Surendra Singh Suryavanshi", "7898653202", "लुकवासा"],
+["कोलारस", "00162", "Bhupendra Pratap Singh Kushwah", "9981429751", "लुकवासा"],
+["कोलारस", "00163", "Abhinav Kumar Arya", "9340994652", "लुकवासा"],
+["कोलारस", "00164", "Amit Raghuwanshi", "8889414243", "लुकवासा"],
+["कोलारस", "00165", "Shubham Jain", "8989458744", "लुकवासा"],
+["कोलारस", "00166", "Bhupendra Pratap Singh Kushwah", "9981429751", "लुकवासा"],
+["कोलारस", "00167", "Parath Singh Kirar", "7697426577", "लुकवासा"],
+["कोलारस", "00168", "Laxmi Patel", "8109123569", "लुकवासा"],
+["कोलारस", "00169", "Shubham Jain", "8989458744", "लुकवासा"],
+["खनियाधाना", "00101", "Mona Sharma", "8463020280", "पिपरौदा उबारी"],
+["खनियाधाना", "00102", "Ambet Singh Jatav", "9009081436", "पिपरौदा उबारी"],
+["खनियाधाना", "00103", "Hemant Narwaria", "9039391852", "पिपरौदा उबारी"],
+["खनियाधाना", "00104", "Atendra Singh Gurjar", "7000975549", "पिपरौदा उबारी"],
+["खनियाधाना", "00105", "Sanjeev Kumar Jatav", "8516084033", "पिपरौदा उबारी"],
+["खनियाधाना", "00106", "Ramdayal Jatav", "9009476639", "पिपरौदा उबारी"],
+["खनियाधाना", "00107", "Nawab Singh Adivasi", "9340301418", "पिपरौदा उबारी"],
+["खनियाधाना", "00108", "PUSHPENDRA MEHRA", "7000402325", "पिपरौदा उबारी"],
+["खनियाधाना", "00109", "Anil Ekka", "8889222508", "पिपरौदा उबारी"],
+["खनियाधाना", "00110", "Rajendra Verman", "9713528380", "पिपरौदा उबारी"],
+["खनियाधाना", "00111", "Raghuveer Jatav", "8224965274", "पिपरौदा उबारी"],
+["खनियाधाना", "00112", "Ankit Mishra", "9893505042", "पिपरौदा उबारी"],
+["खनियाधाना", "00113", "Vinod Kumar Jatav", "9685083642", "पिपरौदा उबारी"],
+["खनियाधाना", "00114", "Archna Rotiya", "9669392190", "पिपरौदा उबारी"],
+["खनियाधाना", "00115", "Biharee Batham", "8085126599", "पिपरौदा उबारी"],
+["खनियाधाना", "00116", "Ritesh Lahori", "9827289579", "पिपरौदा उबारी"],
+["खनियाधाना", "00117", "Devendra Garg", "9713294539", "पिपरौदा उबारी"],
+["खनियाधाना", "00118", "Surendra Kumar Pal", "9589208705", "पिपरौदा उबारी"],
+["खनियाधाना", "00119", "Kamal Kishore Siroliya", "7089871483", "पिपरौदा उबारी"],
+["खनियाधाना", "00120", "Suresh Kumar Arya", "9893177064", "पिपरौदा उबारी"],
+["खनियाधाना", "00121", "PUSHPENDRA MEHRA", "7000402325", "पिपरौदा उबारी"],
+["खनियाधाना", "00122", "Tularam Bhagouriya", "9425765138", "पिपरौदा उबारी"],
+["खनियाधाना", "00123", "Anjali Gupta", "7566247221", "पिपरौदा उबारी"],
+["खनियाधाना", "00124", "Keerti Gupta", "8989225568", "खनियाधाना"],
+["खनियाधाना", "00125", "Anil Ekka", "8889222508", "खनियाधाना"],
+["खनियाधाना", "00126", "Ruchi Sharma", "9179461039", "खनियाधाना"],
+["खनियाधाना", "00127", "Digvijay Singh", "8718062653", "खनियाधाना"],
+["खनियाधाना", "00128", "Janu Soni", "7440530052", "खनियाधाना"],
+["खनियाधाना", "00129", "Anil Ekka", "8889222508", "खनियाधाना"],
+["खनियाधाना", "00130", "Manish Budholia", "9893768545", "खनियाधाना"],
+["खनियाधाना", "00131", "Rajendra Singh Gurjar", "7869684748", "खनियाधाना"],
+["खनियाधाना", "00132", "Rajendra Singh Gurjar", "7869684748", "खनियाधाना"],
+["खनियाधाना", "00133", "Abhay Dayal", "9165962865", "खनियाधाना"],
+["खनियाधाना", "00134", "Leeladhar Mahour", "7999720675", "खनियाधाना"],
+["खनियाधाना", "00135", "Pirvendra Kumar Kabir", "8770211562", "खनियाधाना"],
+["खनियाधाना", "00136", "Pawan Kumar Ahirwar", "8602737320", "खनियाधाना"],
+["खनियाधाना", "00137", "Akhlesh Pal", "9144341700", "खनियाधाना"],
+["खनियाधाना", "00138", "Anurag Kumar Jain", "9425764024", "खनियाधाना"],
+["खनियाधाना", "00139", "Ganga Ram Adiwasi", "6260588966", "खनियाधाना"],
+["खनियाधाना", "00140", "Nandram Adiwasi", "9752081570", "खनियाधाना"],
+["खनियाधाना", "00141", "Nandram Adiwasi", "9752081570", "खनियाधाना"],
+["खनियाधाना", "00142", "Harikrishna Koli", "9753908771", "खनियाधाना"],
+["खनियाधाना", "00143", "Asharaf Ali", "7999112160", "खनियाधाना"],
+["खनियाधाना", "00144", "Nathuram Adivasi", "8085867959", "खनियाधाना"],
+["खनियाधाना", "00145", "Puspendra Singh Himauriya", "7000040912", "खनियाधाना"],
+["खनियाधाना", "00146", "Digvijay Singh", "8718062653", "खनियाधाना"],
+["खनियाधाना", "00147", "Deepak Kumar Prajapati", "9669245091", "खनियाधाना"],
+["खनियाधाना", "00148", "Vikash Jain", "9039678978", "खनियाधाना"],
+["खनियाधाना", "00149", "Jitendra Chaubey", "9425723994", "खनियाधाना"],
+["खनियाधाना", "00150", "Asharaf Ali", "7999112160", "बामौरकलां"],
+["खनियाधाना", "00151", "Manoj Kumar Gupta", "9993480640", "बामौरकलां"],
+["खनियाधाना", "00152", "Abhishek Vyas", "7389111173", "बामौरकलां"],
+["खनियाधाना", "00153", "PRADEEP KUMAR JAIN", "9425714459", "बामौरकलां"],
+["खनियाधाना", "00154", "Sunil Kumar Gaur", "9713544071", "बामौरकलां"],
+["खनियाधाना", "00155", "Sunil Kumar Gaur", "9713544071", "बामौरकलां"],
+["खनियाधाना", "00156", "Jitendra Chaubey", "9425723994", "बामौरकलां"],
+["खनियाधाना", "00157", "Jitendra Chaubey", "9425723994", "बामौरकलां"],
+["खनियाधाना", "00158", "Pramod Kumar Lodhi", "8982880754", "बामौरकलां"],
+["खनियाधाना", "00159", "PRADEEP KUMAR JAIN", "9425714459", "बामौरकलां"],
+["खनियाधाना", "00160", "Mahesh Kumar Gound", "8305914123", "बामौरकलां"],
+["खनियाधाना", "00161", "Akash Singh Kushwah", "6268323764", "बामौरकलां"],
+["खनियाधाना", "00162", "Omnarayan Bhargav", "9340407070", "बामौरकलां"],
+["खनियाधाना", "00163", "Prahalad Singh Verma", "8699262918", "बामौरकलां"],
+["खनियाधाना", "00164", "Kamal Kishore Siroliya", "7089871483", "बामौरकलां"],
+["खनियाधाना", "00165", "Jaigopal Shrivastava", "9179220954", "बामौरकलां"],
+["खनियाधाना", "00166", "Jagbhan Singh Jatav", "7509157749", "बामौरकलां"],
+["खनियाधाना", "00167", "Jaigopal Shrivastava", "9179220954", "बामौरकलां"],
+["खनियाधाना", "00168", "Sameer Shrivastava", "7987092939", "बामौरकलां"],
+["खनियाधाना", "00169", "Pramod Kumar Lodhi", "8982880754", "बामौरकलां"],
+["खनियाधाना", "00170", "Sameer Shrivastava", "7987092939", "बामौरकलां"],
+["खनियाधाना", "00171", "Jagbhan Singh Jatav", "7509157749", "बामौरकलां"],
+["खनियाधाना", "00172", "Mohini Koli", "9755045756", "बामौरकलां"],
+["खनियाधाना", "00173", "Vasudev Singh Pal", "8817099168", "बामौरकलां"],
+["खनियाधाना", "00174", "Veduram Adiwasi", "9131782013", "बामौरकलां"],
+["नरवर", "00101", "Bihari Singh Tomar", "8517818175", "मगरौनी"],
+["नरवर", "00102", "Lokendra Tiwari", "7879426177", "मगरौनी"],
+["नरवर", "00103", "Vinod Singh Rawat", "8435342656", "मगरौनी"],
+["नरवर", "00104", "Ajendra Singh Bhadoria", "7987204683", "मगरौनी"],
+["नरवर", "00105", "Dharmendra Singh Rawat", "9755740173", "मगरौनी"],
+["नरवर", "00106", "Diwan Singh Gurjar", "8827309075", "मगरौनी"],
+["नरवर", "00107", "Dharmendra Singh Rawat", "9755740173", "मगरौनी"],
+["नरवर", "00108", "Jitendra Pradhan", "9893302636", "मगरौनी"],
+["नरवर", "00109", "Bandish Modi", "8871986913", "मगरौनी"],
+["नरवर", "00110", "Varsha Pal", "7581971486", "मगरौनी"],
+["नरवर", "00111", "Arjun Singh Kushwah", "9584198497", "नरवर"],
+["नरवर", "00112", "Mahendra Singh Kushwah", "7566877493", "नरवर"],
+["नरवर", "00113", "Manish Mourya", "7000213860", "नरवर"],
+["नरवर", "00114", "Ramniwas Rawat", "9981653444", "नरवर"],
+["नरवर", "00115", "Kuldeep Singh Raipuriya", "9893177410", "नरवर"],
+["नरवर", "00116", "Rohit Singh Sikarwar", "8103485866", "नरवर"],
+["नरवर", "00117", "Akhilesh Kumar Jatav", "8878625830", "नरवर"],
+["नरवर", "00118", "Hakim Singh Parihar", "9516376952", "नरवर"],
+["नरवर", "00119", "Mukesh Kumar Maheshwari", "9893361296", "नरवर"],
+["नरवर", "00120", "Pankaj Shrivastava", "8982022421", "नरवर"],
+["नरवर", "00121", "Nande Singh", "7240978279", "नरवर"],
+["नरवर", "00122", "Sateesh Kumar Dhakar", "8827195440", "नरवर"],
+["नरवर", "00123", "Ramsahay Nayak", "8085142150", "नरवर"],
+["नरवर", "00124", "Shailendra Singh Jadaun", "9826291978", "नरवर"],
+["नरवर", "00125", "Gopal Das Koli", "8120072807", "मगरौनी"],
+["नरवर", "00126", "Sujata Jain", "8602365262", "मगरौनी"],
+["नरवर", "00127", "Kamal Kishor Sen", "9893167681", "मगरौनी"],
+["नरवर", "00128", "Tinkal Mathur", "8269158007", "मगरौनी"],
+["नरवर", "00129", "Jitendra Pradhan", "9893302636", "मगरौनी"],
+["नरवर", "00130", "Amar Singh Jatav", "7566836324", "मगरौनी"],
+["नरवर", "00131", "Ramlakhan Singh", "8120824502", "करही"],
+["नरवर", "00132", "Harish Kumar Sen", "8871530109", "करही"],
+["नरवर", "00133", "Rakesh Kumar Jatav", "9893364938", "करही"],
+["नरवर", "00134", "Dileep Gurjar", "8357088050", "करही"],
+["नरवर", "00135", "Prabhakar Maraiya", "9589611693", "करही"],
+["नरवर", "00136", "Sateesh Kumar Dhakar", "8827195440", "नरवर"],
+["नरवर", "00137", "Satya Deo Rajouria", "7999211871", "नरवर"],
+["नरवर", "00138", "Jagdish Singh Chandel", "9981471264", "नरवर"],
+["नरवर", "00139", "Dileep Kushwah", "8827052749", "नरवर"],
+["नरवर", "00140", "Devisingh Jatav", "8349361472", "करही"],
+["नरवर", "00141", "Umesh Kumar Shakya", "7746987598", "करही"],
+["नरवर", "00142", "Vineet Kumar Bhardwaj", "9713517753", "करही"],
+["नरवर", "00143", "Ajay Kumar Kujur", "7440539952", "करही"],
+["नरवर", "00144", "Poonam Shrivastava", "7415205637", "करही"],
+["नरवर", "00145", "Chatur Singh", "8770309071", "करही"],
+["नरवर", "00146", "Umesh Kumar Shakya", "7746987598", "करही"],
+["नरवर", "00147", "Narendra Palia", "9754869676", "करही"],
+["नरवर", "00148", "Anuradha Sinoriya", "7970197826", "करही"],
+["नरवर", "00149", "Vineet Kumar Bhardwaj", "9713517753", "करही"],
+["नरवर", "00150", "Namrata Sharma", "8817635165", "करही"],
+["नरवर", "00151", "Raju Sengar", "9753237015", "करही"],
+["नरवर", "00152", "Manish Birthare", "7828373801", "करही"],
+["नरवर", "00153", "Neeraj Singh Rajput", "8982312170", "करही"],
+["नरवर", "00154", "Manoj Kumar Jatav", "8120903208", "करही"],
+["नरवर", "00155", "Neeraj Singh Rajput", "8982312170", "करही"],
+["पिछोर", "00201", "Jitendra Sen", "9826543672", "खोड"],
+["पिछोर", "00202", "Bhagvan Singh Kushwah", "9981125399", "खोड"],
+["पिछोर", "00203", "Gaurav Sharma", "7879508844", "खोड"],
+["पिछोर", "00204", "Vikas Taretiya", "9893348020", "खोड"],
+["पिछोर", "00205", "Ram Kumar Sisodiya", "9165451024", "खोड"],
+["पिछोर", "00206", "Ram Kumar Sisodiya", "9165451024", "खोड"],
+["पिछोर", "00207", "Vijay Pal Jatav", "8085445101", "खोड"],
+["पिछोर", "00208", "Surjeet Singh Tomar", "9131265467", "खोड"],
+["पिछोर", "00209", "Gulshan Mathur", "9179548345", "खोड"],
+["पिछोर", "00210", "Narendra Singh Jatav", "9893236820", "खोड"],
+["पिछोर", "00211", "Surjeet Singh Tomar", "9131265467", "खोड"],
+["पिछोर", "00212", "Ravindra Dangi", "6267875879", "खोड"],
+["पिछोर", "00213", "Amit Gupta", "7354929198", "खोड"],
+["पिछोर", "00214", "Deepak Khatri", "7828120247", "खोड"],
+["पिछोर", "00215", "Asharam Adiwasi", "9522614752", "खोड"],
+["पिछोर", "00216", "Akshay Ahirwar", "9754320022", "खोड"],
+["पिछोर", "00217", "Balveer Singh Kushwah", "8435364467", "खोड"],
+["पिछोर", "00218", "Vivek Badoniya", "8109914425", "खोड"],
+["पिछोर", "00219", "Gulshan Mathur", "9179548345", "खोड"],
+["पिछोर", "00220", "Balveer Singh Kushwah", "8435364467", "खोड"],
+["पिछोर", "00221", "Vivek Badoniya", "8109914425", "खोड"],
+["पिछोर", "00222", "Akansha", "9131838867", "खोड"],
+["पिछोर", "00223", "Ruchika Juneja", "7772847010", "खोड"],
+["पिछोर", "00224", "Sankalp Jain", "9713395800", "खोड"],
+["पिछोर", "00225", "Sankalp Jain", "9713395800", "खोड"],
+["पिछोर", "00226", "Neeraj Maikale", "8305320081", "खोड"],
+["पिछोर", "00227", "Ashish Koli", "8963978827", "खोड"],
+["पिछोर", "00228", "Ravindra Dhakad", "8770939891", "भौंती"],
+["पिछोर", "00229", "Ayub Khan Afgani", "9755077363", "भौंती"],
+["पिछोर", "00230", "Shalini Jain", "9399969537", "भौंती"],
+["पिछोर", "00231", "Gopal Krishan Arya", "6260716678", "भौंती"],
+["पिछोर", "00232", "Ram Nivas Yadav", "9584709729", "भौंती"],
+["पिछोर", "00233", "Surbhi Jain", "7987633030", "भौंती"],
+["पिछोर", "00234", "Abhay Pratap Singh Jadoun", "9399091920", "भौंती"],
+["पिछोर", "00235", "Vijay Pal Jatav", "8085445101", "भौंती"],
+["पिछोर", "00236", "Krishna Kumar Chaurasia", "9179569950", "भौंती"],
+["पिछोर", "00237", "Dharmendra Sharma", "9575616418", "भौंती"],
+["पिछोर", "00238", "Vivek Badoniya", "8109914425", "भौंती"],
+["पिछोर", "00239", "Akshay Ahirwar", "9754320022", "भौंती"],
+["पिछोर", "00240", "Ruby Bhargav", "7898397976", "भौंती"],
+["पिछोर", "00241", "Piyush Sahu", "9926586650", "भौंती"],
+["पिछोर", "00242", "Dharmendra Sharma", "9575616418", "भौंती"],
+["पिछोर", "00243", "Deepak Dangi", "7697382290", "भौंती"],
+["पिछोर", "00244", "Deepak Dangi", "7697382290", "भौंती"],
+["पिछोर", "00245", "Ramesh Kumar Jatav", "7879429561", "भौंती"],
+["पिछोर", "00246", "Kanchan Sharma", "9993308935", "भौंती"],
+["पिछोर", "00247", "Shivam Neekhara", "9179909032", "भौंती"],
+["पिछोर", "00248", "Akash Gandhi", "7509998272", "भौंती"],
+["पिछोर", "00249", "Gulshan Sehariya", "8120040380", "भौंती"],
+["पिछोर", "00250", "Ramesh Kumar Jatav", "7879429561", "भौंती"],
+["पिछोर", "00251", "Harmesh Dinkar", "8770968524", "भौंती"],
+["पिछोर", "00252", "Ramkumar Koli", "9179127174", "भौंती"],
+["पिछोर", "00253", "Ramkumar Koli", "9179127174", "भौंती"],
+["पिछोर", "00254", "Prabal Gupta", "8518074551", "सेमरी"],
+["पिछोर", "00255", "Nishant Gupta", "9630755181", "सेमरी"],
+["पिछोर", "00256", "Amit Kumar Raje", "7415202599", "सेमरी"],
+["पिछोर", "00257", "Ravindra Dangi", "6267875879", "सेमरी"],
+["पिछोर", "00258", "Ramu Adiwasi", "9893501541", "सेमरी"],
+["पिछोर", "00259", "Sunil Kumar Koli", "9993273699", "सेमरी"],
+["पिछोर", "00260", "Sunil Kumar Koli", "9993273699", "सेमरी"],
+["पिछोर", "00261", "Jagdeesh Ahirwar", "7828684668", "सेमरी"],
+["पिछोर", "00262", "Pawan Yadav", "7804853321", "सेमरी"],
+["पिछोर", "00263", "Madhu Sudan Singh", "7747999212", "सेमरी"],
+["पिछोर", "00264", "Halkeram Narwaria", "7747931173", "सेमरी"],
+["पिछोर", "00265", "Pawan Yadav", "7804853321", "सेमरी"],
+["पिछोर", "00266", "Maniram Prajapati", "8085196680", "सेमरी"],
+["पिछोर", "00267", "Abhinay Shrivastava", "8770209707", "सेमरी"],
+["पिछोर", "00268", "Mangal Singh Yadav", "6266486061", "सेमरी"],
+["पिछोर", "00269", "Halkeram Narwaria", "7747931173", "सेमरी"],
+["पिछोर", "00270", "SANDEEP PATEL", "8109914399", "सेमरी"],
+["पिछोर", "00271", "Sandhvi Gautam", "8770388249", "सेमरी"],
+["पिछोर", "00272", "Mukul Singh Rajawat", "7566618296", "सेमरी"],
+["पिछोर", "00273", "Ankit Shrivastava", "9171317101", "सेमरी"],
+["पिछोर", "00274", "Hemant Kumar Tiwari", "7828499997", "सेमरी"],
+["पिछोर", "00275", "Prateek Parashar", "8085277556", "सेमरी"],
+["पिछोर", "00276", "Hrishabh Kankane", "9406589542", "सेमरी"],
+["पिछोर", "00277", "Vivek Singh Sikarwar", "7999399491", "सेमरी"],
+["पिछोर", "00278", "Sourabh Bohare", "7987223341", "सेमरी"],
+["पिछोर", "00279", "Sachin Tiwari", "7247393745", "पिछोर"],
+["पिछोर", "00280", "Deepak Sharma", "9691080446", "पिछोर"],
+["पिछोर", "00281", "Varsha Lodhi", "8349657825", "पिछोर"],
+["पिछोर", "00282", "Sunita Sutrakar", "9630101464", "पिछोर"],
+["पिछोर", "00283", "Abhay Pratap Singh Jadoun", "9399091920", "पिछोर"],
+["पिछोर", "00284", "Gulshan Sehariya", "8120040380", "पिछोर"],
+["पिछोर", "00285", "Maniram Prajapati", "8085196680", "पिछोर"],
+["पिछोर", "00286", "Sona Bhargava", "9993570940", "पिछोर"],
+["पिछोर", "00287", "Prateek Parashar", "8085277556", "पिछोर"],
+["पिछोर", "00288", "Urvi Sharma", "7724962339", "पिछोर"],
+["पिछोर", "00289", "Abhinay Shrivastava", "8770209707", "पिछोर"],
+["पिछोर", "00290", "Har Vilas Lodhi", "9893294521", "पिछोर"],
+["पिछोर", "00291", "Raghu Ram Bhagat", "8959631025", "पिछोर"],
+["पिछोर", "00292", "Anoop Chourasia", "9981371606", "पिछोर"],
+["पिछोर", "00293", "Maniram Prajapati", "8085196680", "पिछोर"],
+["पिछोर", "00294", "Neeraj Prakash Sharma", "9425714624", "पिछोर"],
+["पिछोर", "00295", "Neeraj Prakash Sharma", "9425714624", "पिछोर"],
+["पिछोर", "00296", "Raghu Ram Bhagat", "8959631025", "पिछोर"],
+["पिछोर", "00297", "Halkeram Narwaria", "7747931173", "पिछोर"],
+["पिछोर", "00298", "Pooja Pathak", "9425765612", "पिछोर"],
+["पिछोर", "00299", "Pawan Yadav", "7804853321", "पिछोर"],
+["पिछोर", "00300", "Ramgovind Bhatt", "7898307044", "पिछोर"],
+["पिछोर", "00301", "Shailendra Singh Chandel", "8602498292", "पिछोर"],
+["पिछोर", "00302", "Jatin Kumar", "8319954734", "पिछोर"],
+["पिछोर", "00303", "Shailendra Singh Chandel", "8602498292", "पिछोर"],
+["पिछोर", "00304", "Vivek Kumar Gupta", "7869701859", "पिछोर"],
+["पिछोर", "00305", "Ramgovind Bhatt", "7898307044", "पिछोर"],
+["पोहरी", "00101", "Ankit Jain", "7828571268", "भटनावर"],
+["पोहरी", "00102", "Matadeen Mittal", "9981667994", "भटनावर"],
+["पोहरी", "00103", "Ankit Jain", "7828571268", "भटनावर"],
+["पोहरी", "00104", "Dataram Verma", "9202232297", "भटनावर"],
+["पोहरी", "00105", "Ramdeen Bhagoriya", "9893660354", "भटनावर"],
+["पोहरी", "00106", "Jitendra Indoriya", "9926256675", "भटनावर"],
+["पोहरी", "00107", "Vivek Parashar", "9589186931", "भटनावर"],
+["पोहरी", "00108", "Anurag Sharma", "9074985144", "भटनावर"],
+["पोहरी", "00109", "Abhinav Chaturvedi", "9479696112", "भटनावर"],
+["पोहरी", "00110", "Alok Parihar", "7828353225", "भटनावर"],
+["पोहरी", "00111", "Balveer Singh Dhakar", "7869062963", "भटनावर"],
+["पोहरी", "00112", "Khushbu Goyal", "8251032396", "भटनावर"],
+["पोहरी", "00113", "Matadeen Mittal", "9981667994", "भटनावर"],
+["पोहरी", "00114", "BANTI GOLIYE", "9009174510", "पोहरी"],
+["पोहरी", "00115", "Poonam Sen", "9827693999", "भटनावर"],
+["पोहरी", "00116", "Poonam Sen", "9827693999", "पोहरी"],
+["पोहरी", "00117", "Mukesh Baghel", "9754443205", "पोहरी"],
+["पोहरी", "00118", "BANTI GOLIYE", "9009174510", "पोहरी"],
+["पोहरी", "00119", "Mukesh Baghel", "9754443205", "पोहरी"],
+["पोहरी", "00120", "Manoj Singh Chokotiya", "9752187691", "पोहरी"],
+["पोहरी", "00121", "Manish Garg", "9893778070", "पोहरी"],
+["पोहरी", "00122", "Ashok Kumar Verma", "9893824515", "भटनावर"],
+["पोहरी", "00123", "Pramod Sain", "7974742593", "पोहरी"],
+["पोहरी", "00124", "Pramod Sagar", "8224027435", "पोहरी"],
+["पोहरी", "00125", "Anil Kumar Swarnkar", "9993311615", "पोहरी"],
+["पोहरी", "00126", "Neha Singhal", "8269186031", "पोहरी"],
+["पोहरी", "00127", "Jyoti Rathore", "9179925189", "पोहरी"],
+["पोहरी", "00128", "Kusum Parashar", "8085047519", "पोहरी"],
+["पोहरी", "00129", "Prashant Sharma", "8770409007", "पोहरी"],
+["पोहरी", "00130", "Nekram Adiwasi", "9425764498", "भटनावर"],
+["पोहरी", "00131", "Dinesh Kumar Sharma", "9630223274", "छर्च"],
+["पोहरी", "00132", "Narayan Singh Verma", "9617507666", "छर्च"],
+["पोहरी", "00133", "Mangal Ram", "7566018569", "छर्च"],
+["पोहरी", "00134", "Pavan Kumar Sharma", "9407209281", "छर्च"],
+["पोहरी", "00135", "Harsh Bardhan Narvariya", "9827560197", "छर्च"],
+["पोहरी", "00136", "Vishnu Prasad Mourya", "9617604188", "छर्च"],
+["पोहरी", "00137", "Hemandra Singh Rathour", "8517993772", "छर्च"],
+["पोहरी", "00138", "Gunjan Wangikar", "8085906216", "छर्च"],
+["पोहरी", "00139", "Gunjan Wangikar", "8085906216", "छर्च"],
+["पोहरी", "00140", "Dolly Gupta", "9993470047", "छर्च"],
+["पोहरी", "00141", "Sanjeev Kumar Agrawal", "7999706669", "छर्च"],
+["पोहरी", "00142", "Sunita Rawat", "6260456221", "छर्च"],
+["पोहरी", "00143", "Pooja Sharma", "8878472118", "छर्च"],
+["पोहरी", "00144", "Shahwal Khan", "7566551922", "छर्च"],
+["पोहरी", "00145", "Nabbu Ram Adiwasi", "8458864804", "छर्च"],
+["पोहरी", "00146", "Anil Rathore", "7566703880", "छर्च"],
+["पोहरी", "00147", "Ranjeet Jatav", "8962373776", "पोहरी"],
+["पोहरी", "00148", "KAPTAN SINGH YADAV", "9752782382", "पोहरी"],
+["पोहरी", "00149", "Anurag Sharma", "8770057187", "पोहरी"],
+["बदरवास", "", "Abhishek Rana", "9669450970", "खतौरा"],
+["बदरवास", "00101", "Parmal Singh Adiwasi", "7089156144", "अगरा"],
+["बदरवास", "00102", "Pradeep Kumar Agrawal", "9981630325", "अगरा"],
+["बदरवास", "00103", "Vishnu Prasad Bhargava", "9993933146", "अगरा"],
+["बदरवास", "00104", "Vishnu Prasad Bhargava", "9993933146", "अगरा"],
+["बदरवास", "00105", "Harsh Ojha", "9770675980", "अगरा"],
+["बदरवास", "00106", "Shirashti Dhakad", "8815432407", "अगरा"],
+["बदरवास", "00107", "Ranveer Singh Dangi", "7999460502", "बदरवास"],
+["बदरवास", "00108", "Dharmendra Kirar", "7354410265", "बदरवास"],
+["बदरवास", "00109", "Dharmendra Kirar", "7354410265", "बदरवास"],
+["बदरवास", "00110", "Harsh Ojha", "9770675980", "बदरवास"],
+["बदरवास", "00111", "Amita Chourasia", "7566790921", "बदरवास"],
+["बदरवास", "00112", "Amit Sharma", "9584162822", "अगरा"],
+["बदरवास", "00113", "Monika Bhargava", "7898137948", "अगरा"],
+["बदरवास", "00114", "Rakesh Kumar Upadhyay", "7987966397", "अगरा"],
+["बदरवास", "00115", "Deepak Yadav", "9074437740", "अगरा"],
+["बदरवास", "00116", "Amit Sharma", "9584162822", "बदरवास"],
+["बदरवास", "00117", "Brijendra Singh Yadav", "9691454803", "बदरवास"],
+["बदरवास", "00118", "Deepak Raghuwanshi", "9179114115", "बदरवास"],
+["बदरवास", "00119", "Jitendra", "9713159675", "अगरा"],
+["बदरवास", "00120", "Kiran Parashar", "7828348428", "अगरा"],
+["बदरवास", "00121", "Bhagvati Rawat", "8435994863", "बदरवास"],
+["बदरवास", "00122", "Kuldeep Singh Goud", "8349691240", "बदरवास"],
+["बदरवास", "00123", "Neeraj Dangi", "7828583365", "खतौरा"],
+["बदरवास", "00125", "Vikash Bansal", "9713152876", "खतौरा"],
+["बदरवास", "00126", "Mahendra Singh Lodhi", "9926287363", "खतौरा"],
+["बदरवास", "00127", "Shyam Singh Yadav", "8959823699", "खतौरा"],
+["बदरवास", "00128", "Nandkishore Dhakad", "7999366132", "खतौरा"],
+["बदरवास", "00129", "Mahendra Singh Lodhi", "9926287363", "खतौरा"],
+["बदरवास", "00130", "Mukesh Dangi", "9009442310", "खतौरा"],
+["बदरवास", "00131", "Sunil Kumar Kushwah", "9485243460", "खतौरा"],
+["बदरवास", "00132", "Abhishek Rana", "9669450970", "खतौरा"],
+["बदरवास", "00133", "Deepak Yadav", "9074437740", "खतौरा"],
+["बैराड", "00101", "Balendu Pachori", "6261786745", "गोवर्धन"],
+["बैराड", "00102", "Deepak Kumar Sharma", "8305291523", "गोवर्धन"],
+["बैराड", "00103", "Neha Garg", "7477218707", "गोवर्धन"],
+["बैराड", "00104", "Devendra Singh Rajpoot", "7354208515", "गोवर्धन"],
+["बैराड", "00105", "Meharwan Singh Yadav", "9981770719", "गोवर्धन"],
+["बैराड", "00106", "Nandkishor Rathor", "7509742551", "गोवर्धन"],
+["बैराड", "00107", "Nandkishor Rathor", "7509742551", "गोवर्धन"],
+["बैराड", "00108", "Amit Gupta", "9589259919", "गोवर्धन"],
+["बैराड", "00109", "Balram Verma", "7440787190", "बीलवरामाता"],
+["बैराड", "00110", "Sonu Kumar", "7566032035", "बीलवरामाता"],
+["बैराड", "00111", "Laxmi Sharma", "6260440393", "बीलवरामाता"],
+["बैराड", "00112", "Chetan Pachori", "7509925816", "बीलवरामाता"],
+["बैराड", "00113", "Ravindra Khalkho", "8959023031", "बीलवरामाता"],
+["बैराड", "00114", "Kuldeep Bhargav", "7692053093", "बीलवरामाता"],
+["बैराड", "00115", "Kuldeep Bhargav", "7692053093", "बीलवरामाता"],
+["बैराड", "00116", "Vaishali Pathak", "9630818218", "गोवर्धन"],
+["बैराड", "00117", "Anil Kumar Tagore", "7566721516", "गोवर्धन"],
+["बैराड", "00118", "Anita Patel", "8319602391", "गोवर्धन"],
+["बैराड", "00119", "Sanjay Khan", "7898185487", "गोवर्धन"],
+["बैराड", "00120", "Vishnu Kumar Verma", "9993621754", "गोवर्धन"],
+["बैराड", "00121", "Manorma Sharma", "7828243776", "बैराड"],
+["बैराड", "00122", "Rohit Singh Gurjar", "7974452637", "बैराड"],
+["बैराड", "00123", "Mukul Hardeniya", "9425752200", "बैराड"],
+["बैराड", "00124", "Amit Tyagi", "9713980549", "बैराड"],
+["बैराड", "00125", "Jagannath Adiwasi", "7974089008", "बैराड"],
+["बैराड", "00126", "Vinay Singh Rajput", "8251939453", "बैराड"],
+["बैराड", "00127", "Sadhana Verma", "9131063343", "बैराड"],
+["बैराड", "00128", "Radhamohan Dhakad", "9584576738", "बैराड"],
+["बैराड", "00129", "Anand Kumar Sharma", "9649272443", "बैराड"],
+["बैराड", "00130", "Chetan Pachori", "7509925816", "बैराड"],
+["बैराड", "00131", "Sanjay Khan", "7898185487", "बैराड"],
+["बैराड", "00132", "Rajneesh Dhakar", "9755584553", "बैराड"],
+["बैराड", "00133", "Ballabh Singh Yadav", "9669848957", "बैराड"],
+["बैराड", "00134", "Sultan Singh Verma", "7999156998", "बैराड"],
+["बैराड", "00135", "Dilip Singh Kushwah", "7610773480", "बैराड"],
+["बैराड", "00136", "Eshwar Chand", "8120609919", "बीलवरामाता"],
+["बैराड", "00137", "Gajendra Singh Dhakar", "9098365093", "बीलवरामाता"],
+["बैराड", "00138", "Kapil Singhal", "8878977847", "बीलवरामाता"],
+["बैराड", "00139", "Vikas Bansal", "9617657257", "बीलवरामाता"],
+["बैराड", "00140", "Arun Paliwal", "9009772897", "बीलवरामाता"],
+["बैराड", "00141", "Devendra Soni", "7898411128", "बीलवरामाता"],
+["रन्नौद", "", "Lakhan Singh", "9753844212", "अकाझिरी"],
+["रन्नौद", "", "Madhur Milan Pathak", "8109953013", "अकाझिरी"],
+["रन्नौद", "", "Padam Kumar Sharma", "9300686156", "अकाझिरी"],
+["रन्नौद", "", "Prahlad Singh Parihar", "9993933376", "इन्दार"],
+["रन्नौद", "00101", "Bhanu Sen", "9977416586", "अकाझिरी"],
+["रन्नौद", "00102", "Padam Kumar Sharma", "9300686156", "अकाझिरी"],
+["रन्नौद", "00103", "Madhur Milan Pathak", "8109953013", "अकाझिरी"],
+["रन्नौद", "00104", "Rambaran Dhakar", "7566887268", "अकाझिरी"],
+["रन्नौद", "00105", "Lakhan Singh", "9753844212", "अकाझिरी"],
+["रन्नौद", "00106", "Chandrapal Yadav", "8878987884", "अकाझिरी"],
+["रन्नौद", "00107", "Chandrapal Yadav", "8878987884", "अकाझिरी"],
+["रन्नौद", "00108", "Bhanu Sen", "9977416586", "अकाझिरी"],
+["रन्नौद", "00109", "Padam Kumar Sharma", "9300686156", "अकाझिरी"],
+["रन्नौद", "00110", "Avinash Yadav", "7974642396", "अकाझिरी"],
+["रन्नौद", "00111", "Gaurab Pateriya", "8109705181", "अकाझिरी"],
+["रन्नौद", "00112", "Neeraj Kumar Ojha", "6267325709", "अकाझिरी"],
+["रन्नौद", "00113", "Jitendra Dangi", "8269555276", "रन्नोद"],
+["रन्नौद", "00114", "Ravi Raghuwanshi", "9981151411", "रन्नोद"],
+["रन्नौद", "00115", "Beerendra Singh Dangi", "9827507556", "रन्नोद"],
+["रन्नौद", "00116", "Govind Sharma", "9584882433", "रन्नोद"],
+["रन्नौद", "00117", "Shivani Ashthana", "9039168948", "रन्नोद"],
+["रन्नौद", "00118", "Vikram Dhakad", "6264536578", "रन्नोद"],
+["रन्नौद", "00119", "Alok Kumar Dhore", "7898342645", "रन्नोद"],
+["रन्नौद", "00120", "Ravi Pratap Singh Bhadauriya", "8878588939", "रन्नोद"],
+["रन्नौद", "00121", "Shalu Gupta", "8878378855", "रन्नोद"],
+["रन्नौद", "00122", "Reena Patel", "9294559407", "रन्नोद"],
+["रन्नौद", "00123", "Umesh Kushwaha", "8349812542", "रन्नोद"],
+["रन्नौद", "00124", "Sunil Kumar Dhakad", "7987225679", "इन्दार"],
+["रन्नौद", "00125", "Prahlad Singh Parihar", "9993933376", "इन्दार"],
+["रन्नौद", "00126", "Bhupendra Rawat", "7509447947", "इन्दार"],
+["रन्नौद", "00127", "Lalaram Adiwasi", "9630715314", "इन्दार"],
+["रन्नौद", "00128", "Beerendra Singh Dangi", "9827507556", "इन्दार"],
+["रन्नौद", "00129", "Prahlad Singh Parihar", "9993933376", "इन्दार"],
+["रन्नौद", "00130", "Avinash Yadav", "7974642396", "इन्दार"],
+["रन्नौद", "00131", "Jeetendra Dangi", "9098897447", "इन्दार"],
+["रन्नौद", "00132", "Jitendra Kumar Iklodiya", "9039006504", "इन्दार"],
+["रन्नौद", "00133", "Alok Kumar Dhore", "7898342645", "इन्दार"],
+["रन्नौद", "00134", "Brajesh Yadav", "9584284209", "इन्दार"],
+["शिवपुरी", "00069", "Namita Yadav", "9981374601", "सतनबाडाकला"],
+["शिवपुरी", "00078", "Ritu Godiya", "9516625876", "सतनबाडाकला"],
+["शिवपुरी", "00101", "Mahendra Bhargava", "9926858470", "सुभाषपुरा"],
+["शिवपुरी", "00102", "Kavita Paras", "9685425640", "सुभाषपुरा"],
+["शिवपुरी", "00103", "Sandeep Parashar", "8750721166", "सुभाषपुरा"],
+["शिवपुरी", "00104", "Mayank Pathak", "6269117366", "सुभाषपुरा"],
+["शिवपुरी", "00105", "Pooja Sikarwar", "9074537688", "सुभाषपुरा"],
+["शिवपुरी", "00106", "Nishkam Garg", "9981296262", "सुभाषपुरा"],
+["शिवपुरी", "00107", "Sakshi Dixit", "9691117730", "सुभाषपुरा"],
+["शिवपुरी", "00108", "James Toppo", "9893220280", "सुभाषपुरा"],
+["शिवपुरी", "00109", "Balgovind Sharma", "9589910465", "सुभाषपुरा"],
+["शिवपुरी", "00110", "RAHUL VERMA", "9074984023", "सुभाषपुरा"],
+["शिवपुरी", "00111", "Ravi Kumar Sharma", "9907131415", "सुभाषपुरा"],
+["शिवपुरी", "00112", "Arvind Asaiya", "9926265943", "सुभाषपुरा"],
+["शिवपुरी", "00113", "Deepak Dhakad", "8109432707", "सुभाषपुरा"],
+["शिवपुरी", "00114", "Kiran Thakur", "9907683865", "सुभाषपुरा"],
+["शिवपुरी", "00115", "Vidhyaram Upadhyay", "9406508641", "सुभाषपुरा"],
+["शिवपुरी", "00116", "Abhilasha Bhargava", "8878386517", "सुभाषपुरा"],
+["शिवपुरी", "00117", "Meenu Agrawal", "6260374832", "सुभाषपुरा"],
+["शिवपुरी", "00118", "Ashish Kushwah", "9993673959", "सुभाषपुरा"],
+["शिवपुरी", "00119", "Hari Singh Verma", "8770230378", "सतनबाडाकला"],
+["शिवपुरी", "00120", "Rachna Rajpoot", "9425792110", "सतनबाडाकला"],
+["शिवपुरी", "00121", "Mohni Bagwar", "8878189276", "सतनबाडाकला"],
+["शिवपुरी", "00122", "Sandhya Sharma", "7987197007", "सतनबाडाकला"],
+["शिवपुरी", "00123", "Shivesh Kumar Gupta", "7748052111", "सतनबाडाकला"],
+["शिवपुरी", "00124", "Dileep Sharma", "9691882122", "सतनबाडाकला"],
+["शिवपुरी", "00125", "Mala Dubey", "8770792142", "सतनबाडाकला"],
+["शिवपुरी", "00126", "Sapna Verma", "8251837501", "सतनबाडाकला"],
+["शिवपुरी", "00127", "Rakesh Kumar Jain", "9981453771", "सतनबाडाकला"],
+["शिवपुरी", "00128", "Brijesh Kumar Bhardwaj", "8966842065", "सतनबाडाकला"],
+["शिवपुरी", "00129", "Adarsh Choudhari", "9425137521", "सतनबाडाकला"],
+["शिवपुरी", "00130", "Abhishek Agarwal", "9522199424", "सतनबाडाकला"],
+["शिवपुरी", "00131", "Vivek Gautam", "9584903957", "सतनबाडाकला"],
+["शिवपुरी", "00132", "Kamlesh Sahu", "9713850430", "सतनबाडाकला"],
+["शिवपुरी", "00133", "Savita Agrawal", "9993012524", "सतनबाडाकला"],
+["शिवपुरी", "00134", "Hemlata Verma", "8349463010", "सतनबाडाकला"],
+["शिवपुरी", "00135", "Girraj Hindoliya", "9406933032", "सतनबाडाकला"],
+["शिवपुरी", "00136", "Satendra Singh Dhaker", "9425358765", "सतनबाडाकला"],
+["शिवपुरी", "00137", "Ashish Sharma", "9893382589", "सतनबाडाकला"],
+["शिवपुरी", "00138", "Manish Rajpoot", "8989636497", "ठर्रा"],
+["शिवपुरी", "00139", "Parag Rahora", "9826734547", "ठर्रा"],
+["शिवपुरी", "00140", "Asha Dhakar", "9630355857", "ठर्रा"],
+["शिवपुरी", "00141", "Vikram Singh Rawat", "9644022571", "ठर्रा"],
+["शिवपुरी", "00142", "Kalpana Sharma", "7987804465", "ठर्रा"],
+["शिवपुरी", "00143", "Kamini Gupta", "8085028138", "ठर्रा"],
+["शिवपुरी", "00144", "Pooja Khemariya", "7898724748", "ठर्रा"],
+["शिवपुरी", "00145", "Deepika Verma", "9669878796", "ठर्रा"],
+["शिवपुरी", "00146", "Anurag Sharma", "9713837749", "ठर्रा"],
+["शिवपुरी", "00147", "Ramsewak Rathore", "9039718078", "ठर्रा"],
+["शिवपुरी", "00148", "Rakesh Kumar Gupta", "9425488453", "ठर्रा"],
+["शिवपुरी", "00149", "Sandeep Varma", "9893930722", "ठर्रा"],
+["शिवपुरी", "00150", "Mamta Dhakad", "9993283450", "ठर्रा"],
+["शिवपुरी", "00151", "Sanjeev Maurya", "9425796699", "ठर्रा"],
+["शिवपुरी", "00152", "Jyoti Sikarwar", "9425136031", "ठर्रा"],
+["शिवपुरी", "00153", "Khushboo Khan", "7974543642", "ठर्रा"],
+["शिवपुरी", "00154", "Jay Kumar Dubey", "9479519062", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00155", "Gajendra Gurjar", "8878561846", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00156", "Naveen Sharma", "7898899861", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00157", "Anand Singh Yadav", "9993608763", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00158", "Roopa Sharma", "8878958580", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00159", "Girjesh Shrivastava", "7869386666", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00160", "Vakeel Vanjara", "9425664026", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00161", "Dushyant Singh Tomar", "9685986238", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00162", "Nayna Lahari", "8718819367", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00163", "Taniya Gupta", "8103703186", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00164", "Bharat Kumar Shrivastava", "7024697888", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00165", "Namita Yadav", "9981374601", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00166", "Deepak Gupta", "8827486004", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00167", "Nikhil Jain", "7999869801", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00168", "Jagdish Rathore", "9755812210", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00169", "Shiva Pandey", "7509830300", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00170", "Rachit Dhakad", "9009644854", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00171", "Bhavana Goyal", "7389390368", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00172", "Shiv Kumar Sharma", "8839735430", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00173", "Ravi Prakash Lodhi", "9993737621", "ग्रामीण शिवपुरी"],
+["शिवपुरी", "00174", "Ritu Godiya", "9516625876", "ग्रामीण शिवपुरी"],
+["शिवपुरी नगर", "00001", "Rakesh Kumar Arya", "9755520839", "शिवपुरी"],
+["शिवपुरी नगर", "00002", "Deepak Kumar Prajapati", "7999757629", "शिवपुरी"],
+["शिवपुरी नगर", "00003", "Ankit Kalawat", "9584266122", "छावनी"],
+["शिवपुरी नगर", "00004", "Vivek Rawat", "9993902840", "मनियर"]
+];
+
+let ROWS = [], META = {}, HAS_MOBILE = false;
+let sortKey = "pending", sortDir = -1, timer = null;
+
+const $ = id => document.getElementById(id);
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function norm(s) {
+  return String(s || "").normalize("NFC").replace(/[​-‍﻿]/g, "").toLowerCase()
+    .replace(/[^a-z0-9ऀ-ॿ ]+/g, " ").replace(/\s+/g, " ").trim();
+}
+const parts = s => String(s || "").split(",").map(x => x.trim()).filter(Boolean);
+
+// ---- kolom: [key, label, numeric, sortable] ----
+function colsDef() {
+  const c = [
+    ["rank", "#", true, false],
+    ["name", "Patwari", false, true],
+    ["tehsils", "Tehsil", false, true],
+    ["ri_circle", "RI Mandal", false, true],
+    ["halka", "Halka", false, true],
+  ];
+  if (HAS_MOBILE) c.push(["mobile", "Mobile", false, false]);
+  return c.concat([
+    ["pending", "Pending", true, true],
+    ["ri", "Initiated", true, true],
+    ["pv", "In Process", true, true],
+    ["over15", "15 din+", true, true],
+    ["verified", "Verified", true, true],
+    ["received", "Kul", true, true],
+    ["pct", "Verified %", true, true],
+  ]);
+}
+
+// ---- mobile match: naam + tehsil + halka code se; ek naam ke kai patwari hon to mobile se alag pehchan ----
+const CIDX = new Map();
+CONTACTS.forEach(e => {
+  const k = norm(e[2]);
+  if (!CIDX.has(k)) CIDX.set(k, []);
+  CIDX.get(k).push({ t: e[0], h: e[1], n: e[2], m: e[3], ri: e[4] });
+});
+function matchContacts(r) {
+  const ths = parts(r.tehsils).map(norm), hs = parts(r.halka);
+  return (CIDX.get(norm(r.name)) || []).filter(e => ths.includes(norm(e.t)) && (!e.h || hs.includes(e.h)));
+}
+function buildMobiles(list) {
+  const by = new Map();
+  list.forEach(e => {
+    const lbl = e.t + (e.h ? " " + e.h : "");
+    if (!by.has(e.m)) by.set(e.m, new Set());
+    by.get(e.m).add(lbl);
+  });
+  const multi = by.size > 1;
+  return [...by].map(([m, s]) => ({ m, lbl: multi ? [...s].join(", ") : "" }));
+}
+function withMobileText(r) {
+  r.mobile = r.mobiles.map(x => x.lbl ? `${x.m} (${x.lbl})` : x.m).join(" / ");
+  return r;
+}
+
+function ingest(json) {
+  if (!json || !Array.isArray(json.rows) || !Array.isArray(json.cols)) throw new Error("JSON ka format alag hai");
+  META = { as_of: json.as_of };
+  const api = json.rows.map(r => Object.fromEntries(json.cols.map((c, i) => [c, r[i]])))
+    .filter(r => String(r.district).normalize("NFC") === DISTRICT.normalize("NFC"));
+  if (!api.length) throw new Error("Shivpuri ka data nahi mila");
+  const used = new Set();
+  ROWS = api.map(r => {
+    const ms = matchContacts(r);
+    ms.forEach(e => used.add(e));
+    r = { ...r, mobiles: buildMobiles(ms) };
+    r.multi = r.mobiles.length > 1;
+    return withMobileText(r);
+  });
+  // Excel ke bache hue patwari: (1) wahi naam + wahi mobile = usi patwari ki doosri halka (registry nahi) -> alag row nahi
+  // (2) alag mobile ya API me naam hi nahi = alag patwari, registry data nahi -> zero ke saath alag row
+  const apiMob = new Map();
+  ROWS.forEach(r => { const k = norm(r.name); if (!apiMob.has(k)) apiMob.set(k, new Set()); r.mobiles.forEach(x => apiMob.get(k).add(x.m)); });
+  const extra = new Map();
+  CONTACTS.forEach(c => {
+    const e = { t: c[0], h: c[1], n: c[2], m: c[3], ri: c[4] };
+    if (used.has((CIDX.get(norm(e.n)) || []).find(x => x.t === e.t && x.h === e.h && x.m === e.m))) return;
+    if ((apiMob.get(norm(e.n)) || new Set()).has(e.m)) return;
+    const k = norm(e.n) + "|" + e.m;
+    if (!extra.has(k)) extra.set(k, { n: e.n, m: e.m, t: new Set(), h: new Set(), ri: new Set(), sameName: apiMob.has(norm(e.n)) });
+    const x = extra.get(k); x.t.add(e.t); if (e.h) x.h.add(e.h); if (e.ri) x.ri.add(e.ri);
+  });
+  extra.forEach(x => ROWS.push(withMobileText({
+    district: DISTRICT, tehsils: [...x.t].join(", "), ri_circle: [...x.ri].join(", "), halka: [...x.h].join(", "), name: x.n,
+    villages: 0, plots: 0, received: 0, ri: 0, pv: 0, verified: 0, pending: 0, pct: null, done: 0, v7: 0, over15: 0, status: "none",
+    mobiles: [{ m: x.m, lbl: "" }], noApi: true, sameName: x.sameName,
+  })));
+  ROWS.forEach((r, i) => { r.id = String(i); });
+  HAS_MOBILE = true;
+  buildTehsil();
+  buildPat();
+  setError(null);
+  render();
+}
+
+function tehLabel(t) {
+  const e = TEHSILS.find(x => norm(x[0]) === norm(t));
+  return e ? `${e[0]} (${e[1]})` : t;
+}
+function inTehsil(r, t) { return !t || parts(r.tehsils).some(x => norm(x) === norm(t)); }
+
+function buildTehsil() {
+  const set = new Set();
+  ROWS.forEach(r => parts(r.tehsils).forEach(x => set.add(x)));
+  const order = TEHSILS.map(x => norm(x[0]));
+  const list = [...set].sort((a, b) => {
+    const ia = order.indexOf(norm(a)), ib = order.indexOf(norm(b));
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.localeCompare(b, "hi");
+  });
+  const cur = $("tehsil").value;
+  $("tehsil").innerHTML = `<option value="">Sabhi Tehsil</option>` + list.map(t => `<option value="${esc(t)}">${esc(tehLabel(t))}</option>`).join("");
+  if (list.includes(cur)) $("tehsil").value = cur;
+}
+
+function buildPat() {
+  const t = $("tehsil").value, cur = $("pat").value;
+  const rs = ROWS.filter(r => inTehsil(r, t));
+  const cnt = {}; rs.forEach(r => { cnt[norm(r.name)] = (cnt[norm(r.name)] || 0) + 1; });
+  const opts = rs.map(r => ({ id: r.id, label: r.name + (cnt[norm(r.name)] > 1 || r.multi ? " (" + r.mobiles.map(x => x.m).join(", ") + ")" : "") }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en"));
+  $("pat").innerHTML = `<option value="">Sabhi Patwari</option>` + opts.map(o => `<option value="${o.id}">${esc(o.label)}</option>`).join("");
+  if (opts.some(o => o.id === cur)) $("pat").value = cur;
+}
+
+function sortRows(list, key, dir) {
+  return list.slice().sort((a, b) => {
+    const x = a[key], y = b[key];
+    if (typeof x === "number" && typeof y === "number") return (x - y) * dir || String(a.name).localeCompare(b.name);
+    return String(x ?? "").localeCompare(String(y ?? ""), "hi") * dir;
+  });
+}
+
+function view() {
+  const t = $("tehsil").value, p = $("pat").value, q = $("q").value.trim().toLowerCase(), hz = $("hideZero").checked;
+  let list = ROWS.filter(r => inTehsil(r, t));
+  if (p) list = list.filter(r => r.id === p);
+  if (hz) list = list.filter(r => r.pending > 0);
+  if (q) list = list.filter(r => [r.name, r.tehsils, r.ri_circle, r.halka, r.mobile].join(" ").toLowerCase().includes(q));
+  return sortRows(list, sortKey, sortDir);
+}
+
+function statsOf(list) {
+  const sum = k => list.reduce((s, r) => s + (r[k] || 0), 0);
+  return [
+    ["Kul pending", sum("pending")],
+    ["Registry Initiated", sum("ri")],
+    ["Verification in Process", sum("pv")],
+    ["15 din se purane", sum("over15")],
+    ["Patwari ki sankhya", list.length],
+    ["Pending wale patwari", list.filter(r => r.pending > 0).length],
+  ];
+}
+
+function mobileHtml(r) {
+  if (!r.mobiles || !r.mobiles.length) return `<span class="muted">-</span>`;
+  return r.mobiles.map(x => `<div style="white-space:nowrap"><a class="tel" href="tel:${x.m}">${esc(x.m)}</a>${x.lbl ? ` <span class="muted">(${esc(x.lbl)})</span>` : ""}</div>`).join("");
+}
+
+function nameTags(r) {
+  let t = "";
+  if (r.noApi) t += `<span class="tag">${r.sameName ? "is naam ka alag patwari - " : ""}registry data nahi</span>`;
+  if (r.multi) t += `<span class="tag" title="API ek hi naam ke patwariyon ka data jodkar deti hai, isliye Pending alag-alag nahi kiya ja sakta">ek naam, ${r.mobiles.length} mobile - data milakar</span>`;
+  return t;
+}
+
+function cell(r, k, i) {
+  switch (k) {
+    case "rank": return `<td class="n muted">${i + 1}</td>`;
+    case "name": return `<td>${esc(r.name)}${nameTags(r)}</td>`;
+    case "tehsils": case "ri_circle": case "halka": return `<td class="muted">${esc(r[k])}</td>`;
+    case "mobile": return `<td>${mobileHtml(r)}</td>`;
+    case "pending": return `<td class="n ${r.pending > 0 ? "hot" : "muted"}">${r.pending}</td>`;
+    case "over15": return `<td class="n ${r.over15 > 0 ? "hot" : "muted"}">${r.over15}</td>`;
+    case "pct": return `<td class="n">${r.pct == null ? "-" : Number(r.pct).toFixed(1) + "%"}</td>`;
+    default: return `<td class="n">${r[k]}</td>`;
+  }
+}
+
+function render() {
+  const list = view(), cols = colsDef();
+  $("stats").innerHTML = statsOf(list).map(([l, v]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("thead").innerHTML = cols.map(([k, label, num, sortable]) =>
+    `<th class="${num ? "n" : ""} ${sortable ? "" : "nosort"}" data-k="${k}">${label}${k === sortKey ? (sortDir < 0 ? " ▼" : " ▲") : ""}</th>`).join("");
+  $("tbody").innerHTML = list.map((r, i) => `<tr>${cols.map(c => cell(r, c[0], i)).join("")}</tr>`).join("")
+    || `<tr><td colspan="${cols.length}" class="muted">Koi row nahi mili</td></tr>`;
+}
+
+function setError(msg, hint) {
+  const e = $("err");
+  if (!msg) { e.style.display = "none"; $("fallback").style.display = "none"; return; }
+  e.innerHTML = msg + (hint ? "<small>" + hint + "</small>" : "");
+  e.style.display = "block";
+  $("fallback").style.display = "block";
+}
+
+// ---- Google Sheet: poori Shivpuri list (filter se alag), pending ke ghatte kram me, "Patwari Pending" tab me ----
+let syncMsg = "";
+async function pushSheet() {
+  const all = sortRows(ROWS, "pending", -1);
+  const payload = {
+    tab: SHEET_TAB,
+    district: "Shivpuri",
+    as_of: META.as_of || "",
+    fetched: new Date().toLocaleString("hi-IN"),
+    header: ["#", "Patwari", "Mobile", "Tehsil", "RI Mandal", "Halka", "Gaon", "Plots", "Pending", "Registry Initiated", "In Process", "15 din+", "Verified", "Kul", "Verified %"],
+    textCols: [3, 6], // Mobile aur Halka text rahein (00133 ke shuru ke 0 na hatein)
+    rows: all.map((r, i) => [i + 1, r.name, r.mobile, r.tehsils, r.ri_circle, r.halka, r.villages, r.plots, r.pending, r.ri, r.pv, r.over15, r.verified, r.received, r.pct == null ? "" : r.pct]),
+  };
+  try {
+    // no-cors: jawab padh nahi sakte, par data Sheet tak pahunch jata hai
+    await fetch(WEB_APP_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+    syncMsg = " - Sheet sync: " + new Date().toLocaleTimeString("hi-IN");
+  } catch (e) {
+    syncMsg = " - Sheet sync nahi hua (" + e.message + ")";
+  }
+  $("status").textContent = $("status").textContent.split(" - Sheet sync")[0] + syncMsg;
+}
+
+async function load() {
+  $("status").textContent = "Data la rahe hain (file badi hai, thoda samay lag sakta hai)...";
+  try {
+    const res = await fetch(API, { headers: { accept: "application/json" }, cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    ingest(await res.json());
+    $("status").textContent = "Live data - website ki date: " + (META.as_of || "?") + " - fetch: " + new Date().toLocaleTimeString("hi-IN");
+    pushSheet();
+  } catch (e) {
+    $("status").textContent = "";
+    setError("Live fetch nahi ho paya (" + e.message + ").",
+      "Sambhavit karan: website dusre page ko API call karne ki anumati (CORS) nahi deti. Neeche backup se JSON load kar sakte hain.");
+  }
+}
+
+function setTimer() {
+  clearInterval(timer);
+  const s = +$("auto").value;
+  if (s > 0) timer = setInterval(load, s * 1000);
+}
+
+function downloadCsv() {
+  const list = view();
+  const head = ["Patwari", "Mobile", "Tehsil", "RI Mandal", "Halka", "Gaon", "Plots", "Pending", "Registry Initiated", "In Process", "15 din+", "Verified", "Kul", "Verified %"];
+  const q = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+  const lines = [head.map(q).join(",")].concat(list.map(r =>
+    [r.name, r.mobile, r.tehsils, r.ri_circle, "\t" + r.halka, r.villages, r.plots, r.pending, r.ri, r.pv, r.over15, r.verified, r.received, r.pct == null ? "" : r.pct].map(q).join(",")));
+  const blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "shivpuri_patwari_pending.csv";
+  a.click();
+}
+
+// ---- PDF (PC + mobile): page ko image banakar seedha PDF file banta hai, printer ki zarurat nahi ----
+const PW = 1122, PH = 794;
+const FIRST_ROWS = 20, REST_ROWS = 24;
+let pdfBlob = null, pdfName = "", pdfUrl = "";
+
+function filterText() {
+  const f = [];
+  if ($("tehsil").value) f.push("Tehsil: " + $("tehsil").value);
+  if ($("pat").value) f.push("Patwari: " + $("pat").options[$("pat").selectedIndex].text);
+  if ($("q").value.trim()) f.push("Khoj: " + $("q").value.trim());
+  if ($("hideZero").checked) f.push("Pending 0 wale chhupaye gaye");
+  return f.length ? f.join(" | ") : "Koi nahi (poori Shivpuri list)";
+}
+
+function pdfCols() {
+  const text = [["rank", "#", 30], ["name", "Patwari", 170], ["tehsils", "Tehsil", 90], ["ri_circle", "RI Mandal", 105], ["halka", "Halka", 95]];
+  if (HAS_MOBILE) text.push(["mobile", "Mobile", 165]);
+  const num = [["pending", "Pending"], ["ri", "Initiated"], ["pv", "In Process"], ["over15", "15 din+"], ["verified", "Verified"], ["received", "Kul"], ["pct", "Ver. %"]];
+  const used = text.reduce((s, c) => s + c[2], 0);
+  const nw = Math.floor((PW - 56 - used) / num.length);
+  return text.map(c => ({ k: c[0], label: c[1], w: c[2], n: false })).concat(num.map(c => ({ k: c[0], label: c[1], w: nw, n: true })));
+}
+
+function reportPageHtml(rows, start, p, total, ctx, cols) {
+  const head = p === 0
+    ? `<div class="rh"><h2>Shivpuri - Patwari Pending Registry Report</h2>
+        <div>Website data ki date: ${esc(META.as_of || "?")} &nbsp;|&nbsp; Report banane ka samay: ${esc(ctx.when)}</div>
+        <div>Filter: ${esc(ctx.filter)} &nbsp;|&nbsp; Kul rows: ${ctx.count}</div></div>
+       <div class="rs">${ctx.stats.map(([l, v]) => `<div><b>${v}</b><span>${l}</span></div>`).join("")}</div>`
+    : `<div class="rh2">Shivpuri - Patwari Pending Registry Report (jaari)</div>`;
+  const th = cols.map(c => `<th class="${c.n ? "n" : ""}">${c.label}</th>`).join("");
+  const tr = rows.map((r, i) => `<tr>${cols.map(c => {
+    let v;
+    if (c.k === "rank") v = start + i + 1;
+    else if (c.k === "mobile") v = (r.mobiles || []).map(x => x.m).join(" / ") || "-";
+    else if (c.k === "pct") v = r.pct == null ? "-" : Number(r.pct).toFixed(1) + "%";
+    else v = r[c.k];
+    const hot = (c.k === "pending" && r.pending > 0) || (c.k === "over15" && r.over15 > 0);
+    return `<td class="${c.n || c.k === "rank" ? "n" : ""} ${hot ? "hot" : ""} ${c.k === "mobile" && r.multi ? "mm" : ""}">${esc(v)}${c.k === "name" && (r.multi || r.noApi) ? " *" : ""}</td>`;
+  }).join("")}</tr>`).join("");
+  return `<div class="rp">${head}
+    <table class="rt"><colgroup>${cols.map(c => `<col style="width:${c.w}px">`).join("")}</colgroup>
+    <thead><tr>${th}</tr></thead><tbody>${tr}</tbody></table>
+    <div class="rf">${ctx.foot ? esc(ctx.foot) + " &nbsp;|&nbsp; " : ""}Page ${p + 1} / ${total}</div></div>`;
+}
+
+function setPdfMsg(t) { $("pdfbox").style.display = "flex"; $("pdfmsg").textContent = t; }
+
+async function makePdf() {
+  if (!ROWS.length) { alert("Pehle data load hone dein."); return; }
+  if (!window.html2canvas || !window.jspdf) { alert("PDF banane ki library load nahi hui. Internet check karke page dobara kholein."); return; }
+  const btn = $("pdf");
+  btn.disabled = true;
+  $("pdfShare").style.display = $("pdfSave").style.display = $("pdfOpen").style.display = "none";
+  let holder;
+  try {
+    const list = view(), cols = pdfCols();
+    const pages = [list.slice(0, FIRST_ROWS)];
+    for (let i = FIRST_ROWS; i < list.length; i += REST_ROWS) pages.push(list.slice(i, i + REST_ROWS));
+    const ctx = { when: new Date().toLocaleString("hi-IN"), filter: filterText(), count: list.length, stats: statsOf(list), foot: list.some(r => r.multi || r.noApi) ? "* = ek naam ke kai patwari ka data milakar, ya registry data nahi" : "" };
+    holder = document.createElement("div");
+    holder.style.cssText = "position:absolute;left:-10000px;top:0;";
+    document.body.appendChild(holder);
+
+    const doc = new window.jspdf.jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+    let start = 0;
+    for (let p = 0; p < pages.length; p++) {
+      setPdfMsg(`PDF ban rahi hai... page ${p + 1} / ${pages.length}`);
+      holder.innerHTML = reportPageHtml(pages[p], start, p, pages.length, ctx, cols);
+      start += pages[p].length;
+      await new Promise(r => setTimeout(r, 30));
+      const canvas = await window.html2canvas(holder.firstElementChild, { scale: 1.5, backgroundColor: "#ffffff", logging: false, width: PW, height: PH, windowWidth: PW });
+      if (p > 0) doc.addPage("a4", "landscape");
+      doc.addImage(canvas.toDataURL("image/jpeg", 0.8), "JPEG", 0, 0, 297, 210, undefined, "FAST");
+    }
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    pdfBlob = doc.output("blob");
+    pdfUrl = URL.createObjectURL(pdfBlob);
+    pdfName = "Shivpuri_Patwari_Pending_" + (META.as_of || "report") + ".pdf";
+    setPdfMsg("PDF taiyar: " + pdfName + " (" + Math.round(pdfBlob.size / 1024) + " KB, " + pages.length + " page)");
+    $("pdfSave").style.display = "";
+    $("pdfOpen").style.display = "";
+    try {
+      const f = new File([pdfBlob], pdfName, { type: "application/pdf" });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) $("pdfShare").style.display = "";
+    } catch (e) {}
+  } catch (e) {
+    setPdfMsg("PDF nahi ban payi: " + e.message);
+  } finally {
+    if (holder) holder.remove();
+    btn.disabled = false;
+  }
+}
+
+$("pdf").onclick = makePdf;
+// Share: mobile ka share-sheet (WhatsApp, Gmail, Drive...) kholta hai; yeh seedha button dabane par hi chalta hai
+$("pdfShare").onclick = async () => {
+  try { await navigator.share({ files: [new File([pdfBlob], pdfName, { type: "application/pdf" })], title: pdfName }); }
+  catch (e) { if (e.name !== "AbortError") setPdfMsg("Share nahi ho paya: " + e.message + " - Download / Save ka use karein."); }
+};
+$("pdfSave").onclick = () => {
+  if (!pdfBlob) return;
+  if (!("download" in HTMLAnchorElement.prototype)) { window.open(pdfUrl, "_blank"); return; }
+  const a = document.createElement("a");
+  a.href = pdfUrl; a.download = pdfName;
+  document.body.appendChild(a); a.click(); a.remove();
+};
+$("pdfOpen").onclick = () => { if (pdfUrl) window.open(pdfUrl, "_blank"); };
+
+$("refresh").onclick = load;
+$("csv").onclick = downloadCsv;
+$("auto").onchange = setTimer;
+$("tehsil").onchange = () => { buildPat(); render(); };
+$("pat").onchange = $("hideZero").onchange = render;
+$("q").oninput = render;
+$("thead").onclick = e => {
+  const k = e.target.closest("th")?.dataset.k;
+  const col = colsDef().find(c => c[0] === k);
+  if (!col || !col[3]) return;
+  if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = col[2] ? -1 : 1; }
+  render();
+};
+$("file").onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try { ingest(JSON.parse(await f.text())); $("status").textContent = "File se data - website ki date: " + (META.as_of || "?"); }
+  catch (err) { alert("File padhne me dikkat: " + err.message); }
+};
+$("usePaste").onclick = () => {
+  try { ingest(JSON.parse($("paste").value)); $("status").textContent = "Paste kiye data se - website ki date: " + (META.as_of || "?"); }
+  catch (err) { alert("JSON sahi nahi hai: " + err.message); }
+};
+
+load();
+setTimer();
+</script>
+</body>
+</html>
