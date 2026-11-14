@@ -1,17 +1,3 @@
-अब **BOTTOM पटवारी** टैब को इस तरह अपडेट कर दिया गया है कि उसमें केवल वही पटवारी दिखेंगे जिनका **Completion % जिले के कुल Completion % (`pc`) से कम** है (सबसे कम % वाले पटवारी सबसे ऊपर, और अगर आपने कोई तहसील/कोर्ट फ़िल्टर लगाया है तो भी तुलना **पूरे जिले के औसत Completion %** से ही होगी)।
-
-नीचे दिए गए पूर्ण HTML कोड में ये बदलाव शामिल हैं:
-
-* टैब का नाम अब **`⬇ BOTTOM पटवारी (< जिला %)`** दिखेगा।
-* सूची में केवल `g.pct < distPct` वाले पटवारी ही फ़िल्टर होकर आएंगे।
-* टेबल के ऊपर सूचना में स्पष्ट रूप से **जिले का कुल Completion %** और उससे कम प्रदर्शन करने वाले कुल पटवारियों की संख्या दिखेगी।
-* PDF डाउनलोड, PDF Share और Excel/CSV में भी यही नई फ़िल्टर की हुई सूची जाएगी।
-
----
-
-### अपडेटेड पूरा HTML कोड
-
-```html
 <!DOCTYPE html>
 <html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Svamitva Registry : Live Progress Dashboard · District Shivpuri</title>
@@ -451,5 +437,3 @@ setInterval(()=>refresh(),CFG.POLL*1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 refresh(true);
 </script></body></html>
-
-```
