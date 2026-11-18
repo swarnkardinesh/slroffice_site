@@ -3,8 +3,8 @@
 <title>Svamitva Registry : Live Progress Dashboard · District Shivpuri</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f1f5f9;--sf:#fff;--ink:#0f1f2e;--mut:#5f7183;--ln:#e2e8f0;--ac:#0f766e;--ac2:#0b3b5c;--acb:#e6f4f1;--lo:#fde4e1;--lot:#9b1c13;--mi:#fdf0c8;--mit:#7a4d05;--hi:#d8f1dc;--hit:#17642b;--bar:#2b7a8c;--up:#0f7a4f;--upb:#dcf3e6;--dn:#a85d05;--dnb:#fdeed2;--wk:#7c5cd6;--dy:#e8960c;--sh:0 1px 2px rgba(15,31,46,.05),0 8px 24px rgba(15,31,46,.07);--r:16px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1219;--sf:#141e29;--ink:#e6edf4;--mut:#93a5b6;--ln:#243242;--ac:#2dd4bf;--ac2:#2a7fb0;--acb:#163530;--lo:#4a1f1b;--lot:#f5b8b1;--mi:#4a3a14;--mit:#f3d58b;--hi:#1d3c22;--hit:#b8e3bf;--bar:#5db5c7;--up:#5fe0a0;--upb:#173a29;--dn:#f0c27a;--dnb:#40300f;--wk:#a994f0;--dy:#f5b445;--sh:none}}
+:root{--bg:#f1f5f9;--sf:#fff;--ink:#0f1f2e;--mut:#5f7183;--ln:#cbd5e1;--ac:#0f766e;--ac2:#0b3b5c;--acb:#e6f4f1;--lo:#fde4e1;--lot:#9b1c13;--mi:#fdf0c8;--mit:#7a4d05;--hi:#d8f1dc;--hit:#17642b;--bar:#2b7a8c;--up:#0f7a4f;--upb:#dcf3e6;--dn:#a85d05;--dnb:#fdeed2;--wk:#7c5cd6;--dy:#e8960c;--sh:0 1px 2px rgba(15,31,46,.05),0 8px 24px rgba(15,31,46,.07);--r:16px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1219;--sf:#141e29;--ink:#e6edf4;--mut:#93a5b6;--ln:#2d3d4f;--ac:#2dd4bf;--ac2:#2a7fb0;--acb:#163530;--lo:#4a1f1b;--lot:#f5b8b1;--mi:#4a3a14;--mit:#f3d58b;--hi:#1d3c22;--hit:#b8e3bf;--bar:#5db5c7;--up:#5fe0a0;--upb:#173a29;--dn:#f0c27a;--dnb:#40300f;--wk:#a994f0;--dy:#f5b445;--sh:none}}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Inter","Noto Sans Devanagari","Mukta","Hind","Nirmala UI","Mangal",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
 .in{max-width:1280px;margin:0 auto}
@@ -35,38 +35,55 @@ select,input{width:100%;padding:8px 10px;border:1px solid var(--ln);border-radiu
 .sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
 .sm{border-radius:12px;padding:9px 13px;background:var(--bg)}.sm small{display:block;color:var(--mut);font-size:11.5px}.sm b{font-size:21px;font-weight:800}.sm.dy b{color:var(--dy)}.sm.wk b{color:var(--wk)}.sm.pc b.up{color:var(--up)}.sm.pc b.dn{color:#c0392b}
 .rw{display:grid;grid-template-columns:112px minmax(0,1fr) 118px;gap:10px;align-items:center;margin:9px 0;font-size:13px}.rw .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rw .v{text-align:right;font-weight:700}
-.tr{background:var(--ln);height:13px;border-radius:7px;position:relative}.tr i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--bar),var(--ac))}.tr.stk{display:flex;overflow:hidden}.tr.stk i{height:100%;border-radius:0}.hs{font-size:9.5px;font-weight:500;text-transform:none;letter-spacing:0;opacity:.8}.tr u{position:absolute;top:-3px;width:2px;height:19px;background:var(--ink);opacity:.65}
+.tr{background:var(--ln);height:13px;border-radius:7px;position:relative}.tr i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,var(--bar),var(--ac))}.tr.stk{display:flex;overflow:hidden}.tr.stk i{height:100%;border-radius:0}.hs{font-size:9.5px;font-weight:500;text-transform:none;letter-spacing:0;opacity:.85}.tr u{position:absolute;top:-3px;width:2px;height:19px;background:var(--ink);opacity:.65}
 .gb{display:flex;flex-direction:column;gap:4px}.gb .tr{height:9px;border-radius:5px}.gb .a i{background:var(--dy)}.gb .b i{background:var(--wk)}
 .lgd{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--mut);margin-bottom:6px}.lgd i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}.tabs button,.sbb button,.seg button{border:1px solid var(--ln);background:var(--sf);color:var(--ink);padding:8px 14px;border-radius:99px;font:inherit;font-weight:500;cursor:pointer;box-shadow:var(--sh);transition:.15s}.tabs button:hover{border-color:var(--ac)}
 .tabs button.on,.sbb button.on,.seg button.on{background:var(--ac);color:#fff;border-color:var(--ac)}.sbb{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}.sbb button{padding:5px 12px;font-size:13px}
 .pdfb.xlb{margin-left:0;background:#1d7a46!important;border-color:#1d7a46!important}.pdfb{margin-left:auto;background:var(--ac2)!important;color:#fff!important;border-color:var(--ac2)!important;font-weight:600!important}
 .seg{display:flex;align-items:center;gap:6px;margin:0 0 12px;flex-wrap:wrap;font-size:12.5px;color:var(--mut)}.seg button{padding:4px 13px;font-size:12.5px}
-.tw{overflow:auto;max-height:72vh;border-radius:12px;border:1px solid var(--ln)}
-table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}th,td{padding:8px 10px;border-bottom:1px solid var(--ln);text-align:center;white-space:nowrap}
-th{position:sticky;top:0;background:var(--acb);cursor:pointer;color:var(--ac2);font-weight:700;font-size:11.5px;z-index:2;text-transform:uppercase;letter-spacing:.3px}@media(prefers-color-scheme:dark){th{color:var(--ac)}}
-td.l,th.l{text-align:left}td.sr{color:var(--mut)}td.w2{white-space:normal;min-width:190px;max-width:300px}tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--bg) 55%,transparent)}tbody tr:hover td{background:var(--acb)}
-tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid var(--ac);position:sticky;bottom:0}
-.pc{display:inline-block;min-width:58px;padding:1px 8px;border-radius:7px;text-align:center;font-weight:700}.lo{background:var(--lo);color:var(--lot)}.mi{background:var(--mi);color:var(--mit)}.hi{background:var(--hi);color:var(--hit)}.sc{padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600}
+
+/* Excel / Google Sheets क्लासिक ग्रिड स्टाइल */
+.tw{overflow:auto;max-height:72vh;border-radius:6px;border:1px solid #94a3b8;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:13px;color:#0f172a;background:#fff}
+th,td{padding:6px 10px;border:1px solid #cbd5e1;text-align:center;white-space:nowrap}
+th{position:sticky;top:0;background:#e2e8f0;cursor:pointer;color:#0f172a;font-weight:700;font-size:11.5px;z-index:2;border-bottom:2px solid #94a3b8}
+td.l,th.l{text-align:left}td.sr{color:#475569}td.w2{white-space:normal;min-width:170px;max-width:280px}
+tbody tr:nth-child(even) td{background:#f8fafc}
+tbody tr:hover td{background:#eff6ff}
+tr.sbt td{font-weight:700;background:#e2e8f0!important;color:#0f172a!important;border-top:1.5px solid #94a3b8;border-bottom:1.5px solid #94a3b8}
+tr.tot td{font-weight:800;background:#cbd5e1!important;color:#0f172a!important;border-top:2px solid #475569;position:sticky;bottom:0}
+@media(prefers-color-scheme:dark){
+  .tw{background:#141e29;border-color:#334155}
+  table{background:#141e29;color:#e2e8f0}
+  th,td{border-color:#2d3d4f}
+  th{background:#1e293b;color:#f1f5f9;border-bottom-color:#475569}
+  tbody tr:nth-child(even) td{background:#182330}
+  tbody tr:hover td{background:#1e3a5f}
+  tr.sbt td{background:#1e293b!important;color:#f8fafc!important;border-color:#475569}
+  tr.tot td{background:#0f172a!important;color:#fff!important;border-top-color:#64748b}
+}
+
+.pc{display:inline-block;min-width:58px;padding:1px 6px;border-radius:4px;text-align:center;font-weight:700}.lo{background:#fee2e2;color:#991b1b}.mi{background:#fef3c7;color:#92400e}.hi{background:#dcfce7;color:#166534}.sc{padding:1px 9px;border-radius:99px;font-size:12px;font-weight:600}
 .d{font-size:10.5px;font-weight:700;margin-left:3px;padding:0 4px;border-radius:4px;vertical-align:super;line-height:1}.d.up{background:var(--upb);color:var(--up)}.d.g{background:var(--up);color:#fff}.d.dn{background:var(--dnb);color:var(--dn)}
 .dd{display:inline-block;min-width:34px;padding:1px 8px;border-radius:7px;font-weight:700;text-align:center}.dd.up{background:var(--upb);color:var(--up)}.dd.g{background:var(--up);color:#fff}.dd.dn{background:var(--dnb);color:var(--dn)}.dz{color:var(--mut)}
 .more{margin-top:10px;padding:8px 16px;border:1px solid var(--ln);background:var(--sf);color:var(--ink);border-radius:10px;cursor:pointer;font:inherit;font-weight:600}.note{color:var(--mut);font-size:12px;margin-top:8px;line-height:1.5}h3{font-size:14px;margin:16px 0 6px}
 .tp{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}.tc2{background:var(--bg);border-radius:14px;padding:14px;border-top:4px solid var(--ac)}.tc2.r1{border-color:#e0a800}.tc2.r2{border-color:#9aa5b1}.tc2.r3{border-color:#c0773a}.tc2 h4{margin:0;font-size:15px}.tc2 .s2{color:var(--mut);font-size:12px}.tc2 table{margin-top:6px}.tc2 td{padding:3px 4px;font-size:12px}
 .bg2{display:flex;gap:8px;margin:8px 0 4px}.bg2>div{flex:1;background:var(--sf);border-radius:10px;padding:5px 10px;border:1px solid var(--ln)}.bg2 b{font-size:21px;display:block;line-height:1.2}.bg2 .on{border-color:var(--up)}.bg2 .on b{color:var(--up)}.bg2 small{font-size:11px;color:var(--mut)}
-.dt td{text-align:center}.dt td.l{text-align:left}.dt td.ck{cursor:pointer;font-weight:700;color:var(--ac)}.dt td.ck:hover{background:var(--acb);text-decoration:underline}.dt td.dsel,.dt td.dsel:hover{background:var(--ac)!important;color:#fff}.dt td.tt{font-weight:700;background:var(--acb)}
-.sbt td{font-weight:700;background:var(--acb)!important}.foot{text-align:center;color:var(--mut);font-size:12px;margin-top:6px}.ph{display:none}
+.dt td{text-align:center}.dt td.l{text-align:left}.dt td.ck{cursor:pointer;font-weight:700;color:var(--ac)}.dt td.ck:hover{background:var(--acb);text-decoration:underline}.dt td.dsel,.dt td.dsel:hover{background:var(--ac)!important;color:#fff}.dt td.tt{font-weight:700;background:#e2e8f0}
+.foot{text-align:center;color:var(--mut);font-size:12px;margin-top:6px}.ph{display:none}
 @media print{@page{size:A4 landscape;margin:8mm}body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.g2,.tabs,.sbb,.seg,.more,.note,.sum,.foot{display:none!important}.hd{padding:8px 14px 40px}.w{margin-top:-24px}.ph{display:block;font-weight:700;font-size:13px;margin:0 0 6px}.tw{overflow:visible;max-height:none}table{font-size:9px}th,td{padding:3px 4px;white-space:normal}th{position:static}tr.tot td{position:static}thead{display:table-header-group}tr{break-inside:avoid}.card,.kc{box-shadow:none;border:1px solid var(--ln)}.top{grid-template-columns:230px 1fr}.hero b.big{font-size:36px}.tp{grid-template-columns:repeat(3,1fr)}.tc2{break-inside:avoid}}
 
 #busybox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(11,18,25,.94);color:#fff;align-items:center;justify-content:center;text-align:center;padding:20px}#busybox .bx{max-width:340px}#busybox .sp{width:44px;height:44px;border:4px solid rgba(255,255,255,.25);border-top-color:#2dd4bf;border-radius:50%;margin:0 auto 14px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#bmsg{font-weight:600}
 .pdfhost{position:fixed;top:0;left:0;z-index:1;background:#fff;pointer-events:none}
 .pdfpage{background:#fff;color:#111;font-family:Inter,"Noto Sans Devanagari",Arial,sans-serif;font-size:10px;line-height:1.3;box-sizing:border-box;font-variant-numeric:tabular-nums}
-.pdfpage .ph1{border-bottom:2px solid #0b3b5c;padding-bottom:7px;margin-bottom:8px}.pdfpage h1{font-size:21px;margin:0;color:#0b3b5c;font-weight:800}.pdfpage .d2{font-weight:700;color:#0f766e;font-size:13px}
-.pdfpage .mt{display:flex;flex-wrap:wrap;gap:2px 26px;font-size:11.5px;margin-top:5px}.pdfpage .fl2{margin-top:5px;background:#f1f5f8;border:1px solid #cfd8de;padding:4px 8px;font-size:11.5px}.pdfpage .df{margin-top:4px;font-size:10px;color:#555}
-.pdfpage .ph2{border-bottom:1px solid #0b3b5c;padding-bottom:4px;margin-bottom:6px;font-size:10.5px;color:#222}.pdfpage .ph2 span{color:#555}
-.pdfpage .st{font-size:13.5px;font-weight:700;margin:8px 0 5px;color:#0b3b5c}
-.pdfpage table{border-collapse:collapse;width:100%;table-layout:auto}.pdfpage.nat table{width:auto}.pdfpage th,.pdfpage td{border:1px solid #9aa7b2;padding:2px 4px;vertical-align:middle}
-.pdfpage th{background:#dfe9ef;color:#0b3b5c;font-weight:700;text-align:center;font-size:9.5px}.pdfpage td.n{text-align:center;white-space:nowrap}.pdfpage td.t{text-align:left;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;min-width:120px;max-width:240px}
-.pdfpage th{position:static!important;top:auto!important;z-index:auto!important;cursor:default}.pdfpage td{color:#111}.pdfpage tbody tr:nth-child(even) td{background:#f8fafb}.pdfpage tbody tr.sbt td{font-weight:700;background:#e8eff3!important;color:#111!important}.pdfpage tbody tr.tot td{position:static!important;bottom:auto!important;font-weight:700;background:#e8eff3!important;color:#111!important;border-top:2px solid #0b3b5c}
+.pdfpage .ph1{border-bottom:2px solid #334155;padding-bottom:7px;margin-bottom:8px}.pdfpage h1{font-size:21px;margin:0;color:#0f172a;font-weight:800}.pdfpage .d2{font-weight:700;color:#1e293b;font-size:13px}
+.pdfpage .mt{display:flex;flex-wrap:wrap;gap:2px 26px;font-size:11.5px;margin-top:5px}.pdfpage .fl2{margin-top:5px;background:#f8fafc;border:1px solid #cbd5e1;padding:4px 8px;font-size:11.5px}.pdfpage .df{margin-top:4px;font-size:10px;color:#475569}
+.pdfpage .ph2{border-bottom:1px solid #334155;padding-bottom:4px;margin-bottom:6px;font-size:10.5px;color:#222}.pdfpage .ph2 span{color:#555}
+.pdfpage .st{font-size:13.5px;font-weight:700;margin:8px 0 5px;color:#0f172a}
+.pdfpage table{border-collapse:collapse;width:100%;table-layout:auto}.pdfpage.nat table{width:auto}.pdfpage th,.pdfpage td{border:1px solid #94a3b8;padding:3px 5px;vertical-align:middle}
+.pdfpage th{background:#e2e8f0;color:#0f172a;font-weight:700;text-align:center;font-size:9.5px}.pdfpage td.n{text-align:center;white-space:nowrap}.pdfpage td.t{text-align:left;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;min-width:120px;max-width:240px}
+.pdfpage th{position:static!important;top:auto!important;z-index:auto!important;cursor:default}.pdfpage td{color:#111}.pdfpage tbody tr:nth-child(even) td{background:#f8fafc}.pdfpage tbody tr.sbt td{font-weight:700;background:#e2e8f0!important;color:#0f172a!important}.pdfpage tbody tr.tot td{position:static!important;bottom:auto!important;font-weight:700;background:#cbd5e1!important;color:#0f172a!important;border-top:2px solid #475569}
 </style></head><body>
 <header class="hd"><div class="in"><div class="hdr">
  <div class="brand"><div class="logo">🏛️</div><div><h1>Svamitva Registry : Live Progress Dashboard</h1><span class="dist">District Shivpuri</span></div></div>
@@ -95,7 +112,7 @@ const CFG={
 };
 /* ================================================== */
 let D=[],SYNC='',SD='',hash='',busy=false,EXP=false;
-const F={s:'',t:'',c:'',p:'',st:'',q:''};let tab='tehsil',lim=100,lv='tehsil',sort={},dsel=null,bk=1,T=[];
+const F={s:'',t:'',c:'',p:'',st:'',q:''};let tab='subdiv',lim=100,lv='tehsil',sort={},dsel=null,bk=1,T=[];
 const NA=CFG.NA,BS={1:{s:'1 दिन पहले',n:1,sh:'1 Day'},7:{s:'1 सप्ताह पहले',n:7,sh:'1 Week'}};let B=BS[1];
 const nf=x=>(+x||0).toLocaleString('en-IN'),pf=(a,b)=>b?a/b*100:0,pt=x=>x.toFixed(2)+'%',esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const sgn=(x,d=2)=>(x>=0?'+':'−')+Math.abs(x).toFixed(d);
@@ -299,7 +316,7 @@ cG.innerHTML=tg.slice().sort((a,b)=>b.p7-a.p7).map(g=>`<div class="rw" style="gr
 ph.textContent='Svamitva Registry · District Shivpuri · '+T.find(x=>x[0]==tab)[1]+' · Last Updated: '+SYNC;
 [...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.t==tab));sb.innerHTML='';seg.style.display='none';let h='';
 
-/* Farmer Registry की तर्ज पर अनुभागवार (Subdivision-wise) रिपोर्ट */
+/* Farmer Registry की तर्ज पर अनुभागवार (Subdivision-wise) रिपोर्ट (Pending कॉलम के बिना) */
 if(tab=='subdiv'){
   const subs=grp(R,r=>r.s).sort((a,b)=>a.pct-b.pct||b.pl-a.pl);
   let n=0,body='';
@@ -316,24 +333,21 @@ if(tab=='subdiv'){
     <td>${nf(g.sb)}</td>
     <td>${nf(g.pr)}</td>
     <td>${nf(g.cm)}</td>
-    <td>${nf(g.pl-g.cm)}</td>
     <td><span class="pc ${cls(g.pct)}">${pt(g.pct)}</span></td>
     <td>${nf(g.p1)}</td>
     <td>${nf(g.p7)}</td>
   </tr>`;
   subs.forEach(g0=>{
     X.vil+=g0.vil;X.pl+=g0.pl;X.b+=g0.b;X.i+=g0.i;X.v+=g0.v;X.sb+=g0.sb;X.pr+=g0.pr;X.cm+=g0.cm;X.p1+=g0.p1;X.p7+=g0.p7;
-    // पहले अनुभाग के अंतर्गत आने वाली तहसीलें (Completion % के Ascending क्रम में)
     grp(R.filter(r=>r.s==g0.k),r=>r.t).sort((a,b)=>a.pct-b.pct||b.pl-a.pl).forEach(t0=>{
       n++;
       body+=row(t0,n,g0.k,t0.k,'');
     });
-    // उसके ठीक नीचे अनुभाग का योग (Farmer Registry के 'योग अनुभाग ...' की तरह)
-    body+=row(g0,'','', 'योग अनुभाग '+g0.k,'sbt');
+    body+=row(g0,'','','योग अनुभाग '+g0.k,'sbt');
   });
   X.pct=pf(X.cm,X.pl);
   body+=row(X,'','','District Total','tot');
-  h=`<div class="note" style="margin:0 0 10px">Farmer Registry रिपोर्ट की तरह प्रत्येक <b>Subdivision (अनुभाग)</b> को उसके कुल <b>Completion % के कम से ज़्यादा (Ascending)</b> क्रम में रखा गया है। प्रत्येक अनुभाग की तहसीलें और उनके ठीक नीचे <b>योग अनुभाग</b> दिया गया है।</div>
+  h=`<div class="note" style="margin:0 0 10px">प्रत्येक <b>Subdivision (अनुभाग)</b> को उसके कुल <b>Completion % के कम से ज़्यादा (Ascending)</b> क्रम में रखा गया है। प्रत्येक अनुभाग की तहसीलें और उनके ठीक नीचे <b>योग अनुभाग</b> दिया गया है।</div>
   <div class="tw"><table data-id="subdiv"><thead><tr>
     <th class="l">S.No.</th>
     <th class="l">Sub-Division</th>
@@ -346,7 +360,6 @@ if(tab=='subdiv'){
     <th>Submitted</th>
     <th>Registration in Process</th>
     <th>Completed</th>
-    <th>Pending</th>
     <th>Completion %</th>
     <th>1 Day Progress<br><span class="hs">prev 9 AM → 9 AM</span></th>
     <th>1 Week Progress</th>
@@ -357,7 +370,7 @@ if(tab=='subdiv'){
 if(tab=='tehsil'){const a=grp(R,r=>r.t);h=tblW(tbl('tehsil',a,[['k','Tehsil','t'],...tail]),a)}
 if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],...tail]),a)}
 if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail],1),a,1)}
-if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],1),a,1)}
+if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],1),a,1)}
 if(tab=='village')h=tblW(tbl('village',R,vc,1),R,1);
 if(tab=='bottom'){const dpc=pf(D.reduce((a,r)=>a+r.cm,0),D.reduce((a,r)=>a+r.pl,0)),all=gP(R.filter(r=>r.pn!=NA)),bt=all.filter(g=>g.pct<dpc).sort((a,b)=>a.pct-b.pct||b.pl-a.pl||a.cm-b.cm),sp=bt.reduce((a,g)=>a+g.pl,0),sc=bt.reduce((a,g)=>a+g.cm,0);
 h=`<div class="note" style="margin:0 0 10px">जिले का कुल Completion % <b>${pt(dpc)}</b> है। ऊपर के फ़िल्टर के अनुसार चुने गए ${nf(all.length)} पटवारियों में से जिनका Completion % इससे <b>कम</b> है, वही BOTTOM पटवारी हैं: कुल <b>${nf(bt.length)}</b> पटवारी, सबसे कम % पहले। इनके पास कुल <b>${nf(sp)}</b> प्लॉट हैं, जिनमें से <b>${nf(sc)}</b> Completed (${pt(pf(sc,sp))}) हैं। बराबरी होने पर ज़्यादा प्लॉट वाला पहले।</div><div class="tw">`+tbl('bottom',bt,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],0,{k:'pct',d:1})+'</div>'}
