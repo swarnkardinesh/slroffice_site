@@ -77,11 +77,11 @@ tr.tot td{font-weight:800;background:#cbd5e1!important;color:#0f172a!important;b
 #busybox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(11,18,25,.94);color:#fff;align-items:center;justify-content:center;text-align:center;padding:20px}#busybox .bx{max-width:340px}#busybox .sp{width:44px;height:44px;border:4px solid rgba(255,255,255,.25);border-top-color:#2dd4bf;border-radius:50%;margin:0 auto 14px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#bmsg{font-weight:600}
 .pdfhost{position:fixed;top:0;left:0;z-index:1;background:#fff;pointer-events:none}
 .pdfpage{background:#fff;color:#111;font-family:Inter,"Noto Sans Devanagari",Arial,sans-serif;font-size:10px;line-height:1.3;box-sizing:border-box;font-variant-numeric:tabular-nums}
-.pdfpage .ph1{border-bottom:2px solid #334155;padding-bottom:7px;margin-bottom:8px}.pdfpage h1{font-size:21px;margin:0;color:#0f172a;font-weight:800}.pdfpage .d2{font-weight:700;color:#1e293b;font-size:13px}
-.pdfpage .mt{display:flex;flex-wrap:wrap;gap:2px 26px;font-size:11.5px;margin-top:5px}.pdfpage .fl2{margin-top:5px;background:#f8fafc;border:1px solid #cbd5e1;padding:4px 8px;font-size:11.5px}.pdfpage .df{margin-top:4px;font-size:10px;color:#475569}
-.pdfpage .ph2{border-bottom:1px solid #334155;padding-bottom:4px;margin-bottom:6px;font-size:10.5px;color:#222}.pdfpage .ph2 span{color:#555}
+.pdfpage .ph1{border-bottom:2px solid #0b3b5c;padding-bottom:7px;margin-bottom:9px}.pdfpage h1{font-size:20px;margin:0;color:#0b3b5c;font-weight:800}.pdfpage .d2{font-weight:700;color:#0f766e;font-size:13px}
+.pdfpage .mt{display:flex;flex-wrap:wrap;gap:2px 26px;font-size:11.5px;margin-top:4px;color:#1e293b}
+.pdfpage .ph2{border-bottom:1.5px solid #0b3b5c;padding-bottom:4px;margin-bottom:7px;font-size:10.5px;color:#1e293b}
 .pdfpage .st{font-size:13.5px;font-weight:700;margin:8px 0 5px;color:#0f172a}
-/* PDF तालिका: header गहरा नीला, उप-योग हल्का नीला, कुल योग गहरा हरा (dark mode से स्वतंत्र) */
+/* PDF तालिका: header गहरा नीला, उप-योग हल्का नीला, कुल योग गहरा हरा */
 .pdfpage table{border-collapse:collapse;width:100%;table-layout:auto;background:#fff!important;color:#111!important}
 .pdfpage.nat table{width:auto}
 .pdfpage th,.pdfpage td{border:1px solid #64748b;padding:4px 6px;vertical-align:middle}
@@ -199,20 +199,14 @@ seg.addEventListener('click',e=>{if(e.target.dataset.b){setB(+e.target.dataset.b
 document.getElementById('tcard').addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
 function showMsg(t,err){pm.textContent=t;pm.className=err?'err':'';pm.style.display=t?'block':'none'}
 
-/* ---------- EXPORT: PDF और Excel ---------- */
+/* ---------- EXPORT: PDF और Excel (Clean Metadata) ---------- */
 const LIB={pdf:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',h2c:'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',xl:'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'},libC={};
 const loadLib=u=>libC[u]||(libC[u]=new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=()=>{delete libC[u];no(new Error('library load failed'))};document.head.appendChild(e)}));
 const busyEl=document.getElementById('busybox'),busyUI=(m)=>{busyEl.style.display=m?'flex':'none';if(m)bmsg.textContent=m};
 const NUMR=/^[+−\-]?[\d,]+(\.\d+)?%?$/,cellTxt=el=>{const c=el.cloneNode(true);c.querySelectorAll('br').forEach(b=>b.replaceWith('\n'));return c.textContent.replace(/[ \t]+/g,' ').replace(/ ?\n ?/g,'\n').replace(/\s*[▲▼]$/,'').trim()};
 const repName=()=>{let n=(T.find(x=>x[0]==tab)||['',tab])[1].replace(/^[^A-Za-z\u0900-\u097F]+/,'').trim();if(tab=='progress')n+=' – '+lv+'-wise';return n};
-function filterInfo(){
-  const a=[];if(F.s)a.push('Subdivision: '+F.s);if(F.t)a.push('Tehsil: '+F.t);if(F.c)a.push('Court: '+cs(F.c));
-  if(F.p){const r=D.find(x=>x.pk==F.p);a.push('Patwari: '+(r?r.pn+' ('+r.t+')':F.p))}
-  if(F.st)a.push('Status: '+F.st);if(F.q.trim())a.push('Search: "'+F.q.trim()+'"');
-  let t=a.length?a.join('  |  '):'कोई फ़िल्टर नहीं (पूरा जिला)';
-  if(tab=='bottom')t+='  ||  शर्त: Completion % < जिले का कुल Completion % ('+pt(pf(D.reduce((x,r)=>x+r.cm,0),D.reduce((x,r)=>x+r.pl,0)))+')';
-  return t}
-const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date()),flt:filterInfo(),def:'Completion % = Completed ÷ Total plots  ·  1 Day Progress = prev 9 AM → today 9 AM  ·  Mobile numbers masked (last 4 digits only)'});
+const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date())});
+
 function reportModel(){
   const oLim=lim;lim=1e9;EXP=true;let sections=[];
   try{draw();let title='';
@@ -224,12 +218,13 @@ function reportModel(){
       sections.push({title:el.classList.contains('dt')||sections.length||title?title:'',head,rows,tot,num,bold})})
   }finally{lim=oLim;EXP=false;draw()}
   return{sections}}
+
 /* ----- Excel ----- */
 const toCell=v=>{if(NUMR.test(v)&&!/^0\d/.test(v.replace(/[+−\-]/,''))){const n=parseFloat(v.replace(/[,%+]/g,'').replace('−','-'));if(!isNaN(n))return n}return v};
 function buildWB(M,mt,X){
-  const aoa=[[mt.title+' — '+mt.sub],['Report',mt.rep],[mt.upd],[mt.gen],['Filters',mt.flt],[mt.def],[]];
+  const aoa=[[mt.title+' — '+mt.sub],['Report',mt.rep],[mt.upd],[mt.gen],[]];
   M.sections.forEach(sec=>{if(sec.title)aoa.push([sec.title]);aoa.push(sec.head.map(h=>h.replace(/\n/g,' ')));sec.rows.forEach(r=>aoa.push(r.map(toCell)));aoa.push([])});
-  const ws=X.utils.aoa_to_sheet(aoa),w=[];aoa.slice(7).forEach(r=>r.forEach((c,i)=>{w[i]=Math.max(w[i]||8,Math.min(42,String(c==null?'':c).length+2))}));ws['!cols']=w.map(x=>({wch:x}));
+  const ws=X.utils.aoa_to_sheet(aoa),w=[];aoa.slice(5).forEach(r=>r.forEach((c,i)=>{w[i]=Math.max(w[i]||8,Math.min(42,String(c==null?'':c).length+2))}));ws['!cols']=w.map(x=>({wch:x}));
   const wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,mt.rep.replace(/[\\\/?*\[\]:]/g,' ').slice(0,31)||'Report');return wb}
 const fname=ext=>`Svamitva_Shivpuri_${tab}${tab=='progress'?'_'+lv:''}_${(SD||'').replace(/[^\d]/g,'')||'report'}.${ext}`;
 async function exportExcel(){
@@ -237,12 +232,11 @@ async function exportExcel(){
   try{await loadLib(LIB.xl);const M=reportModel(),wb=buildWB(M,metaInfo(),window.XLSX);window.XLSX.writeFile(wb,fname('xlsx'))}
   catch(e){console.error(e);showMsg('Excel बनाने में समस्या आई। इंटरनेट जाँचकर दोबारा प्रयास करें।',true)}
   busyUI('')}
+
 /* ----- PDF ----- */
 const esc2=s=>esc(s).replace(/\n/g,'<br>');
 function dropCol(sec,c){sec.head.splice(c,1);sec.num.splice(c,1);sec.rows.forEach(r=>r.splice(c,1))}
 function dropByName(M,re){let n=0;M.sections.forEach(sec=>{const c=sec.head.findIndex(h=>re.test(h.replace(/\n/g,' ')));if(c>0&&sec.head.length>8){dropCol(sec,c);n++}});return n}
-/* हर section की प्राकृतिक (natural) column-width एक बार नापकर sec.cw में रखता है,
-   ताकि हर PDF पेज पर columns की चौड़ाई बिल्कुल एक जैसी रहे */
 function naturalW(host,M){
   M.sections.forEach(s=>{delete s.cw});
   host.style.width='4000px';
@@ -254,7 +248,7 @@ function tableHTML(sec,idx){
   let cg='';
   if(sec.cw){const s=sec.cw.reduce((a,b)=>a+b,0)||1;cg='<colgroup>'+sec.cw.map(w=>`<col style="width:${(w/s*100).toFixed(3)}%">`).join('')+'</colgroup>'}
   return`<table${sec.cw?' style="table-layout:fixed;width:100%"':''}>${cg}<thead><tr>`+sec.head.map((h,i)=>`<th>${sec.num[i]?`<div class="hw">${esc2(h)}</div>`:esc2(h)}</th>`).join('')+'</tr></thead><tbody>'+idx.map(j=>`<tr${j==sec.tot?' class="tot"':(sec.bold&&sec.bold.includes(j)?' class="sbt"':'')}>`+sec.rows[j].map((c,i)=>`<td class="${sec.num[i]?'n':'t'}">${esc2(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table>'}
-const hdrHTML=(m,full)=>full?`<div class="ph1"><h1>${esc(m.title)}</h1><div class="d2">${esc(m.sub)}</div><div class="mt"><span><b>Report:</b> ${esc(m.rep)}</span><span><b>${esc(m.upd)}</b></span><span>${esc(m.gen)}</span></div><div class="fl2"><b>Filters:</b> ${esc(m.flt)}</div><div class="df">${esc(m.def)}</div></div>`:`<div class="ph2"><b>${esc(m.title)}</b> · ${esc(m.sub)} · ${esc(m.rep)} · ${esc(m.upd)}<br><span>Filters: ${esc(m.flt)}</span></div>`;
+const hdrHTML=(m,full)=>full?`<div class="ph1"><h1>${esc(m.title)}</h1><div class="d2">${esc(m.sub)}</div><div class="mt"><span><b>Report:</b> ${esc(m.rep)}</span><span><b>${esc(m.upd)}</b></span><span>${esc(m.gen)}</span></div></div>`:`<div class="ph2"><b>${esc(m.title)}</b> · ${esc(m.sub)} · ${esc(m.rep)} · ${esc(m.upd)}</div>`;
 function planPages(secs,h1,h2,usable){
   const pages=[];let cur=null,room=0;const np=()=>{cur={parts:[]};pages.push(cur);room=usable-(pages.length==1?h1:h2)-6};np();
   secs.forEach((s,i)=>{const n=s.rows.length;let idx=0;
@@ -272,13 +266,12 @@ async function exportPDF(){
     const M=reportModel(),mt=metaInfo(),{jsPDF}=window.jspdf;
     const MG=8;
     host=document.createElement('div');host.className='pdfhost';document.body.appendChild(host);
-    let nw=naturalW(host,M),dropped=[];
-    if(nw>1450&&dropByName(M,/^Villages$/)){dropped.push('Villages');nw=naturalW(host,M)}
-    if(nw>1450&&dropByName(M,/^Beneficiaries$/)){dropped.push('Beneficiaries');nw=naturalW(host,M)}
+    let nw=naturalW(host,M);
+    if(nw>1450&&dropByName(M,/^Villages$/))nw=naturalW(host,M);
+    if(nw>1450&&dropByName(M,/^Beneficiaries$/))nw=naturalW(host,M);
     const W=Math.max(1000,nw+4),big=W>1750,PW=big?420:297,PH=big?297:210,k=(PW-2*MG)/W,usable=(PH-MG-12)/k;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:big?'a3':'a4'});
     host.style.width=W+'px';
-    if(dropped.length)mt.def+='  ·  PDF में जगह के लिए छोड़े गए कॉलम: '+dropped.join(', ')+' (Excel में सभी कॉलम उपलब्ध)';
     host.innerHTML=`<div class="pdfpage" data-m="1">${hdrHTML(mt,true)}</div><div class="pdfpage" data-m="2">${hdrHTML(mt,false)}</div>`+M.sections.map((s,i)=>`<div class="pdfpage" data-s="${i}">${s.title?`<div class="st">${esc(s.title)}</div>`:''}${tableHTML(s,s.rows.map((_,j)=>j))}</div>`).join('');
     const h1=host.querySelector('[data-m="1"]').offsetHeight,h2=host.querySelector('[data-m="2"]').offsetHeight;
     const secs=M.sections.map((s,i)=>{const box=host.querySelector(`[data-s="${i}"]`),t=box.querySelector('table'),st=box.querySelector('.st');
@@ -336,7 +329,7 @@ cG.innerHTML=tg.slice().sort((a,b)=>b.p7-a.p7).map(g=>`<div class="rw" style="gr
 ph.textContent='Svamitva Registry · District Shivpuri · '+T.find(x=>x[0]==tab)[1]+' · Last Updated: '+SYNC;
 [...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.t==tab));sb.innerHTML='';seg.style.display='none';let h='';
 
-/* Farmer Registry की तर्ज पर अनुभागवार (Subdivision-wise) रिपोर्ट (Pending कॉलम के बिना) */
+/* Farmer Registry की तर्ज पर अनुभागवार (Subdivision-wise) रिपोर्ट */
 if(tab=='subdiv'){
   const subs=grp(R,r=>r.s).sort((a,b)=>a.pct-b.pct||b.pl-a.pl);
   let n=0,body='';
