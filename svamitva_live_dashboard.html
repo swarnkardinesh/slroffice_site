@@ -72,7 +72,8 @@ tr.tot td{font-weight:800;background:#cbd5e1!important;color:#0f172a!important;b
 .bg2{display:flex;gap:8px;margin:8px 0 4px}.bg2>div{flex:1;background:var(--sf);border-radius:10px;padding:5px 10px;border:1px solid var(--ln)}.bg2 b{font-size:21px;display:block;line-height:1.2}.bg2 .on{border-color:var(--up)}.bg2 .on b{color:var(--up)}.bg2 small{font-size:11px;color:var(--mut)}
 .dt td{text-align:center}.dt td.l{text-align:left}.dt td.ck{cursor:pointer;font-weight:700;color:var(--ac)}.dt td.ck:hover{background:var(--acb);text-decoration:underline}.dt td.dsel,.dt td.dsel:hover{background:var(--ac)!important;color:#fff}.dt td.tt{font-weight:700;background:#e2e8f0}
 .foot{text-align:center;color:var(--mut);font-size:12px;margin-top:6px}.ph{display:none}
-@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.g2,.tabs,.sbb,.seg,.more,.note,.sum,.foot{display:none!important}.hd{padding:8px 14px 40px}.w{margin-top:-24px}.ph{display:block;font-weight:700;font-size:13px;margin:0 0 6px}.tw{overflow:visible;max-height:none}table{font-size:9px}th,td{padding:3px 4px;white-space:normal}th{position:static}tr.tot td{position:static}thead{display:table-header-group}tr{break-inside:avoid}.card,.kc{box-shadow:none;border:1px solid var(--ln)}.top{grid-template-columns:230px 1fr}.hero b.big{font-size:36px}.tp{grid-template-columns:repeat(3,1fr)}.tc2{break-inside:avoid}}
+.diag{margin-top:10px;padding:9px 12px;border:1px dashed var(--ln);border-radius:10px;color:var(--mut);font-size:11.5px;line-height:1.6;text-align:center}.diag b{color:var(--ink)}.diag.bad{border-color:#d64a3b;color:#8a1f15;background:#fde7e4}
+@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:11px}.fl,.g2,.tabs,.sbb,.seg,.more,.note,.sum,.foot,.diag{display:none!important}.hd{padding:8px 14px 40px}.w{margin-top:-24px}.ph{display:block;font-weight:700;font-size:13px;margin:0 0 6px}.tw{overflow:visible;max-height:none}table{font-size:9px}th,td{padding:3px 4px;white-space:normal}th{position:static}tr.tot td{position:static}thead{display:table-header-group}tr{break-inside:avoid}.card,.kc{box-shadow:none;border:1px solid var(--ln)}.top{grid-template-columns:230px 1fr}.hero b.big{font-size:36px}.tp{grid-template-columns:repeat(3,1fr)}.tc2{break-inside:avoid}}
 
 #busybox{display:none;position:fixed;inset:0;z-index:99999;background:rgba(11,18,25,.94);color:#fff;align-items:center;justify-content:center;text-align:center;padding:20px}#busybox .bx{max-width:340px}#busybox .sp{width:44px;height:44px;border:4px solid rgba(255,255,255,.25);border-top-color:#2dd4bf;border-radius:50%;margin:0 auto 14px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#bmsg{font-weight:600}
 .pdfhost{position:fixed;top:0;left:0;z-index:1;background:#fff;pointer-events:none}
@@ -81,7 +82,6 @@ tr.tot td{font-weight:800;background:#cbd5e1!important;color:#0f172a!important;b
 .pdfpage .mt{display:flex;flex-wrap:wrap;gap:2px 26px;font-size:11.5px;margin-top:4px;color:#1e293b}
 .pdfpage .ph2{border-bottom:1.5px solid #0b3b5c;padding-bottom:4px;margin-bottom:7px;font-size:10.5px;color:#1e293b}
 .pdfpage .st{font-size:13.5px;font-weight:700;margin:8px 0 5px;color:#0f172a}
-/* PDF तालिका: header गहरा नीला, उप-योग हल्का नीला, कुल योग गहरा हरा */
 .pdfpage table{border-collapse:collapse;width:100%;table-layout:auto;background:#fff!important;color:#111!important}
 .pdfpage.nat table{width:auto}
 .pdfpage th,.pdfpage td{border:1px solid #64748b;padding:4px 6px;vertical-align:middle}
@@ -111,31 +111,34 @@ tr.tot td{font-weight:800;background:#cbd5e1!important;color:#0f172a!important;b
 <div class="tabs" id="tabs"></div>
 <div class="card" id="tcard"><div class="seg" id="seg"></div><div id="sb"></div><div id="tb"></div></div>
 <div class="foot">Completion % = Completed ÷ Total plots · गोपनीयता हेतु मोबाइल नंबर मास्क किए गए हैं</div>
+<div class="diag" id="diag"></div>
 </main>
 <script>
 /* ===================== CONFIG ===================== */
 const CFG={
   SHEET_ID:"1dafxm2UDPL7idfc3AIx7M0dkuPU0PCBo73Z2DYtbNk4", // Google Sheet ID (Anyone with the link: Viewer)
   SHEET_NAME:"RegistryReport",                              // पूरा डेटा, हेडिंग और अपडेट का समय इसी शीट से
-  API_KEY:"",                                               // वैकल्पिक: Google Drive API key
+  PUB_ID:"2PACX-1vRg7ZcTDpAThoH-VaTxgyXD_pXZk7ET63mZam2DTQ6VCxOWV00jemsOWkqvv0j6cS9JEFrJEtnHjj56", // Publish to web वाली ID
+  PUB_GID:"",   // RegistryReport टैब का gid (शीट खोलने पर URL में gid=... ). भरने पर Published CSV चलेगा, जो हर सेल जैसा है वैसा देता है (सबसे भरोसेमंद)
+  API_KEY:"",   // वैकल्पिक: Google API key (Sheets API + Drive API enabled). भरने पर Sheets API से हर सेल जैसा दिखता है वैसा आता है
   POLL:60, NA:"Patwari Not Assigned"
 };
 /* ================================================== */
-let D=[],SYNC='',SD='',hash='',busy=false,EXP=false;
+let D=[],SYNC='',SD='',hash='',busy=false,EXP=false,DIAG=null;
 const F={s:'',t:'',c:'',p:'',st:'',q:''};let tab='subdiv',lim=100,lv='tehsil',sort={},dsel=null,bk=1,T=[];
 const NA=CFG.NA,BS={1:{s:'1 दिन पहले',n:1,sh:'1 Day'},7:{s:'1 सप्ताह पहले',n:7,sh:'1 Week'}};let B=BS[1];
 const nf=x=>(+x||0).toLocaleString('en-IN'),pf=(a,b)=>b?a/b*100:0,pt=x=>x.toFixed(2)+'%',esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const sgn=(x,d=2)=>(x>=0?'+':'−')+Math.abs(x).toFixed(d);
 function maskMob(v){v=String(v==null?'':v).trim();if(!v||v=='-')return'-';if(/x/i.test(v))return v;if(/e\+/i.test(v))return'XXXXXXXXXX';const d=v.replace(/\D/g,'');return d.length<=4?'XXXXXX'+d:'X'.repeat(d.length-4)+d.slice(-4)}
 
-/* ऑटोमैटिक तहसील से अनुभाग (Subdivision) मैपिंग */
+/* तहसील से अनुभाग (Subdivision) — केवल तब जब शीट में अनुभाग खाली हो */
 function getSubdiv(t,s){
   if(s&&s!=='—'&&s!=='-')return s;
   const x=String(t||'').trim();
-  if(/पिछोर|खनियाधाना|pichhore|khaniyadhana/i.test(x))return'पिछोर';
+  if(/पिछोर|खनियाधाना|pichhore|pichor|khaniyadhana|khaniadhana/i.test(x))return'पिछोर';
   if(/करैरा|नरवर|karera|narwar/i.test(x))return'करैरा';
-  if(/पोहरी|बैराड|बैराड़|pohari|bairad/i.test(x))return'पोहरी';
-  if(/कोलारस|बदरवास|रन्नौद|kolaras|badarwas|rannod/i.test(x))return'कोलारस';
+  if(/पोहरी|बैराड|बैराड़|pohari|pohri|bairad|bairrad/i.test(x))return'पोहरी';
+  if(/कोलारस|बदरवास|रन्नौद|रन्‍नौद|kolaras|badarwas|badarvas|rannod|rannaud/i.test(x))return'कोलारस';
   if(/शिवपुरी|shivpuri/i.test(x))return'शिवपुरी';
   return'अन्य';
 }
@@ -143,21 +146,35 @@ function getSubdiv(t,s){
 /* ---------- data loading ---------- */
 function parseCSV(t){const rows=[];let r=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==','){r.push(c);c=""}else if(ch=='\n'){r.push(c);rows.push(r);r=[];c=""}else if(ch!='\r')c+=ch}if(c!==""||r.length){r.push(c);rows.push(r)}return rows}
 const norm=s=>String(s==null?'':s).toLowerCase().replace(/[^a-z0-9\u0900-\u097f]/g,'');
-const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[,\s%+]/g,'').replace('−','-'));return isNaN(n)?0:n};
+const num=v=>{const n=parseFloat(String(v==null?'':v).replace(/[,\s%+'’`]/g,'').replace('−','-'));return isNaN(n)?0:n};
+const clean=x=>String(x==null?'':x).replace(/\s+/g,' ').trim();
+const ckey=x=>clean(x).replace(/[\u200b-\u200d\ufeff]/g,'').toLowerCase();
 const EX={n:['villagename'],l:['lgdcode'],pn:['patwari'],pk:['patteh'],i:['registryinitiated'],v:['patwariverification'],sb:['submitted'],pr:['registrationinprocess'],cm:['completed'],pl:['totalplots'],b:['totalbeneficiaries'],c:['court'],t:['tehsil'],s:['subdivision'],h:['halka'],m:['mobile'],p1:['1dayprogress'],p7:['1weekprogress']};
 const FB={n:/village|गाँव|गांव|ग्राम/,l:/lgd/,pn:/^patwari(name)?$|^पटवारी$/,i:/initiat/,v:/verif/,sb:/submit/,pr:/process/,cm:/^completed|^पूर्ण/,pl:/plot|प्लॉट/,b:/benef|हितग्राही/,c:/court|न्यायालय/,t:/tehsil|तहसील/,s:/subdiv|sdm|उपखंड|अनुभाग/,h:/^halka$|^हल्का$/,m:/mobile|phone|मोबाइल/,p1:/day/,p7:/week/};
 function mapHeader(row){const hn=row.map(norm),m={},used=new Set();
   for(const f in EX){const j=hn.findIndex((h,x)=>!used.has(x)&&EX[f].includes(h));if(j>=0){m[f]=j;used.add(j)}}
   for(const f in FB){if(m[f]!=null)continue;const j=hn.findIndex((h,x)=>h&&!used.has(x)&&FB[f].test(h));if(j>=0){m[f]=j;used.add(j)}}return m}
+const NUMF=['pl','b','i','v','sb','pr','cm','p1','p7'],NUMN={pl:'Total Plots',b:'Beneficiaries',i:'Registry Initiated',v:'Patwari Verification',sb:'Submitted',pr:'In Process',cm:'Completed',p1:'1 Day Progress',p7:'1 Week Progress'};
 function buildData(rows){
   const hi=rows.findIndex(r=>{const m=mapHeader(r);return m.n!=null&&m.pl!=null&&m.cm!=null});if(hi<0)return null;
-  const m=mapHeader(rows[hi]),out=[];
-  for(let i=hi+1;i<rows.length;i++){const r=rows[i],g=f=>m[f]!=null?String(r[m[f]]==null?'':r[m[f]]).trim():'';
-    const n=g('n');if(!n||/^(total|grand\s*total|sub\s*total|कुल|कुल\s*योग|योग)$/i.test(n))continue;
-    const pl=num(g('pl'));if(!pl&&!num(g('cm')))continue;
-    const t=g('t')||'—',pn=g('pn')||NA,p1=num(g('p1')),p7=num(g('p7'));
-    out.push({n,l:g('l'),t,s:getSubdiv(t,g('s')),c:g('c')||'—',pn,h:g('h')||'—',m:maskMob(g('m')),pk:g('pk')||(t+'|'+pn),pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(g('cm')),p1,p7,di:0,dv:0,ds:0,dp:0,dc:p1,a:[0,0,0,0,p1],e:[0,0,0,0,p7]})}
-  return{out,hasP:m.p1!=null&&m.p7!=null}}
+  const m=mapHeader(rows[hi]),out=[],dg={dataRows:0,skipTotal:0,skipEmpty:0,blank:{},missing:[]};
+  ['t','s','c','pn','h','p1','p7'].forEach(f=>{if(m[f]==null)dg.missing.push(f)});
+  for(let i=hi+1;i<rows.length;i++){const r=rows[i];
+    if(!r.some(c=>String(c==null?'':c).trim()!==''))continue;
+    const g=f=>m[f]!=null?clean(r[m[f]]):'';
+    dg.dataRows++;
+    const nm=g('n'),lgd=g('l'),plRaw=g('pl'),cmRaw=g('cm');
+    if(nm&&/^(total|grand\s*total|sub\s*total|कुल|कुल\s*योग|योग)$/i.test(nm)){dg.skipTotal++;continue}
+    if(!nm&&!lgd&&plRaw===''&&cmRaw===''){dg.skipEmpty++;continue}
+    NUMF.forEach(f=>{if(m[f]!=null&&g(f)==='')dg.blank[f]=(dg.blank[f]||0)+1});
+    const n=nm||(lgd?'LGD '+lgd:'(नाम नहीं)'),t=g('t')||'—',pn=g('pn')||NA,p1=num(g('p1')),p7=num(g('p7')),pl=num(plRaw);
+    out.push({n,l:lgd,t,s:getSubdiv(t,g('s')),c:g('c')||'—',pn,h:g('h')||'—',m:maskMob(g('m')),pk:g('pk')||(t+'|'+pn),pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(cmRaw),p1,p7,di:0,dv:0,ds:0,dp:0,dc:p1,a:[0,0,0,0,p1],e:[0,0,0,0,p7]})}
+  /* एक ही नाम की अलग-अलग लिखावट (खाली जगह/ZWJ/बड़े-छोटे अक्षर) को एक समूह में लाएँ */
+  ['t','s'].forEach(f=>{const cnt=new Map();out.forEach(r=>{const k=ckey(r[f]);if(!cnt.has(k))cnt.set(k,new Map());const c=cnt.get(k);c.set(r[f],(c.get(r[f])||0)+1)});
+    const best=new Map();cnt.forEach((c,k)=>best.set(k,[...c.entries()].sort((a,b)=>b[1]-a[1])[0][0]));out.forEach(r=>{r[f]=best.get(ckey(r[f]))})});
+  out.forEach(r=>{if(!r.pk||r.pk.indexOf('|')>=0&&!m.pk)r.pk=r.t+'|'+r.pn});
+  dg.blankTotal=Object.values(dg.blank).reduce((a,b)=>a+b,0);
+  return{out,hasP:m.p1!=null&&m.p7!=null,diag:dg}}
 const STAMP=/last\s*(sync|synced|update|updated|refresh|refreshed)|updated\s*(on|at)|sync(ed)?\s*(time|on|at)|अंतिम\s*(अपडेट|सिंक)|अपडेट\s*(समय|तिथि)/i,DTV=/\d{1,4}[-\/.]\d{1,2}[-\/.]\d{1,4}|\d{1,2}:\d{2}/;
 function findStamp(rows){
   for(let i=0;i<rows.length;i++){const r=rows[i];
@@ -168,12 +185,18 @@ function findStamp(rows){
   return''}
 const fmtIST=d=>{const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kolkata',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).formatToParts(d).reduce((a,x)=>(a[x.type]=x.value,a),{});return`${p.day}-${p.month}-${p.year} ${p.hour}:${p.minute}:${p.second} ${String(p.dayPeriod||'').toUpperCase()}`};
 async function driveStamp(){if(!CFG.API_KEY)return'';try{const r=await fetch(`https://www.googleapis.com/drive/v3/files/${CFG.SHEET_ID}?fields=modifiedTime&key=${CFG.API_KEY}`,{cache:'no-store'});const j=await r.json();return j.modifiedTime?fmtIST(new Date(j.modifiedTime)):''}catch(e){return''}}
+const SRCN={api:'Google Sheets API',pub:'Published CSV',gviz:'gviz CSV'};
+async function txt(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}
+async function getRows(){
+  const errs=[];
+  if(CFG.API_KEY){try{const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.SHEET_ID}/values/${encodeURIComponent(CFG.SHEET_NAME)}?majorDimension=ROWS&valueRenderOption=FORMATTED_VALUE&key=${CFG.API_KEY}`,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();if(j.values&&buildData(j.values))return{rows:j.values,src:'api'}}catch(e){errs.push('api: '+e.message)}}
+  if(CFG.PUB_ID&&CFG.PUB_GID){try{const rows=parseCSV(await txt(`https://docs.google.com/spreadsheets/d/e/${CFG.PUB_ID}/pub?gid=${CFG.PUB_GID}&single=true&output=csv&_=${Date.now()}`));if(buildData(rows))return{rows,src:'pub'}}catch(e){errs.push('pub: '+e.message)}}
+  const rows=parseCSV(await txt(`https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CFG.SHEET_NAME)}&_=${Date.now()}`));
+  return{rows,src:'gviz',errs}}
 async function loadAll(){
-  const r=await fetch(`https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CFG.SHEET_NAME)}&_=${Date.now()}`,{cache:'no-store'});
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  const rows=parseCSV(await r.text()),res=buildData(rows);
+  const {rows,src,errs}=await getRows(),res=buildData(rows);
   if(!res||!res.out.length)throw new Error('"'+CFG.SHEET_NAME+'" में Village Name / Total Plots / Completed कॉलम नहीं मिले');
-  return{res,sync:findStamp(rows)}}
+  return{res,sync:findStamp(rows),src,errs}}
 
 /* ---------- setup ---------- */
 const stOf=r=>r.pl>0&&r.cm>=r.pl?'Fully completed':r.cm>0?'Partly completed':(r.i+r.v+r.sb+r.pr>0?'Started, not completed':'Not started');
@@ -199,7 +222,7 @@ seg.addEventListener('click',e=>{if(e.target.dataset.b){setB(+e.target.dataset.b
 document.getElementById('tcard').addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
 function showMsg(t,err){pm.textContent=t;pm.className=err?'err':'';pm.style.display=t?'block':'none'}
 
-/* ---------- EXPORT: PDF और Excel (Clean Metadata) ---------- */
+/* ---------- EXPORT: PDF और Excel ---------- */
 const LIB={pdf:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',h2c:'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',xl:'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'},libC={};
 const loadLib=u=>libC[u]||(libC[u]=new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=()=>{delete libC[u];no(new Error('library load failed'))};document.head.appendChild(e)}));
 const busyEl=document.getElementById('busybox'),busyUI=(m)=>{busyEl.style.display=m?'flex':'none';if(m)bmsg.textContent=m};
@@ -334,49 +357,16 @@ if(tab=='subdiv'){
   const subs=grp(R,r=>r.s).sort((a,b)=>a.pct-b.pct||b.pl-a.pl);
   let n=0,body='';
   const X={vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0};
-  const row=(g,no,sub,teh,c)=>`<tr${c?` class="${c}"`:''}>
-    <td class="sr">${no}</td>
-    <td class="l">${esc(sub)}</td>
-    <td class="l w2">${esc(teh)}</td>
-    <td>${nf(g.vil)}</td>
-    <td>${nf(g.pl)}</td>
-    <td>${nf(g.b)}</td>
-    <td>${nf(g.i)}</td>
-    <td>${nf(g.v)}</td>
-    <td>${nf(g.sb)}</td>
-    <td>${nf(g.pr)}</td>
-    <td>${nf(g.cm)}</td>
-    <td><span class="pc ${cls(g.pct)}">${pt(g.pct)}</span></td>
-    <td>${nf(g.p1)}</td>
-    <td>${nf(g.p7)}</td>
-  </tr>`;
+  const row=(g,no,sub,teh,c)=>`<tr${c?` class="${c}"`:''}><td class="sr">${no}</td><td class="l">${esc(sub)}</td><td class="l w2">${esc(teh)}</td><td>${nf(g.vil)}</td><td>${nf(g.pl)}</td><td>${nf(g.b)}</td><td>${nf(g.i)}</td><td>${nf(g.v)}</td><td>${nf(g.sb)}</td><td>${nf(g.pr)}</td><td>${nf(g.cm)}</td><td><span class="pc ${cls(g.pct)}">${pt(g.pct)}</span></td><td>${nf(g.p1)}</td><td>${nf(g.p7)}</td></tr>`;
   subs.forEach(g0=>{
     X.vil+=g0.vil;X.pl+=g0.pl;X.b+=g0.b;X.i+=g0.i;X.v+=g0.v;X.sb+=g0.sb;X.pr+=g0.pr;X.cm+=g0.cm;X.p1+=g0.p1;X.p7+=g0.p7;
-    grp(R.filter(r=>r.s==g0.k),r=>r.t).sort((a,b)=>a.pct-b.pct||b.pl-a.pl).forEach(t0=>{
-      n++;
-      body+=row(t0,n,g0.k,t0.k,'');
-    });
+    grp(R.filter(r=>r.s==g0.k),r=>r.t).sort((a,b)=>a.pct-b.pct||b.pl-a.pl).forEach(t0=>{n++;body+=row(t0,n,g0.k,t0.k,'')});
     body+=row(g0,'','','योग अनुभाग '+g0.k,'sbt');
   });
   X.pct=pf(X.cm,X.pl);
   body+=row(X,'','','District Total','tot');
   h=`<div class="note" style="margin:0 0 10px">प्रत्येक <b>Subdivision (अनुभाग)</b> को उसके कुल <b>Completion % के कम से ज़्यादा (Ascending)</b> क्रम में रखा गया है। प्रत्येक अनुभाग की तहसीलें और उनके ठीक नीचे <b>योग अनुभाग</b> दिया गया है।</div>
-  <div class="tw"><table data-id="subdiv"><thead><tr>
-    <th class="l">S.No.</th>
-    <th class="l">Sub-Division</th>
-    <th class="l">Tehsil Name</th>
-    <th>Villages</th>
-    <th>Total Plots</th>
-    <th>Total Beneficiaries</th>
-    <th>Registry Initiated</th>
-    <th>Patwari Verification</th>
-    <th>Submitted</th>
-    <th>Registration in Process</th>
-    <th>Completed</th>
-    <th>Completion %</th>
-    <th>1 Day Progress<br><span class="hs">prev 9 AM → 9 AM</span></th>
-    <th>1 Week Progress</th>
-  </tr></thead><tbody>${body}</tbody></table></div>
+  <div class="tw"><table data-id="subdiv"><thead><tr><th class="l">S.No.</th><th class="l">Sub-Division</th><th class="l">Tehsil Name</th><th>Villages</th><th>Total Plots</th><th>Total Beneficiaries</th><th>Registry Initiated</th><th>Patwari Verification</th><th>Submitted</th><th>Registration in Process</th><th>Completed</th><th>Completion %</th><th>1 Day Progress<br><span class="hs">prev 9 AM → 9 AM</span></th><th>1 Week Progress</th></tr></thead><tbody>${body}</tbody></table></div>
   <div class="note">${nf(n)} तहसीलें · ${nf(subs.length)} अनुभाग (Subdivisions)</div>`;
 }
 
@@ -408,19 +398,32 @@ if(tab=='action'){const a=R.filter(r=>r.st=='Not started'&&r.pl>=100),b=R.filter
 h=`<h3 style="margin-top:0">कार्य शुरू नहीं हुआ, 100+ प्लॉट (${nf(a.length)} गाँव)</h3>`+tblW(tbl('a1',a,vc,1),a,1)+(b.length?`<h3>पटवारी नियुक्त नहीं (${nf(b.length)} गाँव)</h3>`+tblW(tbl('a2',b,vc,1),b,1):'')}
 tb.innerHTML=h}
 
+/* ---------- डेटा जाँच (सरकारी पोर्टल से मिलान के लिए) ---------- */
+function drawDiag(src,errs){
+  const dg=DIAG,pl=D.reduce((a,r)=>a+r.pl,0),cm=D.reduce((a,r)=>a+r.cm,0),nt=new Set(D.map(r=>r.t)).size,ns=new Set(D.map(r=>r.s)).size;
+  const bl=Object.keys(dg.blank).map(f=>`${NUMN[f]}: ${nf(dg.blank[f])}`).join(', ');
+  const warn=dg.blankTotal>0||dg.missing.length>0||src=='gviz'&&!CFG.PUB_GID&&!CFG.API_KEY&&false;
+  diag.className='diag'+(dg.blankTotal>0?' bad':'');
+  diag.innerHTML=`<b>डेटा जाँच</b> · स्रोत: <b>${SRCN[src]}</b> · शीट की भरी पंक्तियाँ: <b>${nf(dg.dataRows)}</b> · लोड हुए गाँव: <b>${nf(D.length)}</b> · Total Plots: <b>${nf(pl)}</b> · Completed: <b>${nf(cm)}</b> · तहसील: <b>${nt}</b> · Subdivision: <b>${ns}</b>`+
+   (dg.skipTotal?` · छोड़ी गई "Total" पंक्तियाँ: ${dg.skipTotal}`:'')+(dg.skipEmpty?` · खाली पंक्तियाँ: ${dg.skipEmpty}`:'')+
+   (dg.blankTotal>0?`<br>⚠ खाली संख्या-सेल मिले (${bl}). इनकी वजह से आँकड़े सरकारी पोर्टल से कम दिख सकते हैं।`+(src=='gviz'?' gviz टेक्स्ट-फ़ॉर्मेट वाली संख्याएँ छोड़ देता है; ऊपर CONFIG में PUB_GID या API_KEY भरें।':' शीट में ही ये सेल खाली हैं, शीट जाँचें।'):'')+
+   (dg.missing.length?`<br>⚠ ये कॉलम हेडर नहीं मिले: ${dg.missing.join(', ')}`:'')+
+   (errs&&errs.length?`<br>पिछले स्रोत विफल रहे: ${esc(errs.join(' | '))}`:'');
+  if(dg.blankTotal>0)showMsg('सूचना: शीट के कुछ संख्यात्मक सेल खाली/टेक्स्ट मिले, इसलिए कुछ आँकड़े पोर्टल से कम दिख सकते हैं। नीचे "डेटा जाँच" देखें।',true)}
+
 /* ---------- live refresh ---------- */
 function setStatus(kind,txt){dot.className='dot'+(kind=='ok'?'':kind=='err'?' err':' ld');stx.textContent=txt}
 async function refresh(force){
   if(busy)return;busy=true;if(!D.length)setStatus('ld','Loading…');
   try{
-    const {res,sync}=await loadAll();
-    const hh=res.out.length+'|'+res.out.reduce((a,r)=>a+r.cm+r.i+r.v+r.sb+r.pr+r.p1+r.p7+r.pl,0);
+    const {res,sync,src,errs}=await loadAll();
+    const hh=res.out.length+'|'+src+'|'+res.out.reduce((a,r)=>a+r.cm+r.i+r.v+r.sb+r.pr+r.p1+r.p7+r.pl,0);
     let st=sync,approx=false;
     if(!st)st=await driveStamp();
     if(!st){approx=true;let o={};try{o=JSON.parse(localStorage.getItem('svm_chg')||'{}')}catch(e){}
       if(o.h!==hh){o={h:hh,t:fmtIST(new Date())};try{localStorage.setItem('svm_chg',JSON.stringify(o))}catch(e){}}st=o.t}
-    if(force||hh!==hash||st!==SYNC){hash=hh;D=res.out;SYNC=st;SD=(st.split(' ')[0]||'').slice(0,10);setup();draw();
-      showMsg(res.hasP?'':'सूचना: "1 day progress" / "1 week progress" कॉलम नहीं मिले, इसलिए तुलना 0 दिख रही है।')}
+    if(force||hh!==hash||st!==SYNC){hash=hh;D=res.out;DIAG=res.diag;SYNC=st;SD=(st.split(' ')[0]||'').slice(0,10);setup();draw();
+      showMsg(res.hasP?'':'सूचना: "1 day progress" / "1 week progress" कॉलम नहीं मिले, इसलिए तुलना 0 दिख रही है।');drawDiag(src,errs)}
     lsync.textContent=SYNC||'—';lsync.title=approx?'शीट में अपडेट-टाइम सेल नहीं मिला; यह समय पेज द्वारा नया डेटा पहचानने का है':'';setStatus('ok','Live')
   }catch(e){console.error('Dashboard data error:',e);setStatus('err','Offline');if(!D.length)showMsg('डेटा अभी उपलब्ध नहीं है। कृपया कुछ देर बाद पुनः प्रयास करें।',true)}
   busy=false}
