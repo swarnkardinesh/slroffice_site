@@ -78,6 +78,7 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 <div class="fl" id="fl"></div>
 <div class="ph" id="ph"></div>
 <section class="top"><div class="hero"><div class="l">कुल Completion %</div><b class="big" id="hp">—</b><div class="s" id="hs"></div><div class="meter"><i id="hm" style="width:0"></i></div><div class="gd" id="hd1"></div><div class="gd" id="hd7"></div></div><div class="k" id="k"></div></section>
+<div class="card" id="klistcard" style="display:none"><h2 id="klisttitle"></h2><div id="klistbody"></div></div>
 <section class="card"><h2>प्रगति तुलना: 1 Day बनाम 1 Week</h2><div class="sub"><b>1 Day Progress</b> = पिछले दिन सुबह 9 बजे से आज सुबह 9 बजे तक Completed की बढ़त (रोज़ 9 AM पर तैयार) · <b>1 Week Progress</b> = पिछले 1 सप्ताह में Completed की बढ़त</div><div class="sum" id="sum"></div>
 <div class="g2"><div><h3 style="margin-top:0">तहसील-वार स्थिति: कितना पूरा, कितना बाकी</h3><div class="lgd"><span><i style="background:var(--ac)"></i>1 सप्ताह पहले तक Completed</span><span><i style="background:var(--wk)"></i>पिछले 1 सप्ताह में बढ़ा</span><span><i style="background:var(--ln);border:1px solid var(--mut)"></i>बाकी (Pending)</span></div><div id="cT"></div></div>
 <div><h3 style="margin-top:0">तहसील-वार गति: 1 Day बनाम साप्ताहिक औसत (प्रति दिन)</h3><div class="lgd"><span><i style="background:var(--dy)"></i>1 Day</span><span><i style="background:var(--wk)"></i>1 Week का औसत/दिन</span></div><div id="cG"></div></div></div></section>
@@ -95,7 +96,7 @@ const CFG={
 };
 /* ================================================== */
 let D=[],SYNC='',SD='',hash='',busy=false,EXP=false;
-const F={s:'',t:'',c:'',p:'',st:'',q:''};let tab='tehsil',lim=100,lv='tehsil',sort={},dsel=null,bk=1,T=[];
+const F={s:'',t:'',c:'',p:'',st:'',q:''};let tab='tehsil',lim=100,lv='tehsil',sort={},dsel=null,kSel=null,tsel=null,bk=1,T=[];
 const NA=CFG.NA,BS={1:{s:'1 दिन पहले',n:1,sh:'1 Day'},7:{s:'1 सप्ताह पहले',n:7,sh:'1 Week'}};let B=BS[1];
 const nf=x=>(+x||0).toLocaleString('en-IN'),pf=(a,b)=>b?a/b*100:0,pt=x=>x.toFixed(2)+'%',esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 const sgn=(x,d=2)=>(x>=0?'+':'−')+Math.abs(x).toFixed(d);
@@ -116,7 +117,8 @@ function buildData(rows){
   for(let i=hi+1;i<rows.length;i++){const r=rows[i],g=f=>m[f]!=null?String(r[m[f]]==null?'':r[m[f]]).trim():'';
     const n=g('n');if(!n||/^(total|grand\s*total|sub\s*total|कुल|कुल\s*योग|योग)$/i.test(n))continue;
     const pl=num(g('pl'));if(!pl&&!num(g('cm')))continue;
-    const t=g('t')||'—',pn=g('pn')||NA,p1=num(g('p1')),p7=num(g('p7'));
+    const t=g('t')||'—';let pnraw=g('pn');pnraw=pnraw?pnraw.trim():'';const pn=(!pnraw||pnraw==='-'||pnraw==='--')?NA:pnraw;
+    const p1=num(g('p1')),p7=num(g('p7'));
     out.push({n,l:g('l'),t,s:g('s')||'—',c:g('c')||'—',pn,h:g('h')||'—',m:maskMob(g('m')),pk:g('pk')||(t+'|'+pn),pl,b:num(g('b')),i:num(g('i')),v:num(g('v')),sb:num(g('sb')),pr:num(g('pr')),cm:num(g('cm')),p1,p7,di:0,dv:0,ds:0,dp:0,dc:p1,a:[0,0,0,0,p1],e:[0,0,0,0,p7]})}
   return{out,hasP:m.p1!=null&&m.p7!=null}}
 const STAMP=/last\s*(sync|synced|update|updated|refresh|refreshed)|updated\s*(on|at)|sync(ed)?\s*(time|on|at)|अंतिम\s*(अपडेट|सिंक)|अपडेट\s*(समय|तिथि)/i,DTV=/\d{1,4}[-\/.]\d{1,2}[-\/.]\d{1,4}|\d{1,2}:\d{2}/;
@@ -148,7 +150,7 @@ function setup(){
   sel.forEach(([k,,o])=>{if(F[k]&&!o.some(x=>x[0]==F[k]))F[k]=''});
   fl.innerHTML=sel.map(([k,l,o])=>`<div><label>${l}</label><select data-k="${k}"><option value="">All</option>${o.map(([v,t])=>`<option value="${esc(v)}"${F[k]==v?' selected':''}>${esc(t)}</option>`).join('')}</select></div>`).join('')+`<div><label>Search</label><input data-k="q" value="${esc(F.q)}" placeholder="गाँव, LGD, पटवारी या हल्का"></div>`;
   const zm=new Map();D.forEach(r=>{if(r.pn!=NA)zm.set(r.pk,(zm.get(r.pk)||0)+r.i+r.v+r.sb+r.pr+r.cm)});window.ZPN=[...zm.values()].filter(v=>v==0).length;
-  T=[['tehsil','Tehsil-wise'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM पटवारी (जिले के % से कम)'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
+  T=[['tehsil','Tehsil-wise'],['tehsummary','📍 Tehsil Summary'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM पटवारी (जिले के % से कम)'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
   if(!T.some(x=>x[0]==tab))tab='tehsil';
   tabs.innerHTML=T.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('')+'<button class="pdfb" id="pdfb">📄 PDF डाउनलोड</button><button class="pdfb xlb" id="xlb">📊 Excel डाउनलोड</button>';
   setB(bk);segHTML()}
@@ -157,7 +159,8 @@ function setup(){
 fl.addEventListener('input',e=>{if(!e.target.dataset.k)return;F[e.target.dataset.k]=e.target.value;lim=100;draw()});
 tabs.addEventListener('click',e=>{if(e.target.id=='pdfb'){exportPDF();return}if(e.target.id=='xlb'){exportExcel();return}if(e.target.dataset.t){tab=e.target.dataset.t;lim=100;draw()}});
 seg.addEventListener('click',e=>{if(e.target.dataset.b){setB(+e.target.dataset.b);segHTML();lim=100;draw()}});
-document.getElementById('tcard').addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
+document.getElementById('k').addEventListener('click',e=>{const el=e.target.closest('[data-kc]');if(!el)return;kSel=(kSel===el.dataset.kc)?null:el.dataset.kc;draw();if(kSel){const t=document.getElementById('klistcard');if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}});
+document.getElementById('tcard').addEventListener('click',e=>{const t=e.target;const bc=t.closest&&t.closest('td[data-bd]');if(bc){const q=bc.dataset.bd.split('|');dsel={ty:q[0],bi:+q[1],te:q[2]};draw();const el=document.getElementById('dlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}const tc=t.closest&&t.closest('td[data-tbd]');if(tc){const q=tc.dataset.tbd.split('|');tsel=(tsel&&tsel.f===q[0]&&tsel.te===q[1])?null:{f:q[0],te:q[1]};draw();const el=document.getElementById('tlist');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});return}if(t.dataset.clr){dsel=null;draw();return}if(t.dataset.tclr){tsel=null;draw();return}if(t.dataset.more){lim+=200;draw();return}if(t.dataset.lv){lv=t.dataset.lv;lim=100;draw();return}const th=t.closest('th');if(!th||!th.dataset.f)return;const id=th.closest('table').dataset.id,f=th.dataset.f,o=sort[id];sort[id]={k:f,d:o&&o.k==f?-o.d:-1};draw()});
 function showMsg(t,err){pm.textContent=t;pm.className=err?'err':'';pm.style.display=t?'block':'none'}
 /* ---------- EXPORT: PDF (सीधे डाउनलोड) और Excel ---------- */
 const LIB={pdf:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',h2c:'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',xl:'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'},libC={};
@@ -279,6 +282,25 @@ const vc=[['n','Village','t'],['l','LGD','t'],['t','Tehsil','t'],['c','Court','t
 const pvc=[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP];
 const dcols=()=>[['pl','Plots'],['cm','Completed'],['pct','Completion %'],...PP];
 const gP=R=>grp(R,r=>r.pk,r=>r.pn);
+/* ---------- Tehsil Summary helpers ---------- */
+function tehSummaryRows(rows){
+  const m=new Map();
+  rows.forEach(r=>{
+    let g=m.get(r.t);
+    if(!g){g={k:r.t,vil:0,halkas:new Set(),patwaris:new Set(),pl:0,b:0,cm:0};m.set(r.t,g)}
+    g.vil++;
+    if(r.h&&r.h!=='—')g.halkas.add(r.h);
+    if(r.pn!==NA)g.patwaris.add(r.pn);
+    g.pl+=r.pl;g.b+=r.b;g.cm+=r.cm;
+  });
+  return[...m.values()].map(g=>({k:g.k,vil:g.vil,hal:g.halkas.size,pat:g.patwaris.size,pl:g.pl,b:g.b,cm:g.cm}));
+}
+function tehListHTML(R,f,te){
+  const Rf=te==='*'?R:R.filter(r=>r.t===te);
+  if(f==='hal'){const a=grp(Rf,r=>r.t+'|'+r.h,r=>r.h);return'<div class="tw">'+tbl('tehlist_hal',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],['cm','Completed'],['pct','Completion %']],0,{k:'k',d:1})+'</div>'}
+  if(f==='pat'){const a=gP(Rf);return'<div class="tw">'+tbl('tehlist_pat',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],['cm','Completed'],['pct','Completion %']],0,{k:'cm',d:-1})+'</div>'}
+  const sk=f==='vil'?'n':(f==='pl'?'pl':(f==='b'?'b':'cm'));
+  return'<div class="tw">'+tbl('tehlist_vil',Rf,vc,0,{k:sk,d:-1})+'</div>'}
 function draw(){if(!D.length)return;const q=F.q.trim().toLowerCase();
 const R=D.filter(r=>(!F.s||r.s==F.s)&&(!F.t||r.t==F.t)&&(!F.c||r.c==F.c)&&(!F.p||r.pk==F.p)&&(!F.st||r.st==F.st)&&(!q||(r.n+' '+r.l+' '+r.pn+' '+r.h).toLowerCase().includes(q))).map(r=>fin({...r}));
 const S=f=>R.reduce((a,r)=>a+r[f],0),pl=S('pl'),cm=S('cm'),dc=S('dc'),p1=S('p1'),p7=S('p7'),pc=pf(cm,pl);
@@ -286,7 +308,14 @@ hp.textContent=pt(pc);hs.textContent=nf(cm)+' / '+nf(pl)+' plots';hm.style.width
 const pp=d=>pc-pf(cm-d,pl);
 hd1.innerHTML=`<span>1 Day Progress (9 AM → 9 AM)</span><b>+${nf(p1)} · ${sgn(pp(p1))} pp</b>`;hd7.innerHTML=`<span>1 Week Progress</span><b>+${nf(p7)} · ${sgn(pp(p7))} pp</b>`;
 const na=R.filter(r=>r.pn==NA).length,zero=R.filter(r=>r.st=='Not started').length,ns=R.filter(r=>r.ns).length,npw=new Set(R.filter(r=>r.pn!=NA).map(r=>r.pk)).size;
-k.innerHTML=[['Villages',R.length,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g'],['1 Day Progress (9 AM → 9 AM)',p1,'o'],['1 Week Progress',p7,'p'],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:''],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d])=>`<div class="kc ${c}"><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
+const halkaSet=new Set(R.filter(r=>r.h&&r.h!=='—').map(r=>r.t+'|'+r.h)),totalHalka=halkaSet.size;
+k.innerHTML=[['Villages',R.length,''],['Total Halkas',totalHalka,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g'],['1 Day Progress (9 AM → 9 AM)',p1,'o'],['1 Week Progress',p7,'p'],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:'','notstarted'],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d,sel])=>`<div class="kc ${c}"${sel?` data-kc="${sel}" style="cursor:pointer"`:''}><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
+if(kSel==='notstarted'){
+  const list=R.filter(r=>r.st==='Not started');
+  klisttitle.textContent='कार्य शुरू नहीं हुआ गाँव सूची ('+nf(list.length)+')';
+  klistbody.innerHTML='<div class="tw">'+tbl('klist_notstarted',list,vc,0,{k:'t',d:1})+'</div><div class="note">'+nf(list.length)+' गाँव। बंद करने के लिए ऊपर वाले कार्ड को दोबारा क्लिक करें।</div>';
+  klistcard.style.display='block';
+}else{klistcard.style.display='none'}
 const avg=p7/7,ratio=avg?(p1/avg-1)*100:0;
 sum.innerHTML=`<div class="sm dy"><small>1 Day Progress (9 AM → 9 AM)</small><b>+${nf(p1)}</b></div><div class="sm wk"><small>1 Week Progress</small><b>+${nf(p7)}</b></div><div class="sm"><small>साप्ताहिक औसत / दिन</small><b>${nf(Math.round(avg))}</b></div><div class="sm pc"><small>1 Day बनाम साप्ताहिक औसत</small><b class="${ratio>=0?'up':'dn'}">${ratio>=0?'▲':'▼'} ${Math.abs(ratio).toFixed(1)}%</b></div>`;
 const tg=grp(R,r=>r.t).sort((a,b)=>b.pct-a.pct);
@@ -296,6 +325,18 @@ cG.innerHTML=tg.slice().sort((a,b)=>b.p7-a.p7).map(g=>`<div class="rw" style="gr
 ph.textContent='Svamitva Registry · District Shivpuri · '+T.find(x=>x[0]==tab)[1]+' · Last Updated: '+SYNC;
 [...tabs.children].forEach(b=>b.classList.toggle('on',b.dataset.t==tab));sb.innerHTML='';seg.style.display='none';let h='';
 if(tab=='tehsil'){const a=grp(R,r=>r.t);h=tblW(tbl('tehsil',a,[['k','Tehsil','t'],...tail]),a)}
+if(tab=='tehsummary'){
+  const ts=tehSummaryRows(R).sort((a,b)=>a.k.localeCompare(b.k,'hi'));
+  const TOT=ts.reduce((a,g)=>({vil:a.vil+g.vil,hal:a.hal+g.hal,pat:a.pat+g.pat,pl:a.pl+g.pl,b:a.b+g.b,cm:a.cm+g.cm}),{vil:0,hal:0,pat:0,pl:0,b:0,cm:0});
+  const colmap=[['vil','Total Village'],['hal','Total Halka'],['pat','Total Patwari'],['pl','Total Plot'],['b','Total Beneficiary'],['cm','Completed Plot']];
+  const cellHTML=(te,f,v)=>{const on=tsel&&tsel.f===f&&tsel.te===te;return`<td class="ck${on?' dsel':''}" data-tbd="${f}|${esc(te)}">${nf(v)}</td>`};
+  const rows=ts.map(g=>`<tr><td class="l">${esc(g.k)}</td>`+colmap.map(([f])=>cellHTML(g.k,f,g[f])).join('')+'</tr>').join('');
+  const totRowHtml='<tr class="tot"><td class="l">Total</td>'+colmap.map(([f])=>cellHTML('*',f,TOT[f])).join('')+'</tr>';
+  let lst='';
+  if(tsel){
+    const label={vil:'गाँव सूची',hal:'हल्का सूची',pat:'पटवारी सूची',pl:'गाँव सूची (प्लॉट)',b:'गाँव सूची (हितग्राही)',cm:'गाँव सूची (Completed)'}[tsel.f]||'सूची';
+    lst=`<div id="tlist"><h3>चयनित सूची: ${tsel.te==='*'?'पूरा जिला':esc(tsel.te)} · ${label} <button class="more" data-tclr="1" style="margin:0 0 0 8px;padding:2px 10px">सूची हटाएँ</button></h3>`+tehListHTML(R,tsel.f,tsel.te)+'</div>'}
+  h=`<div class="note" style="margin:0 0 10px">तहसील-वार सारांश: किसी भी संख्या पर क्लिक करके उससे संबंधित सूची देखें। अंतिम पंक्ति सभी तहसीलों का योग है।</div><div class="tw"><table><thead><tr><th class="l">Tehsil</th>${colmap.map(c=>`<th>${c[1]}</th>`).join('')}</tr></thead><tbody>${rows}${totRowHtml}</tbody></table></div>`+lst}
 if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],...tail]),a)}
 if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail],1),a,1)}
 if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],1),a,1)}
