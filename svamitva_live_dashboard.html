@@ -131,16 +131,19 @@ const nf=x=>(+x||0).toLocaleString('en-IN'),pf=(a,b)=>b?a/b*100:0,pt=x=>x.toFixe
 const sgn=(x,d=2)=>(x>=0?'+':'−')+Math.abs(x).toFixed(d);
 function maskMob(v){v=String(v==null?'':v).trim();if(!v||v=='-')return'-';if(/x/i.test(v))return v;if(/e\+/i.test(v))return'XXXXXXXXXX';const d=v.replace(/\D/g,'');return d.length<=4?'XXXXXX'+d:'X'.repeat(d.length-4)+d.slice(-4)}
 
-/* तहसील से अनुभाग (Subdivision) — केवल तब जब शीट में अनुभाग खाली हो */
+/* तहसील या शीट के अनुभाग (Subdivision) को English नाम में बदलना */
+function normSubdiv(v){
+  const x=String(v||'').trim();
+  if(!x||x==='—'||x==='-')return'';
+  if(/पिछोर|खनियाधाना|pichhore|pichor|khaniyadhana|khaniadhana/i.test(x))return'Pichhore';
+  if(/करैरा|नरवर|karera|narwar/i.test(x))return'Karera';
+  if(/पोहरी|बैराड|बैराड़|pohari|pohri|bairad|bairrad/i.test(x))return'Pohari';
+  if(/कोलारस|बदरवास|रन्नौद|रन्‍नौद|kolaras|badarwas|badarvas|rannod|rannaud/i.test(x))return'Kolaras';
+  if(/शिवपुरी|shivpuri/i.test(x))return'Shivpuri';
+  return x;
+}
 function getSubdiv(t,s){
-  if(s&&s!=='—'&&s!=='-')return s;
-  const x=String(t||'').trim();
-  if(/पिछोर|खनियाधाना|pichhore|pichor|khaniyadhana|khaniadhana/i.test(x))return'पिछोर';
-  if(/करैरा|नरवर|karera|narwar/i.test(x))return'करैरा';
-  if(/पोहरी|बैराड|बैराड़|pohari|pohri|bairad|bairrad/i.test(x))return'पोहरी';
-  if(/कोलारस|बदरवास|रन्नौद|रन्‍नौद|kolaras|badarwas|badarvas|rannod|rannaud/i.test(x))return'कोलारस';
-  if(/शिवपुरी|shivpuri/i.test(x))return'शिवपुरी';
-  return'अन्य';
+  return normSubdiv(s)||normSubdiv(t)||'Other';
 }
 
 /* ---------- data loading ---------- */
@@ -382,11 +385,11 @@ if(tab=='subdiv'){
   subs.forEach(g0=>{
     X.vil+=g0.vil;X.pl+=g0.pl;X.b+=g0.b;X.i+=g0.i;X.v+=g0.v;X.sb+=g0.sb;X.pr+=g0.pr;X.cm+=g0.cm;X.p1+=g0.p1;X.p7+=g0.p7;
     grp(R.filter(r=>r.s==g0.k),r=>r.t).sort((a,b)=>a.pct-b.pct||b.pl-a.pl).forEach(t0=>{n++;body+=row(t0,n,g0.k,t0.k,'')});
-    body+=row(g0,'','','योग अनुभाग '+g0.k,'sbt');
+    body+=row(g0,'','','Sub-Division Total ('+g0.k+')','sbt');
   });
   X.pct=pf(X.cm,X.pl);
   body+=row(X,'','','District Total','tot');
-  h=`<div class="note" style="margin:0 0 10px">प्रत्येक <b>Subdivision (अनुभाग)</b> को उसके कुल <b>Completion % के कम से ज़्यादा (Ascending)</b> क्रम में रखा गया है। प्रत्येक अनुभाग की तहसीलें और उनके ठीक नीचे <b>योग अनुभाग</b> दिया गया है।</div>
+  h=`<div class="note" style="margin:0 0 10px">प्रत्येक <b>Subdivision (अनुभाग)</b> को उसके कुल <b>Completion % के कम से ज़्यादा (Ascending)</b> क्रम में रखा गया है। प्रत्येक अनुभाग की तहसीलें और उनके ठीक नीचे <b>Sub-Division Total</b> दिया गया है।</div>
   <div class="tw"><table data-id="subdiv"><thead><tr><th class="l">S.No.</th><th class="l">Sub-Division</th><th class="l">Tehsil Name</th><th>Villages</th><th>Total Plots</th><th>Total Beneficiaries</th><th>Registry Initiated</th><th>Patwari Verification</th><th>Submitted</th><th>Registration in Process</th><th>Completed</th><th>Completion %</th><th>1 Day Progress<br><span class="hs">prev 9 AM → 9 AM</span></th><th>1 Week Progress</th></tr></thead><tbody>${body}</tbody></table></div>
   <div class="note">${nf(n)} तहसीलें · ${nf(subs.length)} अनुभाग (Subdivisions)</div>`;
 }
