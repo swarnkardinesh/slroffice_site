@@ -164,7 +164,17 @@ const LIB={pdf:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min
 const loadLib=u=>libC[u]||(libC[u]=new Promise((ok,no)=>{const e=document.createElement('script');e.src=u;e.onload=ok;e.onerror=()=>{delete libC[u];no(new Error('library load failed'))};document.head.appendChild(e)}));
 const busyEl=document.getElementById('busybox'),busyUI=(m)=>{busyEl.style.display=m?'flex':'none';if(m)bmsg.textContent=m};
 const NUMR=/^[+−\-]?[\d,]+(\.\d+)?%?$/,cellTxt=el=>{const c=el.cloneNode(true);c.querySelectorAll('br').forEach(b=>b.replaceWith('\n'));return c.textContent.replace(/[ \t]+/g,' ').replace(/ ?\n ?/g,'\n').replace(/\s*[▲▼]$/,'').trim()};
-const repName=()=>{let n=(T.find(x=>x[0]==tab)||['',tab])[1].replace(/^[^A-Za-z\u0900-\u097F]+/,'').trim();if(tab=='progress')n+=' – '+lv+'-wise';return n};
+const scopeName=()=>{
+  const parts=[];
+  if(F.s)parts.push('Subdivision '+F.s);
+  if(F.t)parts.push('Tehsil '+F.t);
+  if(F.c)parts.push('Court '+cs(F.c));
+  if(F.p){const r=D.find(x=>x.pk==F.p);parts.push('Patwari '+(r?r.pn+' ('+r.t+')':F.p))}
+  if(F.st)parts.push(F.st);
+  if(F.q.trim())parts.push('"'+F.q.trim()+'"');
+  return parts.length?parts.join(', '):'District Shivpuri';
+};
+const repName=()=>{let n=(T.find(x=>x[0]==tab)||['',tab])[1].replace(/^[^A-Za-z\u0900-\u097F]+/,'').trim();if(tab=='progress')n+=' – '+lv+'-wise';return n+' – '+scopeName()};
 function filterInfo(){
   const a=[];if(F.s)a.push('Subdivision: '+F.s);if(F.t)a.push('Tehsil: '+F.t);if(F.c)a.push('Court: '+cs(F.c));
   if(F.p){const r=D.find(x=>x.pk==F.p);a.push('Patwari: '+(r?r.pn+' ('+r.t+')':F.p))}
@@ -172,7 +182,7 @@ function filterInfo(){
   let t=a.length?a.join('  |  '):'कोई फ़िल्टर नहीं (पूरा जिला)';
   if(tab=='bottom')t+='  ||  शर्त: Completion % < जिले का कुल Completion % ('+pt(pf(D.reduce((x,r)=>x+r.cm,0),D.reduce((x,r)=>x+r.pl,0)))+')';
   return t}
-const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date()),flt:filterInfo(),def:'Completion % = Completed ÷ Total plots  ·  1 Day Progress = prev 9 AM → today 9 AM  ·  Mobile numbers masked (last 4 digits only)'});
+const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date()),flt:filterInfo(),def:'Completion % = Completed ÷ Total plots  ·  1 Day Progress = prev 9 AM → today 9 AM'});
 function reportModel(){
   const oLim=lim;lim=1e9;EXP=true;let sections=[];
   try{draw();let title='';
@@ -187,9 +197,9 @@ function reportModel(){
 /* ----- Excel ----- */
 const toCell=v=>{if(NUMR.test(v)&&!/^0\d/.test(v.replace(/[+−\-]/,''))){const n=parseFloat(v.replace(/[,%+]/g,'').replace('−','-'));if(!isNaN(n))return n}return v};
 function buildWB(M,mt,X){
-  const aoa=[[mt.title+' — '+mt.sub],['Report',mt.rep],[mt.upd],[mt.gen],['Filters',mt.flt],[mt.def],[]];
+  const aoa=[[mt.title+' — '+mt.sub],['Report',mt.rep],[mt.upd],[mt.gen],[mt.def],[]];
   M.sections.forEach(sec=>{if(sec.title)aoa.push([sec.title]);aoa.push(sec.head.map(h=>h.replace(/\n/g,' ')));sec.rows.forEach(r=>aoa.push(r.map(toCell)));aoa.push([])});
-  const ws=X.utils.aoa_to_sheet(aoa),w=[];aoa.slice(7).forEach(r=>r.forEach((c,i)=>{w[i]=Math.max(w[i]||8,Math.min(42,String(c==null?'':c).length+2))}));ws['!cols']=w.map(x=>({wch:x}));
+  const ws=X.utils.aoa_to_sheet(aoa),w=[];aoa.slice(6).forEach(r=>r.forEach((c,i)=>{w[i]=Math.max(w[i]||8,Math.min(42,String(c==null?'':c).length+2))}));ws['!cols']=w.map(x=>({wch:x}));
   const wb=X.utils.book_new();X.utils.book_append_sheet(wb,ws,mt.rep.replace(/[\\\/?*\[\]:]/g,' ').slice(0,31)||'Report');return wb}
 const fname=ext=>`Svamitva_Shivpuri_${tab}${tab=='progress'?'_'+lv:''}_${(SD||'').replace(/[^\d]/g,'')||'report'}.${ext}`;
 async function exportExcel(){
@@ -204,7 +214,7 @@ function dropByName(M,re){let n=0;M.sections.forEach(sec=>{const c=sec.head.find
 function naturalW(host,M){host.style.width='4000px';host.innerHTML=M.sections.map((s,i)=>`<div class="pdfpage nat" data-n="${i}">${tableHTML(s,s.rows.map((_,j)=>j))}</div>`).join('');return Math.ceil(Math.max(...[...host.querySelectorAll('.nat table')].map(t=>t.offsetWidth)))}
 function tableHTML(sec,idx){
   return'<table><thead><tr>'+sec.head.map(h=>`<th>${esc2(h)}</th>`).join('')+'</tr></thead><tbody>'+idx.map(j=>`<tr${j==sec.tot?' class="tot"':''}>`+sec.rows[j].map((c,i)=>`<td class="${sec.num[i]?'n':'t'}">${esc2(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table>'}
-const hdrHTML=(m,full)=>full?`<div class="ph1"><h1>${esc(m.title)}</h1><div class="d2">${esc(m.sub)}</div><div class="mt"><span><b>Report:</b> ${esc(m.rep)}</span><span><b>${esc(m.upd)}</b></span><span>${esc(m.gen)}</span></div><div class="fl2"><b>Filters:</b> ${esc(m.flt)}</div><div class="df">${esc(m.def)}</div></div>`:`<div class="ph2"><b>${esc(m.title)}</b> · ${esc(m.sub)} · ${esc(m.rep)} · ${esc(m.upd)}<br><span>Filters: ${esc(m.flt)}</span></div>`;
+const hdrHTML=(m,full)=>full?`<div class="ph1"><h1>${esc(m.title)}</h1><div class="d2">${esc(m.sub)}</div><div class="mt"><span><b>Report:</b> ${esc(m.rep)}</span><span><b>${esc(m.upd)}</b></span><span>${esc(m.gen)}</span></div><div class="df">${esc(m.def)}</div></div>`:`<div class="ph2"><b>${esc(m.title)}</b> · ${esc(m.sub)} · ${esc(m.rep)} · ${esc(m.upd)}</div>`;
 function planPages(secs,h1,h2,usable){
   const pages=[];let cur=null,room=0;const np=()=>{cur={parts:[]};pages.push(cur);room=usable-(pages.length==1?h1:h2)-6};np();
   secs.forEach((s,i)=>{const n=s.rows.length;let idx=0;
