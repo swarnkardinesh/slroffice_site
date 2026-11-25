@@ -304,14 +304,17 @@ function subdivisionTableHTML(R){
     if(!tm.has(r.t))tm.set(r.t,{s:r.s,t:r.t,vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0});
     const o=tm.get(r.t);o.vil++;o.pl+=r.pl;o.b+=r.b;o.i+=r.i;o.v+=r.v;o.sb+=r.sb;o.pr+=r.pr;o.cm+=r.cm;o.p1+=r.p1;o.p7+=r.p7;
   });
-  const subs=[...bySub.keys()].sort((a,b)=>String(a).localeCompare(String(b),'hi'));
+  const rowCells=o=>{const pct=pf(o.cm,o.pl);return`<td>${nf(o.vil)}</td><td>${nf(o.pl)}</td><td>${nf(o.b)}</td><td>${nf(o.i)}</td><td>${nf(o.v)}</td><td>${nf(o.sb)}</td><td>${nf(o.pr)}</td><td>${nf(o.cm)}</td><td><span class="pc ${cls(pct)}">${pt(pct)}</span></td><td>${sg(o.p1,'g')}</td><td>${sg(o.p7,'g')}</td>`};
+  const subTotals=[...bySub.keys()].map(s=>{
+    const tm=bySub.get(s),ST={vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0};
+    [...tm.values()].forEach(o=>Object.keys(ST).forEach(k=>ST[k]+=o[k]));
+    return{s,ST,pct:pf(ST.cm,ST.pl)};
+  }).sort((a,b)=>a.pct-b.pct);
   let sn=0,rowsHTML='';
   const DT={vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0};
-  const rowCells=o=>{const pct=pf(o.cm,o.pl);return`<td>${nf(o.vil)}</td><td>${nf(o.pl)}</td><td>${nf(o.b)}</td><td>${nf(o.i)}</td><td>${nf(o.v)}</td><td>${nf(o.sb)}</td><td>${nf(o.pr)}</td><td>${nf(o.cm)}</td><td><span class="pc ${cls(pct)}">${pt(pct)}</span></td><td>${sg(o.p1,'g')}</td><td>${sg(o.p7,'g')}</td>`};
-  subs.forEach(s=>{
-    const tm=bySub.get(s),tehs=[...tm.values()].sort((a,b)=>String(a.t).localeCompare(String(b.t),'hi'));
-    const ST={vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0};
-    tehs.forEach(o=>{sn++;rowsHTML+=`<tr><td class="l sr">${sn}</td><td class="l">${esc(s)}</td><td class="l">${esc(o.t)}</td>${rowCells(o)}</tr>`;Object.keys(ST).forEach(k=>ST[k]+=o[k])});
+  subTotals.forEach(({s,ST})=>{
+    const tm=bySub.get(s),tehs=[...tm.values()].sort((a,b)=>pf(a.cm,a.pl)-pf(b.cm,b.pl));
+    tehs.forEach(o=>{sn++;rowsHTML+=`<tr><td class="l sr">${sn}</td><td class="l">${esc(s)}</td><td class="l">${esc(o.t)}</td>${rowCells(o)}</tr>`});
     Object.keys(DT).forEach(k=>DT[k]+=ST[k]);
     rowsHTML+=`<tr class="tot"><td></td><td class="l" colspan="2">Sub-Division Total (${esc(s)})</td>${rowCells(ST)}</tr>`;
   });
