@@ -79,7 +79,7 @@ tr.tot td{font-weight:800;background:var(--acb)!important;border-top:2px solid v
 <div class="ph" id="ph"></div>
 <section class="top"><div class="hero"><div class="l">कुल Completion %</div><b class="big" id="hp">—</b><div class="s" id="hs"></div><div class="meter"><i id="hm" style="width:0"></i></div><div class="gd" id="hd1"></div><div class="gd" id="hd7"></div></div><div class="k" id="k"></div></section>
 <div class="card" id="klistcard" style="display:none"><h2 id="klisttitle"></h2><div id="klistbody"></div></div>
-<section class="card"><h2>प्रगति तुलना: 1 Day बनाम 1 Week</h2><div class="sub"><b>1 Day Progress</b> = पिछले दिन सुबह 9 बजे से आज सुबह 9 बजे तक Completed की बढ़त (रोज़ 9 AM पर तैयार) · <b>1 Week Progress</b> = पिछले 1 सप्ताह में Completed की बढ़त</div><div class="sum" id="sum"></div>
+<section class="card"><h2>प्रगति तुलना: 1 Day बनाम 1 Week</h2><div class="sub"><b>1 Day Progress</b> = पिछले दिन सुबह 8 बजे से आज सुबह 8 बजे तक Completed की बढ़त (रोज़ 8 AM पर तैयार) · <b>1 Week Progress</b> = पिछले 1 सप्ताह में Completed की बढ़त</div><div class="sum" id="sum"></div>
 <div class="g2"><div><h3 style="margin-top:0">तहसील-वार स्थिति: कितना पूरा, कितना बाकी</h3><div class="lgd"><span><i style="background:var(--ac)"></i>1 सप्ताह पहले तक Completed</span><span><i style="background:var(--wk)"></i>पिछले 1 सप्ताह में बढ़ा</span><span><i style="background:var(--ln);border:1px solid var(--mut)"></i>बाकी (Pending)</span></div><div id="cT"></div></div>
 <div><h3 style="margin-top:0">तहसील-वार गति: 1 Day बनाम साप्ताहिक औसत (प्रति दिन)</h3><div class="lgd"><span><i style="background:var(--dy)"></i>1 Day</span><span><i style="background:var(--wk)"></i>1 Week का औसत/दिन</span></div><div id="cG"></div></div></div></section>
 <div class="tabs" id="tabs"></div>
@@ -150,7 +150,7 @@ function setup(){
   sel.forEach(([k,,o])=>{if(F[k]&&!o.some(x=>x[0]==F[k]))F[k]=''});
   fl.innerHTML=sel.map(([k,l,o])=>`<div><label>${l}</label><select data-k="${k}"><option value="">All</option>${o.map(([v,t])=>`<option value="${esc(v)}"${F[k]==v?' selected':''}>${esc(t)}</option>`).join('')}</select></div>`).join('')+`<div><label>Search</label><input data-k="q" value="${esc(F.q)}" placeholder="गाँव, LGD, पटवारी या हल्का"></div>`;
   const zm=new Map();D.forEach(r=>{if(r.pn!=NA)zm.set(r.pk,(zm.get(r.pk)||0)+r.i+r.v+r.sb+r.pr+r.cm)});window.ZPN=[...zm.values()].filter(v=>v==0).length;
-  T=[['tehsil','Tehsil-wise'],['tehsummary','📍 Tehsil Summary'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 10 पटवारी'],['bottom','⬇ BOTTOM पटवारी (जिले के % से कम)'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
+  T=[['tehsil','Tehsil-wise'],['tehsummary','📍 Tehsil Summary'],['subdiv','📋 Subdivision-wise Report'],['court','Court-wise'],['patwari','Patwari-wise'],['halka','Halka-wise'],['village','Village-wise'],['top','🏆 TOP 20 पटवारी (संख्या के अनुसार)'],['toppct','🏅 TOP 20 पटवारी (% के अनुसार)'],['bottom','⬇ BOTTOM पटवारी (जिले के % से कम)'],['dist','📊 पटवारी वितरण'],['zero','⚠ शून्य प्रगति पटवारी'],['progress','Progress'],['action','Action list']].filter(x=>x[0]!='zero'||ZPN>0);
   if(!T.some(x=>x[0]==tab))tab='tehsil';
   tabs.innerHTML=T.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('')+'<button class="pdfb" id="pdfb">📄 PDF डाउनलोड</button><button class="pdfb xlb" id="xlb">📊 Excel डाउनलोड</button>';
   setB(bk);segHTML()}
@@ -185,7 +185,7 @@ function filterInfo(){
   let t=a.length?a.join('  |  '):'कोई फ़िल्टर नहीं (पूरा जिला)';
   if(tab=='bottom')t+='  ||  शर्त: Completion % < जिले का कुल Completion % ('+pt(pf(D.reduce((x,r)=>x+r.cm,0),D.reduce((x,r)=>x+r.pl,0)))+')';
   return t}
-const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date()),flt:filterInfo(),def:'Completion % = Completed ÷ Total plots  ·  1 Day Progress = prev 9 AM → today 9 AM'});
+const metaInfo=()=>({title:'Svamitva Registry : Progress Report',sub:'District Shivpuri',rep:repName(),upd:'Last Updated: '+(SYNC||'—'),gen:'Generated: '+fmtIST(new Date()),flt:filterInfo(),def:'Completion % = Completed ÷ Total plots  ·  1 Day Progress = prev 8 AM → today 8 AM'});
 function reportModel(){
   const oLim=lim;lim=1e9;EXP=true;let sections=[];
   try{draw();let title='';
@@ -276,7 +276,7 @@ const totRow=(a,cols,id)=>{const X={vil:0};NF.forEach(f=>X[f]=0);a.forEach(r=>{X
 function tbl(id,rows,cols,limit,def){const s=sort[id]||def||{k:'pct',d:1},a=[...rows].sort((x,y)=>{const p=x[s.k],q=y[s.k];return(typeof p=='number'?p-q:String(p).localeCompare(String(q),'hi'))*s.d||y.pl-x.pl}),sh=limit?a.slice(0,lim):a;
 return`<table data-id="${id}"><thead><tr><th class="l">Sr.</th>${cols.map(([f,l,t])=>`<th data-f="${f}" class="${t=='t'?'l':''}">${l}${s.k==f?(s.d>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody>`+sh.map((r,j)=>`<tr><td class="l sr">${j+1}</td>`+cols.map(([f,l,t])=>cell(r,f,t,id)).join('')+'</tr>').join('')+totRow(a,cols,id)+`</tbody></table>`}
 const tblW=(h,rows,limit)=>`<div class="tw">${h}</div>`+(limit&&rows.length>lim?`<button class="more" data-more="1">और दिखाएँ (${nf(rows.length-lim)} शेष)</button>`:'')+`<div class="note">${nf(rows.length)} पंक्तियाँ। क्रम बदलने के लिए कॉलम के शीर्षक पर क्लिक करें।</div>`;
-const P1=['p1','1 Day Progress<br><span class="hs">prev 9 AM → 9 AM</span>'],P7=['p7','1 Week Progress'],PP=[P1,P7];
+const P1=['p1','1 Day Progress<br><span class="hs">prev 8 AM → 8 AM</span>'],P7=['p7','1 Week Progress'],PP=[P1,P7];
 const SC=[['i','Registry initiated'],['v','Verification'],['sb','Submitted'],['pr','In process'],['cm','Completed']],tail=[['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP];
 const vc=[['n','Village','t'],['l','LGD','t'],['t','Tehsil','t'],['c','Court','t'],['pn','Patwari','t'],['h','Halka','t'],['m','Mobile','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP,['st','Status','t']];
 const pvc=[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP];
@@ -293,23 +293,46 @@ function tehSummaryRows(rows){
     if(r.pn!==NA)g.patwaris.add(r.pn);
     g.pl+=r.pl;g.b+=r.b;g.cm+=r.cm;
   });
-  return[...m.values()].map(g=>({k:g.k,vil:g.vil,hal:g.halkas.size,pat:g.patwaris.size,pl:g.pl,b:g.b,cm:g.cm}));
+  return[...m.values()].map(g=>({k:g.k,vil:g.vil,hal:g.halkas.size,pat:g.patwaris.size,pl:g.pl,b:g.b,cm:g.cm,pct:pf(g.cm,g.pl)}));
+}
+/* ---------- Subdivision-wise report (PDF format: Sub-Division -> Tehsil rows, sub-division total, district total) ---------- */
+function subdivisionTableHTML(R){
+  const bySub=new Map();
+  R.forEach(r=>{
+    if(!bySub.has(r.s))bySub.set(r.s,new Map());
+    const tm=bySub.get(r.s);
+    if(!tm.has(r.t))tm.set(r.t,{s:r.s,t:r.t,vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0});
+    const o=tm.get(r.t);o.vil++;o.pl+=r.pl;o.b+=r.b;o.i+=r.i;o.v+=r.v;o.sb+=r.sb;o.pr+=r.pr;o.cm+=r.cm;o.p1+=r.p1;o.p7+=r.p7;
+  });
+  const subs=[...bySub.keys()].sort((a,b)=>String(a).localeCompare(String(b),'hi'));
+  let sn=0,rowsHTML='';
+  const DT={vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0};
+  const rowCells=o=>{const pct=pf(o.cm,o.pl);return`<td>${nf(o.vil)}</td><td>${nf(o.pl)}</td><td>${nf(o.b)}</td><td>${nf(o.i)}</td><td>${nf(o.v)}</td><td>${nf(o.sb)}</td><td>${nf(o.pr)}</td><td>${nf(o.cm)}</td><td><span class="pc ${cls(pct)}">${pt(pct)}</span></td><td>${sg(o.p1,'g')}</td><td>${sg(o.p7,'g')}</td>`};
+  subs.forEach(s=>{
+    const tm=bySub.get(s),tehs=[...tm.values()].sort((a,b)=>String(a.t).localeCompare(String(b.t),'hi'));
+    const ST={vil:0,pl:0,b:0,i:0,v:0,sb:0,pr:0,cm:0,p1:0,p7:0};
+    tehs.forEach(o=>{sn++;rowsHTML+=`<tr><td class="l sr">${sn}</td><td class="l">${esc(s)}</td><td class="l">${esc(o.t)}</td>${rowCells(o)}</tr>`;Object.keys(ST).forEach(k=>ST[k]+=o[k])});
+    Object.keys(DT).forEach(k=>DT[k]+=ST[k]);
+    rowsHTML+=`<tr class="tot"><td></td><td class="l" colspan="2">Sub-Division Total (${esc(s)})</td>${rowCells(ST)}</tr>`;
+  });
+  rowsHTML+=`<tr class="tot"><td></td><td class="l" colspan="2">District Total</td>${rowCells(DT)}</tr>`;
+  return`<div class="tw"><table data-id="subdiv"><thead><tr><th class="l">S.No</th><th class="l">Sub-Division</th><th class="l">Tehsil Name</th><th>Villages</th><th>Total Plots</th><th>Total Beneficiaries</th><th>Registry Initiated</th><th>Patwari Verification</th><th>Submitted</th><th>Registration in Process</th><th>Completed</th><th>Completion %</th><th>1 Day Progress<br><span class="hs">prev 8 AM → 8 AM</span></th><th>1 Week Progress</th></tr></thead><tbody>${rowsHTML}</tbody></table></div>`;
 }
 function tehListHTML(R,f,te){
   const Rf=te==='*'?R:R.filter(r=>r.t===te);
   if(f==='hal'){const a=grp(Rf,r=>r.t+'|'+r.h,r=>r.h);return'<div class="tw">'+tbl('tehlist_hal',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],['cm','Completed'],['pct','Completion %']],0,{k:'k',d:1})+'</div>'}
   if(f==='pat'){const a=gP(Rf);return'<div class="tw">'+tbl('tehlist_pat',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],['cm','Completed'],['pct','Completion %']],0,{k:'cm',d:-1})+'</div>'}
-  const sk=f==='vil'?'n':(f==='pl'?'pl':(f==='b'?'b':'cm'));
+  const sk=f==='vil'?'n':(f==='pl'?'pl':(f==='b'?'b':(f==='pct'?'pct':'cm')));
   return'<div class="tw">'+tbl('tehlist_vil',Rf,vc,0,{k:sk,d:-1})+'</div>'}
 function draw(){if(!D.length)return;const q=F.q.trim().toLowerCase();
 const R=D.filter(r=>(!F.s||r.s==F.s)&&(!F.t||r.t==F.t)&&(!F.c||r.c==F.c)&&(!F.p||r.pk==F.p)&&(!F.st||r.st==F.st)&&(!q||(r.n+' '+r.l+' '+r.pn+' '+r.h).toLowerCase().includes(q))).map(r=>fin({...r}));
 const S=f=>R.reduce((a,r)=>a+r[f],0),pl=S('pl'),cm=S('cm'),dc=S('dc'),p1=S('p1'),p7=S('p7'),pc=pf(cm,pl);
 hp.textContent=pt(pc);hs.textContent=nf(cm)+' / '+nf(pl)+' plots';hm.style.width=Math.min(100,pc)+'%';
 const pp=d=>pc-pf(cm-d,pl);
-hd1.innerHTML=`<span>1 Day Progress (9 AM → 9 AM)</span><b>+${nf(p1)} · ${sgn(pp(p1))} pp</b>`;hd7.innerHTML=`<span>1 Week Progress</span><b>+${nf(p7)} · ${sgn(pp(p7))} pp</b>`;
+hd1.innerHTML=`<span>1 Day Progress (8 AM → 8 AM)</span><b>+${nf(p1)} · ${sgn(pp(p1))} pp</b>`;hd7.innerHTML=`<span>1 Week Progress</span><b>+${nf(p7)} · ${sgn(pp(p7))} pp</b>`;
 const na=R.filter(r=>r.pn==NA).length,zero=R.filter(r=>r.st=='Not started').length,ns=R.filter(r=>r.ns).length,npw=new Set(R.filter(r=>r.pn!=NA).map(r=>r.pk)).size;
 const halkaSet=new Set(R.filter(r=>r.h&&r.h!=='—').map(r=>r.t+'|'+r.h)),totalHalka=halkaSet.size;
-k.innerHTML=[['Villages',R.length,''],['Total Halkas',totalHalka,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g'],['1 Day Progress (9 AM → 9 AM)',p1,'o'],['1 Week Progress',p7,'p'],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:'','notstarted'],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d,sel])=>`<div class="kc ${c}"${sel?` data-kc="${sel}" style="cursor:pointer"`:''}><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
+k.innerHTML=[['Villages',R.length,''],['Total Halkas',totalHalka,''],['Total plots',pl,''],['Beneficiaries',S('b'),''],['Completed',cm,'g'],['1 Day Progress (8 AM → 8 AM)',p1,'o'],['1 Week Progress',p7,'p'],['Pending plots',pl-cm,'p'],['Not started villages',zero,'o',ns?`<sup class="d up">${nf(ns)} गाँव में शुरू हुआ</sup>`:'','notstarted'],['Patwaris',npw,''],...(na?[['Patwari not assigned (villages)',na,'r']]:[]),...(ZPN>0?[['काम शुरू नहीं करने वाले पटवारी',gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0).length,'r']]:[])].map(([a,b,c,d,sel])=>`<div class="kc ${c}"${sel?` data-kc="${sel}" style="cursor:pointer"`:''}><small>${a}</small><b>${nf(b)}</b>${d||''}</div>`).join('');
 if(kSel==='notstarted'){
   const list=R.filter(r=>r.st==='Not started');
   klisttitle.textContent='कार्य शुरू नहीं हुआ गाँव सूची ('+nf(list.length)+')';
@@ -317,7 +340,7 @@ if(kSel==='notstarted'){
   klistcard.style.display='block';
 }else{klistcard.style.display='none'}
 const avg=p7/7,ratio=avg?(p1/avg-1)*100:0;
-sum.innerHTML=`<div class="sm dy"><small>1 Day Progress (9 AM → 9 AM)</small><b>+${nf(p1)}</b></div><div class="sm wk"><small>1 Week Progress</small><b>+${nf(p7)}</b></div><div class="sm"><small>साप्ताहिक औसत / दिन</small><b>${nf(Math.round(avg))}</b></div><div class="sm pc"><small>1 Day बनाम साप्ताहिक औसत</small><b class="${ratio>=0?'up':'dn'}">${ratio>=0?'▲':'▼'} ${Math.abs(ratio).toFixed(1)}%</b></div>`;
+sum.innerHTML=`<div class="sm dy"><small>1 Day Progress (8 AM → 8 AM)</small><b>+${nf(p1)}</b></div><div class="sm wk"><small>1 Week Progress</small><b>+${nf(p7)}</b></div><div class="sm"><small>साप्ताहिक औसत / दिन</small><b>${nf(Math.round(avg))}</b></div><div class="sm pc"><small>1 Day बनाम साप्ताहिक औसत</small><b class="${ratio>=0?'up':'dn'}">${ratio>=0?'▲':'▼'} ${Math.abs(ratio).toFixed(1)}%</b></div>`;
 const tg=grp(R,r=>r.t).sort((a,b)=>b.pct-a.pct);
 cT.innerHTML=tg.map(g=>{const b0=pf(g.cm-g.p7,g.pl),w=pf(g.p7,g.pl);return`<div class="rw"><span class="nm" title="${esc(g.k)}">${esc(g.k)}</span><div class="tr stk" title="1 सप्ताह पहले तक ${pt(b0)} · पिछले 1 सप्ताह में +${w.toFixed(2)}% · बाकी ${pt(100-g.pct)}"><i style="width:${b0}%;background:var(--ac)"></i><i style="width:${w}%;background:var(--wk)"></i></div><span class="v">${pt(g.pct)}</span></div>`}).join('');
 const gm=Math.max(1,...tg.map(g=>Math.max(g.p1,g.p7/7)));
@@ -328,15 +351,17 @@ if(tab=='tehsil'){const a=grp(R,r=>r.t);h=tblW(tbl('tehsil',a,[['k','Tehsil','t'
 if(tab=='tehsummary'){
   const ts=tehSummaryRows(R).sort((a,b)=>a.k.localeCompare(b.k,'hi'));
   const TOT=ts.reduce((a,g)=>({vil:a.vil+g.vil,hal:a.hal+g.hal,pat:a.pat+g.pat,pl:a.pl+g.pl,b:a.b+g.b,cm:a.cm+g.cm}),{vil:0,hal:0,pat:0,pl:0,b:0,cm:0});
-  const colmap=[['vil','Total Village'],['hal','Total Halka'],['pat','Total Patwari'],['pl','Total Plot'],['b','Total Beneficiary'],['cm','Completed Plot']];
-  const cellHTML=(te,f,v)=>{const on=tsel&&tsel.f===f&&tsel.te===te;return`<td class="ck${on?' dsel':''}" data-tbd="${f}|${esc(te)}">${nf(v)}</td>`};
+  TOT.pct=pf(TOT.cm,TOT.pl);
+  const colmap=[['vil','Total Village'],['hal','Total Halka'],['pat','Total Patwari'],['pl','Total Plot'],['b','Total Beneficiary'],['cm','Completed Plot'],['pct','Completion %']];
+  const cellHTML=(te,f,v)=>{const on=tsel&&tsel.f===f&&tsel.te===te,disp=f==='pct'?pt(v):nf(v);return`<td class="ck${on?' dsel':''}" data-tbd="${f}|${esc(te)}">${disp}</td>`};
   const rows=ts.map(g=>`<tr><td class="l">${esc(g.k)}</td>`+colmap.map(([f])=>cellHTML(g.k,f,g[f])).join('')+'</tr>').join('');
   const totRowHtml='<tr class="tot"><td class="l">Total</td>'+colmap.map(([f])=>cellHTML('*',f,TOT[f])).join('')+'</tr>';
   let lst='';
   if(tsel){
-    const label={vil:'गाँव सूची',hal:'हल्का सूची',pat:'पटवारी सूची',pl:'गाँव सूची (प्लॉट)',b:'गाँव सूची (हितग्राही)',cm:'गाँव सूची (Completed)'}[tsel.f]||'सूची';
+    const label={vil:'गाँव सूची',hal:'हल्का सूची',pat:'पटवारी सूची',pl:'गाँव सूची (प्लॉट)',b:'गाँव सूची (हितग्राही)',cm:'गाँव सूची (Completed)',pct:'गाँव सूची (Completion %)'}[tsel.f]||'सूची';
     lst=`<div id="tlist"><h3>चयनित सूची: ${tsel.te==='*'?'पूरा जिला':esc(tsel.te)} · ${label} <button class="more" data-tclr="1" style="margin:0 0 0 8px;padding:2px 10px">सूची हटाएँ</button></h3>`+tehListHTML(R,tsel.f,tsel.te)+'</div>'}
   h=`<div class="note" style="margin:0 0 10px">तहसील-वार सारांश: किसी भी संख्या पर क्लिक करके उससे संबंधित सूची देखें। अंतिम पंक्ति सभी तहसीलों का योग है।</div><div class="tw"><table><thead><tr><th class="l">Tehsil</th>${colmap.map(c=>`<th>${c[1]}</th>`).join('')}</tr></thead><tbody>${rows}${totRowHtml}</tbody></table></div>`+lst}
+if(tab=='subdiv'){h=`<div class="note" style="margin:0 0 8px">Subdivision-wise Report: हर उपखंड (Sub-Division) के अंतर्गत तहसील-वार पंक्ति, फिर उस उपखंड का Sub-Division Total, और अंत में District Total — ठीक PDF प्रारूप अनुसार।</div>`+subdivisionTableHTML(R)}
 if(tab=='court'){const a=grp(R,r=>r.c);h=tblW(tbl('court',a,[['k','Court','t'],...tail]),a)}
 if(tab=='patwari'){const a=gP(R);h=tblW(tbl('patwari',a,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],...tail],1),a,1)}
 if(tab=='halka'){const a=grp(R,r=>r.t+'|'+r.h,r=>r.h);h=`<div class="note" style="margin:0 0 8px">हल्कावार प्रगति। Pending plots = कुल प्लॉट − Completed।</div>`+tblW(tbl('halka',a,[['teh','Tehsil','t'],['k','Halka','t'],['pnm','Patwari','t'],['mbn','Mobile','t'],['vil','Villages'],['vn','संबद्ध ग्राम','t'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],1),a,1)}
@@ -356,8 +381,10 @@ h=mk('cm',CB,'1. Completed प्लॉट के अनुसार पटव�
 if(tab=='progress'){sb.innerHTML='<div class="sbb">'+[['tehsil','Tehsil'],['court','Court'],['patwari','Patwari'],['village','Village']].map(([k,l])=>`<button data-lv="${k}" class="${lv==k?'on':''}">${l}-wise</button>`).join('')+'</div>';
 const C={tehsil:[grp(R,r=>r.t),[['k','Tehsil','t']]],court:[grp(R,r=>r.c),[['k','Court','t']]],patwari:[gP(R),[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t']]],village:[R,[['n','Village','t'],['t','Tehsil','t'],['pn','Patwari','t'],['h','Halka','t']]]}[lv];
 const ch=C[0].filter(r=>r.p1||r.p7);h=`<div class="note" style="margin:0 0 8px">जिन ${nf(ch.length)} पंक्तियों में पिछले 1 Day या 1 Week में Completed बढ़ा, वही यहाँ दिख रही हैं।</div>`+tblW(tbl('pg_'+lv,ch,[...C[1],...dcols()],1,{k:'p7',d:-1}),ch,1)}
-if(tab=='top'){const g=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.cm>0).sort((a,b)=>b.cm-a.cm||b.pct-a.pct||b.pl-a.pl).slice(0,10);g.forEach((x,j)=>x.rk=j+1);
-if(EXP)h='<div class="tw">'+tbl('top',g,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],0,{k:'rk',d:1})+'</div>';else h=`<div class="note" style="margin:0 0 10px">रैंकिंग: सबसे ज़्यादा कुल Completed वाले पटवारी पहले। बराबरी होने पर ज़्यादा Completion %, फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 10 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>+${nf(g.p1)}</b><small>1 Day</small></div><div><b>+${nf(g.p7)}</b><small>1 Week</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td></tr>`).join('')+`</table></div>`).join('')+'</div>'}
+if(tab=='top'){const g=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.cm>0).sort((a,b)=>b.cm-a.cm||b.pct-a.pct||b.pl-a.pl).slice(0,20);g.forEach((x,j)=>x.rk=j+1);
+if(EXP)h='<div class="tw">'+tbl('top',g,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],0,{k:'rk',d:1})+'</div>';else h=`<div class="note" style="margin:0 0 10px">रैंकिंग का आधार: सबसे ज़्यादा कुल Completed (यानी संख्या के अनुसार) वाले पटवारी पहले। बराबरी होने पर ज़्यादा Completion %, फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 20 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>+${nf(g.p1)}</b><small>1 Day</small></div><div><b>+${nf(g.p7)}</b><small>1 Week</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td></tr>`).join('')+`</table></div>`).join('')+'</div>'}
+if(tab=='toppct'){const g=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.pl>0).sort((a,b)=>b.pct-a.pct||b.cm-a.cm||b.pl-a.pl).slice(0,20);g.forEach((x,j)=>x.rk=j+1);
+if(EXP)h='<div class="tw">'+tbl('toppct',g,[['teh','Tehsil','t'],['k','Patwari','t'],['hal','Halka','t'],['mob','Mobile','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC,['pct','Completion %'],...PP],0,{k:'rk',d:1})+'</div>';else h=`<div class="note" style="margin:0 0 10px">रैंकिंग का आधार: सबसे ज़्यादा Completion % (यानी % के अनुसार) वाले पटवारी पहले। बराबरी होने पर ज़्यादा कुल Completed, फिर ज़्यादा प्लॉट। फ़िल्टर लगाने पर उसी तहसील/कोर्ट के TOP 20 दिखते हैं।</div><div class="tp">`+g.map((g,j)=>`<div class="tc2 ${j<3?'r'+(j+1):''}"><div class="s2">${['🥇','🥈','🥉'][j]||'🏅'} रैंक ${j+1}</div><h4>${esc(g.k)}</h4><div class="s2">${esc(g.teh)} · ${esc(g.hal)} · ${esc(g.mob)}</div><div class="bg2"><div class="on"><b>${pt(g.pct)}</b><small>Completion %</small></div><div><b>${nf(g.cm)}</b><small>कुल Completed</small></div><div><b>+${nf(g.p1)}</b><small>1 Day</small></div><div><b>+${nf(g.p7)}</b><small>1 Week</small></div></div><div class="s2">${g.vil} गाँव · ${nf(g.pl)} प्लॉट · ${nf(g.b)} हितग्राही · Pending ${nf(g.pend)} प्लॉट</div><table>`+SC.map(([f,l])=>`<tr><td class="l">${l}</td><td>${nf(g[f])}</td></tr>`).join('')+`</table></div>`).join('')+'</div>'}
 if(tab=='zero'){const z=gP(R.filter(r=>r.pn!=NA)).filter(g=>g.i+g.v+g.sb+g.pr+g.cm==0);
 h=`<div class="note" style="margin:0 0 10px">ऐसे पटवारी जिनके सभी गाँवों में पाँचों चरण शून्य हैं, यानी अभी तक कोई काम शुरू नहीं हुआ। कुल <b>${nf(z.length)}</b> पटवारी, <b>${nf(z.reduce((a,g)=>a+g.vil,0))}</b> गाँव, <b>${nf(z.reduce((a,g)=>a+g.pl,0))}</b> प्लॉट।</div>`+tblW(tbl('zero',z,[['teh','Tehsil','t'],['k','Patwari','t'],['mob','Mobile','t'],['hal','Halka','t'],['vn','संबद्ध ग्राम','t'],['vil','Villages'],['pl','Plots'],['b','Beneficiaries'],...SC],1,{k:'pl',d:-1}),z,1)}
 if(tab=='action'){const a=R.filter(r=>r.st=='Not started'&&r.pl>=100),b=R.filter(r=>r.pn==NA);
