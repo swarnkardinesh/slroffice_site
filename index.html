@@ -316,9 +316,9 @@ function subdivisionTableHTML(R){
     const tm=bySub.get(s),tehs=[...tm.values()].sort((a,b)=>pf(a.cm,a.pl)-pf(b.cm,b.pl));
     tehs.forEach(o=>{sn++;rowsHTML+=`<tr><td class="l sr">${sn}</td><td class="l">${esc(s)}</td><td class="l">${esc(o.t)}</td>${rowCells(o)}</tr>`});
     Object.keys(DT).forEach(k=>DT[k]+=ST[k]);
-    rowsHTML+=`<tr class="tot"><td></td><td class="l" colspan="2">Sub-Division Total (${esc(s)})</td>${rowCells(ST)}</tr>`;
+    rowsHTML+=`<tr class="tot"><td></td><td class="l">Sub-Division Total</td><td class="l">(${esc(s)})</td>${rowCells(ST)}</tr>`;
   });
-  rowsHTML+=`<tr class="tot"><td></td><td class="l" colspan="2">District Total</td>${rowCells(DT)}</tr>`;
+  rowsHTML+=`<tr class="tot"><td></td><td class="l">District Total</td><td></td>${rowCells(DT)}</tr>`;
   return`<div class="tw"><table data-id="subdiv"><thead><tr><th class="l">S.No</th><th class="l">Sub-Division</th><th class="l">Tehsil Name</th><th>Villages</th><th>Total Plots</th><th>Total Beneficiaries</th><th>Registry Initiated</th><th>Patwari Verification</th><th>Submitted</th><th>Registration in Process</th><th>Completed</th><th>Completion %</th><th>1 Day Progress<br><span class="hs">prev 8 AM → 8 AM</span></th><th>1 Week Progress</th></tr></thead><tbody>${rowsHTML}</tbody></table></div>`;
 }
 function tehListHTML(R,f,te){
